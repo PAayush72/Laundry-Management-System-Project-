@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login/Signup Form</title>
+        <!--<h:outputStylesheet name="style.css"/>-->
+        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
+        <style>
+            body {
+                background: #35dc9b;
+                background: linear-gradient(to bottom, #35dc9b, #3857af);
+                display: flex;
+                flex-direction: column;
+                flex-grow: 0;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+            }
+
+            h1 {
+                margin: 0 auto 40px;
+                color: #fff;
+                font: 20px Helvetica;
+                text-transform: uppercase;
+                letter-spacing: 3px;
+            }
+
+            form {
+                label {
+                    position: relative;
+                    display: block;
+
+                    input {
+                        font: 18px Helvetica, Arial, sans-serif;
+                        box-sizing: border-box;
+                        border: 2px solid white;
+                        color: white;
+                        background: transparent;
+                        display: block;
+                        padding: 20px;
+                        width: 300px;
+                        height: 60px;
+                        margin-bottom: 20px;
+                        font-size: 18px;
+                        outline: none;
+                        transition: all 0.2s ease-in-out;
+
+                        input::placeholder {
+                            transition: all 0.2s ease-in-out;
+                            color: rgba(255,255,255,0.6);
+                            font: 18px Helvetica, Arial, sans-serif;
+                        }
+
+                        input:focus, input:active {
+
+                            box-shadow: inset 0 0 10px rgba(255,255,255,0.4);
+                            color: rgba(255,255,255,1);
+                        }
+
+                        input:focus, input:active, input.populated {
+                            padding-top: 28px;
+                            padding-bottom: 12px;
+
+                            input::placeholder {
+                                color: transparent;
+                            }
+
+                            input + span {
+                                opacity: 1;
+                                top: 10px;
+                            }
+                        }
+                    }
+
+                    span {
+                        color: rgba(255,255,255,0.6);
+                        font: 13px Helvetica, Arial, sans-serif;
+                        position: absolute;
+                        top: 0px;
+                        left: 20px;
+                        opacity: 0;
+                        transition: all 0.2s ease-in-out;
+                    }
+                }
+
+                input[type="submit"] {
+                    transition: all 0.2s ease-in-out;
+                    font: 18px Helvetica, Arial, sans-serif;
+                    border: none;
+                    background: #1aaf75;
+                    color: #fff;
+                    padding: 16px 40px;
+                    cursor: pointer;
+
+                    input:hover {
+                        background: #109f67;
+                    }
+                }
+            }
+
+        </style>
+    </h:head>
+    <h:body>
+        <h:form>
+            <h:panelGrid columns="1">
+                <!-- Name Input -->
+                
+
+                <!-- Email Input -->
+                <h:outputLabel  value="Email"/>
+                <h:inputText value="#{loginMB.email}" required="true"/>
+
+              
+
+                <h:outputLabel  value="Password"/>
+                <h:inputText  value="#{loginMB.password}" required="true"/>
+
+
+                <!-- Submit Button -->
+                <h:commandButton value="Send" action="#{loginMB.login()}" type="submit"/>
+            </h:panelGrid>
+        </h:form>
+        <!--<h:outputScript name="main.js"/>-->
+        <script>
+
+            $(function () {
+                $('input').on('change', function () {
+                    var input = $(this);
+                    if (input.val().length) {
+                        input.addClass('populated');
+                    } else {
+                        input.removeClass('populated');
+                    }
+                });
+
+                setTimeout(function () {
+                    $('#fname').trigger('focus');
+                }, 500);
+            });
+        </script>
+    </h:body>
+</html>
