@@ -109,19 +109,17 @@ public class CustomerResource {
     @GET
     @Path("/getCustById/{customer_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Tblcustomer> getCustomersById(@PathParam("customer_id") int customer_id){
+    public Tblcustomer getCustomersById(@PathParam("customer_id") int customer_id){
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        Collection<Tblcustomer> customers = u.getCustomersById(customer_id);
-        return customers;
+        return  u.getCustomersById(customer_id);
     }
 
     @GET
     @Path("/getCustByEmail/{email}")
     @Produces(MediaType.APPLICATION_JSON)
-    public Collection<Tblcustomer> getCustomersByEmail(@PathParam("email") String email) {
+    public Tblcustomer getCustomersByEmail(@PathParam("email") String email) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        Collection<Tblcustomer> e_mail = u.getCustomersByEmail(email);
-        return e_mail;
+        return u.getCustomersByEmail(email);
     }
 
     @GET

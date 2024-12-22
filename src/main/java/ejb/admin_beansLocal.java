@@ -23,7 +23,7 @@ public interface admin_beansLocal {
 
     void deleteservice(int services_id);
 
-    Collection<Tblservice> getAllServiceById(int services_id);
+    Tblservice getAllServiceById(int services_id);
 
     Collection<Tblservice> getAllServices();
 

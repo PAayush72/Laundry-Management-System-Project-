@@ -150,7 +150,7 @@ public class Tblorder implements Serializable {
         this.tblorderitemCollection = tblorderitemCollection;
     }
 
-    @JsonbTransient
+    @XmlTransient
     public Collection<Tblpayment> getTblpaymentCollection() {
         return tblpaymentCollection;
     }

@@ -102,7 +102,7 @@ public class ServiceResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getAllServiceById/{services_id}")
-    public Collection<Tblservice> getAllServiceById(@PathParam("services_id") int services_id) {
+    public Tblservice getAllServiceById(@PathParam("services_id") int services_id) {
         return u.getAllServiceById(services_id);
     }
 

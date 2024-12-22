@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+
+        <style>
+            table {
+                width: 100%;
+                border-collapse: collapse;
+            }
+            th, td {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+            th {
+                background-color: #f2f2f2;
+            }
+        </style>
+        <link rel="manifest" href="site.webmanifest"/>
+        <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico"/>
+
+        <!-- CSS here -->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="assets/css/owl.carousel.min.css"/>
+        <link rel="stylesheet" href="assets/css/slicknav.css"/>
+        <link rel="stylesheet" href="assets/css/flaticon.css"/>
+        <link rel="stylesheet" href="assets/css/progressbar_barfiller.css"/>
+        <link rel="stylesheet" href="assets/css/gijgo.css"/>
+        <link rel="stylesheet" href="assets/css/animate.min.css"/>
+        <link rel="stylesheet" href="assets/css/animated-headline.css"/>
+        <link rel="stylesheet" href="assets/css/magnific-popup.css"/>
+        <link rel="stylesheet" href="assets/css/fontawesome-all.min.css"/>
+        <link rel="stylesheet" href="assets/css/themify-icons.css"/>
+        <link rel="stylesheet" href="assets/css/slick.css"/>
+        <link rel="stylesheet" href="assets/css/nice-select.css"/>
+        <link rel="stylesheet" href="assets/css/style.css"/>
+    </h:head>
+    <h:body>
+        <header>
+            <!-- Header Start -->
+            <div class="header-area">
+                <div class="main-header header-sticky">
+                    <!-- Logo -->
+                    <div class="header-left">
+                        <div class="logo">
+                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                        </div>
+                        <div class="menu-wrapper  d-flex align-items-center">
+                            <!-- Main-menu -->
+                            <div class="main-menu d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li class="active"><a href="home.jsf">Home</a></li>
+                                        <li><a href="about_us.jsf">About</a></li>
+                                        <li><a href="services.jsf">Services</a></li>
+                                        <li><a href="blog.html">Order</a>
+                                            <ul class="submenu">
+                                                <li><a href="displayOrders.jsf">Order Details</a></li>
+                                                <li><a href="order_item_details.jsf">Order Item Details</a></li>
+
+                                            </ul>
+                                        </li>
+                                        <li><a href="contact.jsf">Contact</a></li>
+                                        <li>
+                                            <h:form>
+                                                <!-- Render Login link if the user is not logged in -->
+                                                <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                    <a href="login.jsf" class="dropdown-item">Login</a>
+                                                </h:panelGroup>
+
+                                                <!-- Render Log Out button if the user is logged in -->
+                                                <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                    <h:commandLink value="Log Out" action="#{loginMB.logout()}" class="dropdown-item" />
+                                                </h:panelGroup>
+                                            </h:form>
+                                        </li>
+
+                                    </ul>
+
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-right d-none d-lg-block">
+
+                        <a href="#" class="header-btn2"><h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                Make an Appointment
+                            </h:panelGroup>
+
+                            <!-- Render Log Out button if the user is logged in -->
+                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                Welcome"#{loginMB.c.customerName}"!
+                            </h:panelGroup></a>
+                    </div>
+                    <!-- Mobile Menu -->
+                    <div class="col-12">
+                        <div class="mobile_menu d-block d-lg-none"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Header End -->
+        </header>
+
+        <f:view>
+            <h:form>
+                <h1>List of Order Items</h1>
+                <h:dataTable value="#{orderItemBean.getAllOrderitemByOrderId(orderBean.order.orderId)}" var="item">
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="OrderItemId"/>
+                        </f:facet>
+                        <h:outputText value="#{item.orderItemId}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Material"/>
+                        </f:facet>
+                        <h:outputText value="#{item.material}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Qty"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qty}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Photo"/>
+                        </f:facet>
+                        <h:graphicImage value="#{item.photo}" alt="Order Photo" width="70" height="70"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="ServiceId"/>
+                        </f:facet>
+                        <h:outputText value="#{item.serviceId.servicesId}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="OrderId"/>
+                        </f:facet>
+                        <h:outputText value="#{item.orderId.orderId}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Service Charge"/>
+                        </f:facet>
+                        <h:outputText value="#{orderItemBean.getAllServiceById(item.serviceId.servicesId).charge}"/>
+                    </h:column>
+                    <h:column>
+                        <f:facet name="header">
+                            <h:outputText value="Total Charge"/>
+                        </f:facet>
+                        <h:outputText value="#{item.qty * orderItemBean.getAllServiceById(item.serviceId.servicesId).charge}"/>
+                    </h:column>
+                    <h:column>
+                        <h:form>
+                            <h:commandButton value="delete" action="#{orderItemBean.deleteOrderItem(item.orderItemId,item.orderId.orderId)}">
+                                <f:param name="orderItemId" value="#{item.orderItemId}"/>
+                                <f:param name="orderId" value="#{item.orderId}"/>
+
+                            </h:commandButton>
+                        </h:form>
+                    </h:column>
+
+                    <h:column>
+                        <h:link value="Update" outcome="updateOrderItem" style="background-color: white;color: black">
+                            <f:param name="orderItemId" value="#{item.orderItemId}"/>
+                            <f:param name="orderId" value="#{item.orderId.orderId}"/>
+                        </h:link>
+                    </h:column>
+                </h:dataTable>
+                <h:panelGroup>
+                    <h:outputText value="Grand Total: " />
+                    <h:outputText value="#{orderItemBean.calculateGrandTotal(orderItemBean.getAllOrderitemByOrderId(orderBean.order.orderId))}" />
+                    <h:commandButton value="Download PDF" action="#{PdfBean.generatePdf}">
+                        <f:param name="ACTION" value="DOWNLOAD"/>
+                    </h:commandButton>
+                </h:panelGroup>
+                 <h:commandButton value="Pay" action="#{orderItemBean.processPayment}" />
+            </h:form>
+        </f:view>
+    </h:body>
+</html>

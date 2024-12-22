@@ -140,7 +140,7 @@ public class admin_beans implements admin_beansLocal {
     @Override
     public Collection<Tblservice> getAllServices() {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        return em.createNamedQuery("Tblservice.findAll").getResultList();
+       return em.createNamedQuery("Tblservice.findAll").getResultList();
     }
 
     @Override
@@ -160,10 +160,10 @@ public class admin_beans implements admin_beansLocal {
     }
 
     @Override
-    public Collection<Tblservice> getAllServiceById(int services_id) {
-        return em.createNamedQuery("Tblservice.findByServicesId")
+    public Tblservice getAllServiceById(int services_id) {
+        return (Tblservice) em.createNamedQuery("Tblservice.findByServicesId")
                 .setParameter("servicesId", services_id)
-                .getResultList();
+                .getResultList().iterator().next();
 //       throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

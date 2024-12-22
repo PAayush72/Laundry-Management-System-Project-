@@ -55,9 +55,6 @@ public class Tblorderitem implements Serializable {
     @Size(min = 1, max = 255)
     @Column(name = "photo")
     private String photo;
-    @JoinColumn(name = "customer_id", referencedColumnName = "customer_id")
-    @ManyToOne(optional = false)
-    private Tblcustomer customerId;
     @JoinColumn(name = "service_id", referencedColumnName = "services_id")
     @ManyToOne(optional = false)
     private Tblservice serviceId;
@@ -109,14 +106,6 @@ public class Tblorderitem implements Serializable {
 
     public void setPhoto(String photo) {
         this.photo = photo;
-    }
-
-    public Tblcustomer getCustomerId() {
-        return customerId;
-    }
-
-    public void setCustomerId(Tblcustomer customerId) {
-        this.customerId = customerId;
     }
 
     public Tblservice getServiceId() {

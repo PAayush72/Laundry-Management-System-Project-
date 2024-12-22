@@ -38,17 +38,17 @@ public class userServlet extends HttpServlet {
             out.println("<body>");
             out.println("<h1>Customer Details</h1>");
             //            userBean.addCustomer("Raj", "p", "p", "800", "abc");
-            LocalDate order_date = LocalDate.of(2024, 10, 20);
-            LocalDate pickup_date = LocalDate.of(2024, 10, 21);
-            LocalDate delivery_date = LocalDate.of(2024, 10, 22);
-
-            Date orderDate = Date.from(order_date.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            Date pickupDate = Date.from(pickup_date.atStartOfDay(ZoneId.systemDefault()).toInstant());
-            Date deliveryDate = Date.from(delivery_date.atStartOfDay(ZoneId.systemDefault()).toInstant());
-//            services.addEmployee("pl", 3, 5000);
-//            userBean.addorder(9, orderDate, pickupDate, deliveryDate, "not",3);
-//userBean.updateOrder(8, 6, orderDate, pickupDate, deliveryDate, "Done", 3);
-//              userBean.removeCustomer(4);
+//            LocalDate order_date = LocalDate.now();
+//          
+//              userBean.removeCustomer(4);  LocalDate pickup_date = LocalDate.of(2024, 10, 21);
+//            LocalDate delivery_date = LocalDate.of(2024, 10, 22);
+//
+////            Date orderDate = Date.from(order_date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+//            Date pickupDate = Date.from(pickup_date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+//            Date deliveryDate = Date.from(delivery_date.atStartOfDay(ZoneId.systemDefault()).toInstant());
+////            services.addEmployee("pl", 3, 5000);
+//            userBean.addorder(42, deliveryDate, pickupDate, deliveryDate, "not");
+////userBean.updateOrder(8, 6, orderDate, pickupDate, deliveryDate, "Done", 3);
 //               userBean.deleteOrder(7);
 //            userBean.addorderItem(5, 2, 8, "Kurta", 1);
 //            userBean.addorderItem(5, 1, 8, "Blazer", 1);
@@ -57,35 +57,12 @@ public class userServlet extends HttpServlet {
 //           for(Tblorder r : o){
 //               out.println("delivay date:"+r.getDeliveryDate());
 //           }
+userBean.deleteOrder(175,45);
 
-            Collection<Tblcustomer> customers = userBean.getAllCustomers();
-            for (Tblcustomer customer : customers) {
-                out.println("<h3>Customer ID: " + customer.getCustomerId()
-                        + ", Name: " + customer.getCustomerName()
-                        + ", Address: " + customer.getCustomerAddress()
-                        + ", Email: " + customer.getEmail()
-                        + ", Phone: " + customer.getPhno() + "</h3>");
-
-                // Get orders for this customer
-                Collection<Tblorder> orders = userBean.getOrderByCustomerId(customer.getCustomerId());
-
-                for (Tblorder order : orders) {
-                    out.println("<h4>Order Date: " + order.getOrderDate()
-                            + ", Pickup Date: " + order.getPickupDate()
-                            + ", Delivery Date: " + order.getDeliveryDate()
-                            + ", Status: " + order.getStatus() + "</h4>");
-
-                    // Get services for each order (associated by serviceId)
-//                    Tblservice service = order.getServicesId(); // Get the related service using the order's serviceId
-
-//                    out.println("<h3>Service: " + service.getServiceType() + " (" + service.getCharge() + ")</h3>");
-
-//                    Tblemployee emp = service.getServicesId();
-                }
+            
 //                Tblorder order = new Tblorder();
-                
+
                 out.println("<hr>");
-            }
             
 
             out.println("</body>");

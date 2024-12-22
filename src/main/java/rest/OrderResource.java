@@ -11,8 +11,11 @@ import entities.Tblorderitem;
 import entities.Tblservice;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.EJB;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.UriInfo;
@@ -38,6 +41,7 @@ import javax.ws.rs.core.Response;
 @RequestScoped
 public class OrderResource {
 
+//    Tblorder newOrder = new Tblorder();
     @EJB
     user_beanLocal u;
 
@@ -77,47 +81,57 @@ public class OrderResource {
     }
 
     @POST
-    @Path("/addorder/{customer_id}/{order_date}/{pickup_date}/{delivery_date}/{status}")
-    public void addorder(@PathParam("customer_id") int customer_id,
-            @PathParam("order_date") String order_date,
+    @Path("/addorder/{customer_id}/{pickup_date}/{delivery_date}/{status}")
+    public void addorder(
+            @PathParam("customer_id") int customer_id,
             @PathParam("pickup_date") String pickup_date,
             @PathParam("delivery_date") String delivery_date,
-            @PathParam("status") String status
-    ) {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedDate = dateFormat.parse(order_date);
-            Date pickupdate = dateFormat.parse(pickup_date);
-            Date deliverydate = dateFormat.parse(delivery_date);
+            @PathParam("status") String status) {
 
-            u.addorder(customer_id, parsedDate, pickupdate, deliverydate, status);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            // Generate the current date for the order date
+            LocalDate localOrderDate = LocalDate.now();
+            Date orderDate = Date.from(localOrderDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+            // Parse the pickup and delivery dates from the input strings
+            Date pickupDate = dateFormat.parse(pickup_date);
+            Date deliveryDate = dateFormat.parse(delivery_date);
+            // Assuming 'u' is an instance of a service class where you handle business logic
+            u.addorder(customer_id, orderDate, pickupDate, deliveryDate, status);
+
         } catch (ParseException e) {
-// Handle exceptions (e.g., invalid date format)
-            throw new WebApplicationException("Invalid date format. Please use yyyy-MM-dd.", 400);
+            // Handle invalid date format
+            throw new WebApplicationException("Invalid date format. Please use yyyy-MM-dd.", Response.Status.BAD_REQUEST);
+
+        } catch (Exception e) {
+            // Handle other exceptions
+            throw new WebApplicationException("An error occurred while processing the request.", Response.Status.INTERNAL_SERVER_ERROR);
         }
     }
 
     @PUT
-    @Path("/UpdateOrder/{order_id}/{customer_id}/{order_date}/{pickup_date}/{delivery_date}/{status}")
+    @Path("/UpdateOrder/{order_id}/{customer_id}/{pickup_date}/{delivery_date}/{status}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response updateOrder(
             @PathParam("order_id") int order_id,
             @PathParam("customer_id") int customer_id,
-            @PathParam("order_date") String order_date,
             @PathParam("pickup_date") String pickup_date,
             @PathParam("delivery_date") String delivery_date,
             @PathParam("status") String status) {
 
         try {
             // Date parsing with a format of "yyyy-MM-dd"
+            LocalDate localOrderDate = LocalDate.now();
+            Date orderDate = Date.from(localOrderDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date parsedOrderDate = dateFormat.parse(order_date);
+
             Date parsedPickupDate = dateFormat.parse(pickup_date);
             Date parsedDeliveryDate = dateFormat.parse(delivery_date);
 
             // Update order details
-            u.updateOrder(order_id, customer_id, parsedOrderDate, parsedPickupDate, parsedDeliveryDate, status);
+            u.updateOrder(order_id, customer_id, orderDate, parsedPickupDate, parsedDeliveryDate, status);
 
             // Return HTTP 200 OK with a success message
             return Response.ok("Order updated successfully").build();
@@ -135,11 +149,11 @@ public class OrderResource {
     }
 
     @DELETE
-    @Path("/DeleteOrder/{order_id}")
+    @Path("/DeleteOrder/{order_id}/{customer_id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public void deleteOrder(@PathParam("order_id") int order_id) {
+    public void deleteOrder(@PathParam("order_id") int order_id,@PathParam("customer_id")int customer_id) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        u.deleteOrder(order_id);
+        u.deleteOrder(order_id,customer_id);
     }
 
     @GET
@@ -160,7 +174,7 @@ public class OrderResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getOrderById/{order_id}")
-    public Collection<Tblorder> getOrderById(@PathParam("order_id") int order_id) {
+    public Tblorder getOrderById(@PathParam("order_id") int order_id) {
         return u.getOrderById(order_id);
     }
 
@@ -211,35 +225,51 @@ public class OrderResource {
     }
 
     @POST
-    @Path("/addorderitem/{customer_id}/{service_id}/{order_id}/{material}/{qty}/{photo}")
-    public void addorderItem(@PathParam("customer_id") int customer_id,
+    @Path("/addorderitem/{service_id}/{order_id}/{material}/{qty}/{photo}")
+    public Response addorderItem(
             @PathParam("service_id") int service_id,
             @PathParam("order_id") int order_id,
             @PathParam("material") String material,
             @PathParam("qty") int qty,
             @PathParam("photo") String photo) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        u.addorderItem(customer_id, service_id, order_id, material, qty, photo);
+        try {
+            // Call the service to add the order item
+            Response response = u.addorderItem(service_id, order_id, material, qty, photo);
+
+            // Check if the status code indicates success (e.g., 201 Created)
+            if (response.getStatus() == Response.Status.CREATED.getStatusCode()) {
+                return Response.status(Response.Status.CREATED).entity("Order item added successfully").build();
+            } else {
+                // If the status code is not 201, return a bad request
+                return Response.status(Response.Status.BAD_REQUEST).entity("Failed to add order item").build();
+            }
+        } catch (Exception e) {
+            // Log the exception and return a server error response
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred while adding the order item")
+                    .build();
+        }
     }
 
     @PUT
-    @Path("/updateOrderItem/{order_item_id}/{customer_id}/{services_id}/{order_id}/{material}/{qty}/{photo}")
+    @Path("/updateOrderItem/{order_item_id}/{services_id}/{order_id}/{material}/{qty}/{photo}")
     @Produces(MediaType.APPLICATION_JSON)
     public void updateOrderItem(@PathParam("order_item_id") int order_item_id,
-            @PathParam("customer_id") int customer_id,
             @PathParam("services_id") int services_id,
             @PathParam("order_id") int order_id,
             @PathParam("material") String material,
             @PathParam("qty") int qty,
             @PathParam("photo") String photo) {
-        u.updateOrderItem(order_item_id, customer_id, services_id, order_id, material, qty, photo);
+        u.updateOrderItem(order_item_id, services_id, order_id, material, qty, photo);
     }
 
     @DELETE
-    @Path("/deleteOrderItem/{order_item_id}")
-    public void deleteOrderItem(@PathParam("order_item_id") int order_item_id) {
+    @Path("/deleteOrderItem/{order_item_id}/{order_id}")
+    public void deleteOrderItem(@PathParam("order_item_id") int order_item_id,@PathParam("order_id")int order_id) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        u.deleteOrderItem(order_item_id);
+        u.deleteOrderItem(order_item_id,order_id);
     }
 
     @GET
@@ -248,14 +278,6 @@ public class OrderResource {
     public Collection<Tblorderitem> getAllOrderitem() {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         return u.getAllOrderitem();
-    }
-
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
-    @Path("/getAllOrderitemBycustomerId/{customer_id}")
-    public Collection<Tblorderitem> getAllOrderitemBycustomerId(@PathParam("customer_id") int customer_id) {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        return u.getAllOrderitemBycustomerId(customer_id);
     }
 
     @GET
@@ -270,7 +292,7 @@ public class OrderResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getAllOrderitemByOrderId/{order_id}")
-    public Collection<Tblorderitem> getAllOrderitemByOrderId(@PathParam("order_id") int order_id) {
+    public List<Tblorderitem> getAllOrderitemByOrderId(@PathParam("order_id") int order_id) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         return u.getAllOrderitemByOrderId(order_id);
     }
@@ -286,7 +308,7 @@ public class OrderResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getAllOrderitemById/{order_item_id}")
-    public Collection<Tblorderitem> getAllOrderitemById(@PathParam("order_item_id") int order_item_id) {
+    public Tblorderitem getAllOrderitemById(@PathParam("order_item_id") int order_item_id) {
         // Call the method to fetch order items by order_item_id
         return u.getAllOrderitemById(order_item_id);
     }

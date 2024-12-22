@@ -1,14 +1,13 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
- */
 package cdi;
 
+import client.customer;
+import entities.Tblcustomer;
 import java.io.IOException;
-import javax.inject.Named;
 import java.io.Serializable;
+import javax.inject.Named;
 import java.util.Set;
-import javax.enterprise.context.RequestScoped;
+import javax.annotation.PostConstruct;
+import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import static javax.faces.application.FacesMessage.SEVERITY_ERROR;
 import javax.faces.context.FacesContext;
@@ -20,37 +19,43 @@ import static javax.security.enterprise.authentication.mechanism.http.Authentica
 import javax.security.enterprise.credential.Credential;
 import javax.security.enterprise.credential.Password;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import javax.ws.rs.core.GenericType;
+import javax.ws.rs.core.Response;
 
-/**
- *
- * @author vanshita
- */
 @Named(value = "loginMB")
-@RequestScoped
-public class LoginMB {
+@SessionScoped
+public class LoginMB implements Serializable {
 
     @Inject
     private SecurityContext securityContext;
 
-//    @EJB
-//    private UserBeanLocal userBean;
-//    
-//    private Users newUser = new Users();
-//    private Integer roleId;
-    private String email;
-    private String password;
-//    private String confirmPassword;
-    private String message;
-    private AuthenticationStatus status;
-    private Set<String> roles;
+    private customer cl;
 
-    /**
-     * Creates a new instance of UserMB
-     */
-    public LoginMB() {
+    private String email;
+    private String id;
+    private Tblcustomer c;
+    private GenericType<Tblcustomer> gc;
+    private Response rs;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+    private String password;
+    private String username;
+
+    public SecurityContext getSecurityContext() {
+        return securityContext;
+    }
+
+    public void setSecurityContext(SecurityContext securityContext) {
+        this.securityContext = securityContext;
     }
 
     public String getEmail() {
@@ -67,14 +72,6 @@ public class LoginMB {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public SecurityContext getSecurityContext() {
-        return securityContext;
-    }
-
-    public void setSecurityContext(SecurityContext securityContext) {
-        this.securityContext = securityContext;
     }
 
     public String getMessage() {
@@ -101,86 +98,123 @@ public class LoginMB {
         this.roles = roles;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public Tblcustomer getC() {
+        return c;
+    }
+
+    public void setC(Tblcustomer c) {
+        this.c = c;
+    }
+
+    private String message;
+    private AuthenticationStatus status;
+    private Set<String> roles;
+
+    public LoginMB() {
+
+    }
+
+    @PostConstruct
+    public void init() {
+        cl = new customer();
+        gc = new GenericType<Tblcustomer>() {
+        };
+    }
+
+    // Getters and setters for email, password, securityContext, message, status, and roles
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
         try {
+            HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
+            HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
 
-            HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-            HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
-
-            request.getSession().setAttribute("logged-group", "");
+            HttpSession session = request.getSession();
+            session.setAttribute("logged-group", "");
 
             Credential credential = new UsernamePasswordCredential(email, new Password(password));
             AuthenticationStatus status = securityContext.authenticate(request, response, withParams().credential(credential));
 
-            System.out.println("Status in bean : " + status);
-
             if (status.equals(SEND_CONTINUE)) {
-                // Authentication mechanism has send a redirect, should not
-                // send anything to response from JSF now. The control will now go into HttpAuthenticationMechanism
                 context.responseComplete();
+                return null;
             }
 
-            System.out.println("In bean Roles :" + roles);
+            rs = cl.getCustomersByEmail(Response.class, email);
+            c = rs.readEntity(gc);
+            session.setAttribute("user-id", c.getCustomerId());
+            session.setAttribute("loginMB", this);  // Add this lin
+            System.out.println("customer id>>>" + c.getCustomerId());
             if (roles.contains("admin")) {
-                System.out.println("In admin");
-                request.getSession().setAttribute("logged-group", "admin");
-                return "index.jsf?faces-redirect=true";
-            } //   else if(securityContext.isCallerInRole("Supervisor"))
-            else if (roles.contains("user") || roles.contains("employee")) {
-                System.out.println("In user");
-                if (roles.contains("user")) {
-                    request.getSession().setAttribute("logged-group", "user");
-                    request.getSession().setAttribute("user-email", email);
-//                  request.getSession().setAttribute("user-email", email);
-                } else if (roles.contains("employee")) {
-                    request.getSession().setAttribute("logged-group", "employee");
-                    request.getSession().setAttribute("user-email", email);
-                }
-                return "index.jsf?faces-redirect=true";
-            }
-//            else if (roles.contains("free-user")) {
-//                System.out.println("In user");
-//                request.getSession().setAttribute("logged-group", "free-user");
-//                return "/user_side/dashboard.jsf?faces-redirect=true";
-//            }
+                session.setAttribute("logged-group", "admin");
 
-            //} 
+                return "home.jsf?faces-redirect=true";
+            } else if (roles.contains("user") || roles.contains("employee")) {
+                if (roles.contains("user")) {
+                    session.setAttribute("logged-group", "user");
+                    session.setAttribute("user-email", email);
+                    session.setAttribute("user-name", username);
+//                    session.setAttribute("user-id", id);
+
+                } else if (roles.contains("employee")) {
+                    session.setAttribute("logged-group", "employee");
+                    session.setAttribute("user-email", email);
+                    session.setAttribute("user-name", username);
+//                    session.setAttribute("user-id", id);
+
+                }
+                System.out.println("session>>>>" + session.getAttribute("user-email"));
+                return "home.jsf?faces-redirect=true";
+            }
         } catch (Exception e) {
-            System.out.print("Username pass wrong");
-            message = "Error : Username or Password is Incorrect!!!";
-            //   e.printStackTrace();
+            message = "Error: Username or Password is Incorrect!!!";
         }
-//        
         return "error.jsf?faces-redirect=true";
     }
 
     private static void addError(FacesContext context, String message) {
-        context = FacesContext.getCurrentInstance();
-        context.addMessage(
-                null,
-                new FacesMessage(SEVERITY_ERROR, message, null));
+        context.addMessage(null, new FacesMessage(SEVERITY_ERROR, message, null));
     }
 
-    public String logout() throws ServletException {
-        System.out.println("In Log out");
-        HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
-        request.getSession().setAttribute("logged-group", "");
-        request.logout();
-        request.getSession().invalidate();
+    public String logout() {
+        try {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 
-        return "/login.jsf?faces-redirect=true";
+            HttpSession session = request.getSession(false); // Get the current session, don't create a new one if it doesn't exist
+            if (session != null) {
+                session.invalidate();
+            }
 
+            request.logout();
+
+            System.out.println("User logged out successfully.");
+
+            facesContext.getExternalContext().redirect(request.getContextPath() + "/login.jsf");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null; // Navigation case is handled by the redirect
+    }
+
+    public boolean isLoggedIn() {
+        FacesContext context = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) context.getExternalContext().getSession(false);
+        return session != null && session.getAttribute("logged-group") != null;
     }
 
     public void navigateToLoginPage() throws IOException {
-        // Redirect to the register page
         FacesContext.getCurrentInstance().getExternalContext().redirect("../login.jsf");
     }
 
     public void navigateToRegisterPage() throws IOException {
-        // Redirect to the register page
-        FacesContext.getCurrentInstance().getExternalContext().redirect("../login.jsf");
+        FacesContext.getCurrentInstance().getExternalContext().redirect("../register.jsf");
     }
-
 }

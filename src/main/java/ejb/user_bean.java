@@ -10,12 +10,23 @@ import entities.Tblorderitem;
 import entities.Tblpayment;
 import entities.Tblrole;
 import entities.Tblservice;
+import java.net.URI;
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.Date;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
+import javax.faces.context.FacesContext;
+import javax.servlet.http.HttpSession;
+import javax.transaction.Transactional;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriBuilder;
 
 /**
  *
@@ -27,6 +38,29 @@ public class user_bean implements user_beanLocal {
     @PersistenceContext(unitName = "project_unit")
     EntityManager em;
 
+//    public class OrderDTO {
+//
+//        private Integer orderId;
+//        private String status;
+//
+//        // Getters and Setters
+//        public Integer getOrderId() {
+//            return orderId;
+//        }
+//
+//        public void setOrderId(Integer orderId) {
+//            this.orderId = orderId;
+//        }
+//
+//        public String getStatus() {
+//            return status;
+//        }
+//
+//        public void setStatus(String status) {
+//            this.status = status;
+//        }
+//
+//    }
     @Override
     public Collection<Tblcustomer> getAllCustomer() {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -53,31 +87,52 @@ public class user_bean implements user_beanLocal {
         em.merge(role);
     }
 
+//    @Transactional
     @Override
     public void addorder(int customer_id, Date order_date, Date pickup_date, Date delivery_date, String status) {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        Tblcustomer cust = (Tblcustomer) em.find(Tblcustomer.class, customer_id);
-//        Tblservice se = (Tblservice) em.find(Tblservice.class, services_id);
-//        Tblorder o = (Tblorder) em.find(Tblorder.class, order_id);
+        // Find the customer by their ID
+        Tblcustomer cust = em.find(Tblcustomer.class, customer_id);
+        if (cust == null) {
+            throw new IllegalArgumentException("Customer not found with ID: " + customer_id);
+        }
 
-        Collection<Tblorder> Tblorder = cust.getTblorderCollection();
-        Tblorder a = new Tblorder();
-        a.setCustomerId(cust);
-        a.setOrderDate(order_date);
-        a.setPickupDate(pickup_date);
-        a.setDeliveryDate(delivery_date);
-        a.setStatus(status);
-//        a.setServicesId(se);
+        // Use the provided order_date
+        Date orderDate = order_date != null ? order_date : new Date();
 
-        Tblorder.add(a);
-        cust.setTblorderCollection(Tblorder);
-//        se.setTblorderCollection(Tblorder);
+        // Create a new order
+        Tblorder newOrder = new Tblorder();
+        newOrder.setCustomerId(cust);
+        newOrder.setOrderDate(orderDate);
+        newOrder.setPickupDate(pickup_date);
+        newOrder.setDeliveryDate(delivery_date);
+        newOrder.setStatus(status);
 
-        em.persist(a);
+        // Persist the new order
+        em.persist(newOrder);
+        em.flush();  // Ensure the order ID is generated
+
+//        Integer ordId = newOrder.getOrderId();
+//        addorderItem(service_id,newOrder.ordId,material,qty,photo);
+        // Update the customer's order collection
+        Collection<Tblorder> orders = cust.getTblorderCollection();
+        orders.add(newOrder);
+        cust.setTblorderCollection(orders);
+
+        // Merge the customer entity to update the order collection
         em.merge(cust);
-//        em.merge(se);
+
+        // Log the order ID
+        Logger.getLogger(this.getClass().getName()).info("Order added with ID: " + newOrder.getOrderId());
     }
 
+//    @Override
+//    public Tblorder getLatestOrderForCustomer(int customerId) {
+//        TypedQuery<Tblorder> query = em.createQuery(
+//                "SELECT o FROM Tblorder o WHERE o.customerId.customerId = :customerId ORDER BY o.orderId DESC", Tblorder.class);
+//        query.setParameter("customerId", customerId);
+//        query.setMaxResults(1);
+//        return query.getResultList().stream().findFirst().orElse(null);
+//    }
     // Add business logic below. (Right-click in editor and choose
     // "Insert Code > Add Business Method")
     @Override
@@ -109,11 +164,10 @@ public class user_bean implements user_beanLocal {
     }
 
     @Override
-    public Collection<Tblcustomer> getCustomersByEmail(String email) {
+    public Tblcustomer getCustomersByEmail(String email) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        return em.createNamedQuery("Tblcustomer.findByEmail")
-                .setParameter("email", email)
-                .getResultList();
+        return (Tblcustomer) em.createNamedQuery("Tblcustomer.findByEmail")
+                .setParameter("email", email).getResultList().iterator().next();
     }
 
     @Override
@@ -146,11 +200,11 @@ public class user_bean implements user_beanLocal {
     }
 
     @Override
-    public Collection<Tblcustomer> getCustomersById(int customer_id) {
+    public Tblcustomer getCustomersById(int customer_id) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        return em.createNamedQuery("Tblcustomer.findByCustomerId")
+        return (Tblcustomer) em.createNamedQuery("Tblcustomer.findByCustomerId")
                 .setParameter("customerId", customer_id)
-                .getResultList();
+                .getResultList().iterator().next();
     }
 
     @Override
@@ -159,9 +213,10 @@ public class user_bean implements user_beanLocal {
         Tblorder ord = (Tblorder) em.find(Tblorder.class, order_id);
         Tblcustomer cust = (Tblcustomer) em.find(Tblcustomer.class, customer_id);
 //        Tblservice s = (Tblservice) em.find(Tblservice.class, services_id);
+        Date orderDate = order_date != null ? order_date : new Date();
 
         ord.setCustomerId(cust);
-        ord.setOrderDate(order_date);
+        ord.setOrderDate(orderDate);
         ord.setPickupDate(pickup_date);
         ord.setDeliveryDate(delivery_date);
         ord.setStatus(status);
@@ -171,10 +226,36 @@ public class user_bean implements user_beanLocal {
     }
 
     @Override
-    public void deleteOrder(int order_id) {
+    public void updateOrderStatus(int orderId, String status) {
+        try {
+            // Find the order by orderId
+            Tblorder order = em.find(Tblorder.class, orderId);
+
+            if (order != null) {
+                // Set the new status
+                order.setStatus(status);
+
+                // Persist the changes (update the order in the database)
+                em.merge(order);
+            } else {
+                // Handle the case when the order is not found (optional)
+                System.out.println("Order not found for ID: " + orderId);
+            }
+        } catch (Exception e) {
+            // Handle any exceptions (e.g., log the error)
+            e.printStackTrace();
+        }
+    }
+    
+    @Override
+    public void deleteOrder(int order_id, int customer_id) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         Tblorder ord = (Tblorder) em.find(Tblorder.class, order_id);
+        Tblcustomer cust = (Tblcustomer) em.find(Tblcustomer.class, customer_id);
+        Collection<Tblorder> o = cust.getTblorderCollection();
 
+        o.remove(ord);
+        em.merge(ord);
         em.remove(ord);
     }
 
@@ -196,11 +277,11 @@ public class user_bean implements user_beanLocal {
     }
 
     @Override
-    public Collection<Tblorder> getOrderById(int order_id) {
+    public Tblorder getOrderById(int order_id) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        return em.createNamedQuery("Tblorder.findByOrderId")
+        return (Tblorder) em.createNamedQuery("Tblorder.findByOrderId")
                 .setParameter("orderId", order_id)
-                .getResultList();
+                .getResultList().iterator().next();
     }
 
     @Override
@@ -253,18 +334,19 @@ public class user_bean implements user_beanLocal {
 //        // Assuming Tblservice has a field like 'order' that references Tblorder:
 //        return a.getServicesId();  // Return the Tblorder object associated with the Tblservice
 //    }
+//    @Transactional
     @Override
-    public void addorderItem(int customer_id, int service_id, int order_id, String material, int qty, String photo) {
+    public Response addorderItem(int service_id, int order_id, String material, int qty, String photo) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         Tblservice service = (Tblservice) em.find(Tblservice.class, service_id);
         Tblorder ord = (Tblorder) em.find(Tblorder.class, order_id);
-        Tblcustomer cust = (Tblcustomer) em.find(Tblcustomer.class, customer_id);
+
         Collection<Tblorderitem> item = service.getTblorderitemCollection();
-        Collection<Tblorderitem> c = cust.getTblorderitemCollection();
+
         Collection<Tblorderitem> o = ord.getTblorderitemCollection();
 
         Tblorderitem i = new Tblorderitem();
-        i.setCustomerId(cust);
+
         i.setOrderId(ord);
         i.setServiceId(service);
         i.setMaterial(material);
@@ -272,44 +354,77 @@ public class user_bean implements user_beanLocal {
         i.setPhoto(photo);
 
         item.add(i);
-        c.add(i);
+
         o.add(i);
-        cust.setTblorderitemCollection(item);
+
         ord.setTblorderitemCollection(item);
         service.setTblorderitemCollection(item);
 
         em.persist(i);
-        em.merge(cust);
+        em.flush();
         em.merge(service);
         em.merge(ord);
+        try {
+            URI createdUri = UriBuilder.fromPath("/orders/{orderId}/items/{itemId}")
+                    .build(ord.getOrderId(), i.getOrderItemId());
 
+            // Return a 201 Created response with the URI and a success message
+            return Response.created(createdUri)
+                    .entity("Order item successfully added.")
+                    .build();
+
+        } catch (Exception e) {
+            // Log the error and handle exceptions
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                    .entity("An error occurred while adding the order item")
+                    .build();
+
+        }
     }
 
     @Override
-    public void updateOrderItem(int order_item_id, int customer_id, int services_id, int order_id, String material, int qty, String photo) {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        Tblorder ord = (Tblorder) em.find(Tblorder.class, order_id);
-        Tblcustomer cust = (Tblcustomer) em.find(Tblcustomer.class, customer_id);
-        Tblservice s = (Tblservice) em.find(Tblservice.class, services_id);
-        Tblorderitem item = (Tblorderitem) em.find(Tblorderitem.class, order_item_id);
+    public void updateOrderItem(int order_item_id, int services_id, int order_id, String material,
+            int qty, String photo) {
+        if (order_id == 0) {
+            throw new IllegalArgumentException("Invalid order_id: 0 is not a valid order ID.");
+        }
 
-        item.setOrderItemId(order_item_id);
-        item.setCustomerId(cust);
+        // Fetch the Tblorder, Tblservice, and Tblorderitem entities from the database
+        Tblorder ord = em.find(Tblorder.class, order_id);
+        Tblservice s = em.find(Tblservice.class, services_id);
+        Tblorderitem item = em.find(Tblorderitem.class, order_item_id);
+
+        // Check if any of the retrieved entities are null and handle it
+        if (ord == null) {
+            throw new IllegalArgumentException("Order with ID " + order_id + " not found.");
+        }
+        if (s == null) {
+            throw new IllegalArgumentException("Service with ID " + services_id + " not found.");
+        }
+        if (item == null) {
+            throw new IllegalArgumentException("OrderItem with ID " + order_item_id + " not found.");
+        }
+
+        // Set the updated values to the order item
         item.setServiceId(s);
         item.setOrderId(ord);
         item.setMaterial(material);
         item.setQty(qty);
         item.setPhoto(photo);
 
+        // Merge the updated item into the database
         em.merge(item);
-
     }
 
     @Override
-    public void deleteOrderItem(int order_item_id) {
+    public void deleteOrderItem(int order_item_id, int order_id) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         Tblorderitem i = (Tblorderitem) em.find(Tblorderitem.class, order_item_id);
-
+        Tblorder ord = (Tblorder) em.find(Tblorder.class, order_id);
+        Collection<Tblorderitem> o = ord.getTblorderitemCollection();
+        o.remove(i);
+        em.merge(i);
         em.remove(i);
     }
 
@@ -321,28 +436,31 @@ public class user_bean implements user_beanLocal {
     }
 
     @Override
-    public Collection<Tblorderitem> getAllOrderitemBycustomerId(int customer_id) {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        Tblcustomer c = (Tblcustomer) em.find(Tblcustomer.class, customer_id);
-        return c.getTblorderitemCollection();
-    }
-
-    @Override
-    public Collection<Tblorderitem> getAllOrderitemByServiceId(int service_id) {
+    public Collection<Tblorderitem> getAllOrderitemByServiceId(int service_id
+    ) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         Tblservice s = (Tblservice) em.find(Tblservice.class, service_id);
         return s.getTblorderitemCollection();
     }
 
     @Override
-    public Collection<Tblorderitem> getAllOrderitemByOrderId(int order_id) {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        Tblorder o = (Tblorder) em.find(Tblorder.class, order_id);
-        return o.getTblorderitemCollection();
+    public List<Tblorderitem> getAllOrderitemByOrderId(int orderId) {
+        // First, retrieve the Tblorder using the orderId
+        Tblorder order = em.find(Tblorder.class, orderId);
+
+        if (order == null) {
+            return new ArrayList<>(); // Return an empty list if the order doesn't exist
+        }
+
+        // Now, query the Tblorderitem based on the Tblorder object
+        TypedQuery<Tblorderitem> query = em.createQuery("SELECT oi FROM Tblorderitem oi WHERE oi.orderId = :order", Tblorderitem.class);
+        query.setParameter("order", order);  // Set the Tblorder object as the parameter
+        return query.getResultList();  // Return the list of order items
     }
 
     @Override
-    public Collection<Tblorderitem> getAllOrderitemByMaterial(String material) {
+    public Collection<Tblorderitem> getAllOrderitemByMaterial(String material
+    ) {
         // Use the correct named query to filter by material
         return em.createNamedQuery("Tblorderitem.findByMaterial")
                 .setParameter("material", material)
@@ -350,15 +468,17 @@ public class user_bean implements user_beanLocal {
     }
 
     @Override
-    public Collection<Tblorderitem> getAllOrderitemById(int order_item_id) {
+    public Tblorderitem getAllOrderitemById(int order_item_id
+    ) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        return em.createNamedQuery("Tblorderitem.findByOrderItemId")
+        return (Tblorderitem) em.createNamedQuery("Tblorderitem.findByOrderItemId")
                 .setParameter("orderItemId", order_item_id)
-                .getResultList();
+                .getResultList().iterator().next();
     }
 
     @Override
-    public void addpayment(int customer_id, int order_id, int amount, String method) {
+    public void addpayment(int customer_id, int order_id, double amount, String method
+    ) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         Tblcustomer cust = (Tblcustomer) em.find(Tblcustomer.class, customer_id);
         Tblorder ord = (Tblorder) em.find(Tblorder.class, order_id);
@@ -384,7 +504,8 @@ public class user_bean implements user_beanLocal {
     }
 
     @Override
-    public void updatepayment(int pay_id, int customer_id, int order_id, int amount, String method) {
+    public void updatepayment(int pay_id, int customer_id, int order_id, double amount, String method
+    ) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         Tblorder ord = (Tblorder) em.find(Tblorder.class, order_id);
         Tblcustomer cust = (Tblcustomer) em.find(Tblcustomer.class, customer_id);
@@ -398,7 +519,8 @@ public class user_bean implements user_beanLocal {
     }
 
     @Override
-    public void deletePayment(int pay_id) {
+    public void deletePayment(int pay_id
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
@@ -408,17 +530,20 @@ public class user_bean implements user_beanLocal {
     }
 
     @Override
-    public Collection<Tblpayment> getPaymentByCustId(int customer_id) {
+    public Collection<Tblpayment> getPaymentByCustId(int customer_id
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Collection<Tblpayment> getPaymentByOrderId(int order_id) {
+    public Collection<Tblpayment> getPaymentByOrderId(int order_id
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 
     @Override
-    public Collection<Tblpayment> getPaymentByMethod(String method) {
+    public Collection<Tblpayment> getPaymentByMethod(String method
+    ) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 

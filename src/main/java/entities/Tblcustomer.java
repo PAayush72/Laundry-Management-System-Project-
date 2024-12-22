@@ -80,8 +80,6 @@ public class Tblcustomer implements Serializable {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId")
     private Collection<Tblorder> tblorderCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId")
-    private Collection<Tblorderitem> tblorderitemCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "customerId")
     private Collection<Tblpayment> tblpaymentCollection;
 
     public Tblcustomer() {
@@ -163,15 +161,6 @@ public class Tblcustomer implements Serializable {
 
     public void setTblorderCollection(Collection<Tblorder> tblorderCollection) {
         this.tblorderCollection = tblorderCollection;
-    }
-
-    @JsonbTransient
-    public Collection<Tblorderitem> getTblorderitemCollection() {
-        return tblorderitemCollection;
-    }
-
-    public void setTblorderitemCollection(Collection<Tblorderitem> tblorderitemCollection) {
-        this.tblorderitemCollection = tblorderitemCollection;
     }
 
     @JsonbTransient

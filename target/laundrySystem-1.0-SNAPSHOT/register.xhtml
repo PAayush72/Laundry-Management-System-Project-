@@ -1,150 +1,152 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Login/Signup Form</title>
-        <!--<h:outputStylesheet name="style.css"/>-->
+
+        <!-- Boxicons for icons -->
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
+        
         <style>
             body {
-                background: #35dc9b;
-                background: linear-gradient(to bottom, #35dc9b, #3857af);
+                background: #ffffff; /* White background */
                 display: flex;
-                flex-direction: column;
-                flex-grow: 0;
-                align-items: center;
                 justify-content: center;
+                align-items: center;
                 height: 100vh;
+                margin: 0;
+                font-family: Arial, sans-serif;
             }
 
             h1 {
-                margin: 0 auto 40px;
-                color: #fff;
-                font: 20px Helvetica;
+                color: #333;
                 text-transform: uppercase;
-                letter-spacing: 3px;
+                letter-spacing: 2px;
+                margin-bottom: 40px;
             }
 
-            form {
-                label {
-                    position: relative;
-                    display: block;
+            .form-container {
+                background: #fff;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                width: 100%;
+                max-width: 450px;
+                text-align: center;
+                border: 1px solid #ddd;
+            }
 
-                    input {
-                        font: 18px Helvetica, Arial, sans-serif;
-                        box-sizing: border-box;
-                        border: 2px solid white;
-                        color: white;
-                        background: transparent;
-                        display: block;
-                        padding: 20px;
-                        width: 300px;
-                        height: 60px;
-                        margin-bottom: 20px;
-                        font-size: 18px;
-                        outline: none;
-                        transition: all 0.2s ease-in-out;
+            .form-container label {
+                display: block;
+                font-size: 14px;
+                margin-bottom: 8px;
+                text-align: left;
+                color: #333;
+            }
 
-                        input::placeholder {
-                            transition: all 0.2s ease-in-out;
-                            color: rgba(255,255,255,0.6);
-                            font: 18px Helvetica, Arial, sans-serif;
-                        }
+            .form-container input {
+                width: 100%;
+                padding: 14px;
+                margin-bottom: 15px;
+                border: 2px solid #ddd;
+                border-radius: 8px;
+                font-size: 16px;
+                outline: none;
+                transition: all 0.3s ease;
+                background: transparent;
+                color: #333;
+            }
 
-                        input:focus, input:active {
+            .form-container input:focus {
+                border-color: #1aaf75;
+                box-shadow: 0 0 10px rgba(26, 175, 117, 0.3);
+            }
 
-                            box-shadow: inset 0 0 10px rgba(255,255,255,0.4);
-                            color: rgba(255,255,255,1);
-                        }
+            .form-container input::placeholder {
+                color: #bbb;
+            }
 
-                        input:focus, input:active, input.populated {
-                            padding-top: 28px;
-                            padding-bottom: 12px;
+            .form-container input[type="submit"] {
+                background-color: #1aaf75;
+                color: #fff;
+                border: none;
+                cursor: pointer;
+                transition: background-color 0.3s ease;
+                font-size: 18px;
+                padding: 15px;
+            }
 
-                            input::placeholder {
-                                color: transparent;
-                            }
+            .form-container input[type="submit"]:hover {
+                background-color: #109f67;
+            }
 
-                            input + span {
-                                opacity: 1;
-                                top: 10px;
-                            }
-                        }
-                    }
+            .form-container .forgot-password {
+                text-align: left;
+                font-size: 12px;
+                color: #666;
+            }
 
-                    span {
-                        color: rgba(255,255,255,0.6);
-                        font: 13px Helvetica, Arial, sans-serif;
-                        position: absolute;
-                        top: 0px;
-                        left: 20px;
-                        opacity: 0;
-                        transition: all 0.2s ease-in-out;
-                    }
-                }
+            .form-container .forgot-password a {
+                color: #1aaf75;
+                text-decoration: none;
+            }
 
-                input[type="submit"] {
-                    transition: all 0.2s ease-in-out;
-                    font: 18px Helvetica, Arial, sans-serif;
-                    border: none;
-                    background: #1aaf75;
-                    color: #fff;
-                    padding: 16px 40px;
-                    cursor: pointer;
+            .form-container .forgot-password a:hover {
+                text-decoration: underline;
+            }
 
-                    input:hover {
-                        background: #109f67;
-                    }
-                }
+            .form-container .signup {
+                font-size: 14px;
+                margin-top: 20px;
+            }
+
+            .form-container .signup a {
+                color: #3857af;
+                text-decoration: none;
+            }
+
+            .form-container .signup a:hover {
+                text-decoration: underline;
             }
 
         </style>
     </h:head>
     <h:body>
-        <h:form>
-            <h:panelGrid columns="1">
+        <div class="form-container">
+            <h1>Signup</h1>
+            <h:form>
                 <!-- Name Input -->
-                <h:outputLabel  value="Name"/>
-                <h:inputText  value="#{signup.customerName}" required="true"/>
-
-                <h:outputLabel  value="Address"/>
-                <h:inputText  value="#{signup.customerAddress}" required="true"/>
-
+                <h:outputLabel value="Name" />
+                <h:inputText value="#{signup.customerName}" required="true" />
+                
+                <!-- Address Input -->
+                <h:outputLabel value="Address" />
+                <h:inputText value="#{signup.customerAddress}" required="true"  />
+                
                 <!-- Email Input -->
-                <h:outputLabel  value="Email"/>
-                <h:inputText value="#{signup.email}" required="true"/>
+                <h:outputLabel value="Email" />
+                <h:inputText value="#{signup.email}" required="true"  />
+                
+                <!-- Phone Number Input -->
+                <h:outputLabel value="Phone Number" />
+                <h:inputText value="#{signup.phno}" required="true"  />
 
-                <h:outputLabel  value="Phone Number"/>
-                <h:inputText  value="#{signup.phno}" required="true"/>
-
-                <h:outputLabel  value="Password"/>
-                <h:inputText  value="#{signup.password}" required="true"/>
-
-
+                <!-- Password Input -->
+                <h:outputLabel value="Password" />
+                <h:inputSecret value="#{signup.password}" required="true" />
+                
                 <!-- Submit Button -->
-                <h:commandButton value="Send" action="#{signup.addcust}" type="submit"/>
-            </h:panelGrid>
-        </h:form>
-        <!--<h:outputScript name="main.js"/>-->
-        <script>
+                <h:commandButton value="Sign Up" action="#{signup.addcust}" type="submit" />
 
-            $(function () {
-                $('input').on('change', function () {
-                    var input = $(this);
-                    if (input.val().length) {
-                        input.addClass('populated');
-                    } else {
-                        input.removeClass('populated');
-                    }
-                });
+                <div class="forgot-password">
+                    <a href="#">Forgot Password?</a>
+                </div>
 
-                setTimeout(function () {
-                    $('#fname').trigger('focus');
-                }, 500);
-            });
-        </script>
+                <div class="signup">
+                    <p>Already have an account? <a href="login.jsf">Login here</a></p>
+                </div>
+            </h:form>
+        </div>
     </h:body>
 </html>

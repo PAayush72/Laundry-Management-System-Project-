@@ -43,7 +43,7 @@ public class Tblpayment implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "amount")
-    private int amount;
+    private double amount;
     @Basic(optional = false)
     @NotNull
     @Size(min = 1, max = 255)
@@ -63,7 +63,7 @@ public class Tblpayment implements Serializable {
         this.payId = payId;
     }
 
-    public Tblpayment(Integer payId, int amount, String method) {
+    public Tblpayment(Integer payId, double amount, String method) {
         this.payId = payId;
         this.amount = amount;
         this.method = method;
@@ -77,11 +77,11 @@ public class Tblpayment implements Serializable {
         this.payId = payId;
     }
 
-    public int getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 

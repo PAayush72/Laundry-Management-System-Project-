@@ -111,7 +111,7 @@ public class EmployeeResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getEmployeesByPhone/{emp_phono}")
-    public Collection<Tblemployee> getEmployeesByPhone(String emp_phono) {
+    public Collection<Tblemployee> getEmployeesByPhone(@PathParam("emp_phono")String emp_phono) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         return u.getEmployeesByAddress(emp_phono);
     }
@@ -119,7 +119,7 @@ public class EmployeeResource {
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/getEmployeesByAddress/{emp_address}")
-    public Collection<Tblemployee> getEmployeesByAddress(String emp_address) {
+    public Collection<Tblemployee> getEmployeesByAddress(@PathParam("emp_address")String emp_address) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
         return u.getEmployeesByPhone(emp_address);
     }

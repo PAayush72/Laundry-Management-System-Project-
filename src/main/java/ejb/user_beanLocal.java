@@ -11,7 +11,9 @@ import entities.Tblpayment;
 import entities.Tblservice;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import javax.ejb.Local;
+import javax.ws.rs.core.Response;
 
 /**
  *
@@ -23,19 +25,19 @@ public interface user_beanLocal {
 
     Collection<Tblcustomer> getAllCustomer();
 
-    void addCustomer(String customer_name, String customer_address, String email, String phno, String password,int role_id);
+    void addCustomer(String customer_name, String customer_address, String email, String phno, String password, int role_id);
 
     void updateCustomer(int customer_id, String customer_name, String customer_address, String email, String phno, String password);
 
-    void removeCustomer(int customer_id,int role_id);
+    void removeCustomer(int customer_id, int role_id);
 
     Collection<Tblcustomer> getAllCustomers();
 
-    Collection<Tblcustomer> getCustomersById(int customer_id);
+    Tblcustomer getCustomersById(int customer_id);
 
     Collection<Tblcustomer> getAllCustomersByName(String customer_name);
 
-    Collection<Tblcustomer> getCustomersByEmail(String email);
+    Tblcustomer getCustomersByEmail(String email);
 
     Collection<Tblcustomer> getAllCustomersByAddress(String customer_address);
 
@@ -46,15 +48,18 @@ public interface user_beanLocal {
 
     void updateOrder(int order_id, int customer_id, Date order_date, Date pickup_date, Date delivery_date, String status);
 
-    void deleteOrder(int order_id);
+    void deleteOrder(int order_id, int customer_id);
+
+    void updateOrderStatus(int orderId, String status);
 
     Collection<Tblorder> getAllOrders();
 
     Collection<Tblorder> getOrderByCustomerId(int customer_id);
 
+//    Tblorder getLatestOrderForCustomer(int customerId);
 //    Collection<Tblorder> getOrderByServiceId(int services_id);
 //    Tblorder getserviceId(int services_id);
-    Collection<Tblorder> getOrderById(int order_id);
+    Tblorder getOrderById(int order_id);
 
     Collection<Tblorder> getOrderByOrderDate(Date order_date);
 
@@ -68,28 +73,26 @@ public interface user_beanLocal {
     //service
 //     Collection<Tblservice> getCustomerById(int customer_id);
     //Orderitem
-    void addorderItem(int customer_id, int services_id, int order_id, String material, int qty, String photo);
+    Response addorderItem(int services_id, int order_id, String material, int qty, String photo);
 
-    void updateOrderItem(int order_item_id, int customer_id, int service_id, int order_id, String material, int qty, String photo);
+    void updateOrderItem(int order_item_id, int service_id, int order_id, String material, int qty, String photo);
 
-    void deleteOrderItem(int order_item_id);
+    void deleteOrderItem(int order_item_id, int order_id);
 
     Collection<Tblorderitem> getAllOrderitem();
 
-    Collection<Tblorderitem> getAllOrderitemBycustomerId(int customer_id);
-
     Collection<Tblorderitem> getAllOrderitemByServiceId(int service_id);
 
-    Collection<Tblorderitem> getAllOrderitemByOrderId(int order_id);
+    List<Tblorderitem> getAllOrderitemByOrderId(int order_id);
 
-    Collection<Tblorderitem> getAllOrderitemById(int order_item_id);
+    Tblorderitem getAllOrderitemById(int order_item_id);
 
     Collection<Tblorderitem> getAllOrderitemByMaterial(String material);
 
     //Payment
-    void addpayment(int customer_id, int order_id, int amount, String method);
+    void addpayment(int customer_id, int order_id, double amount, String method);
 
-    void updatepayment(int pay_id, int customer_id, int order_id, int amount, String method);
+    void updatepayment(int pay_id, int customer_id, int order_id, double amount, String method);
 
     void deletePayment(int pay_id);
 

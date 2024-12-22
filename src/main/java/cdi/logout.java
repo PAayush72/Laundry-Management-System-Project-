@@ -23,6 +23,7 @@ public class logout implements Serializable {
      * Creates a new instance of logout
      * @return 
      */
+    
     public String logout() {
         FacesContext.getCurrentInstance().getExternalContext().invalidateSession();
         return "index.jsf?faces-redirect=true"; // Redirect to login pag
