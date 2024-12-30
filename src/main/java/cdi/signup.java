@@ -5,6 +5,7 @@
 package cdi;
 
 import client.customer;
+import ejb.user_beanLocal;
 import entities.Tblcustomer;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
@@ -14,8 +15,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.inject.Inject;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import org.glassfish.soteria.identitystores.hash.Pbkdf2PasswordHashImpl;
@@ -27,6 +30,9 @@ import org.glassfish.soteria.identitystores.hash.Pbkdf2PasswordHashImpl;
 @Named(value = "signup")
 @SessionScoped
 public class signup implements Serializable {
+
+    @Inject
+    private user_beanLocal ubl;
 
     customer ebl;
     Response rs;
@@ -52,6 +58,7 @@ public class signup implements Serializable {
         gcust = new GenericType<Collection<Tblcustomer>>() {
         };
     }
+
     @PostConstruct
     public void init() {
         pb = new Pbkdf2PasswordHashImpl();
@@ -161,13 +168,24 @@ public class signup implements Serializable {
 
     public String addcust() {
         try {
-             String hashedPassword = pb.generate(password.toCharArray());
-            ebl.addCustomer(customerName, customerAddress, email, phno, hashedPassword, String.valueOf(role_id));
-            return "login";
 
+//            System.out.println("Method triggerd:"+email);
+//            Tblcustomer c = ubl.getCustomersByEmail(email);
+//            System.out.println("Customer email:"+c);
+//            if (c != null) {
+//                System.out.println("If triggerd");
+//                FacesMessage emailExistError = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Username Already Exists", null);
+//                FacesContext.getCurrentInstance().addMessage(null, emailExistError);
+//                return null;
+//            }
+//            System.out.println("Else triggerd");s
+            String hashedPassword = pb.generate(password.toCharArray());
+//            ebl.addCustomer(customerName, customerAddress, email, phno, hashedPassword, String.valueOf(role_id));
+            ubl.addCustomer(customerName, customerAddress, email, phno, hashedPassword, role_id);
+            return "login";
         } catch (Exception e) {
             FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error adding customer", e.getMessage()));
-            return "error";
+            return null;
         }
 
     }

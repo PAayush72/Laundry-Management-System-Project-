@@ -10,6 +10,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import javax.annotation.PostConstruct;
 import javax.faces.context.FacesContext;
@@ -75,11 +76,22 @@ public class orderBean implements Serializable {
                 e.printStackTrace();
             }
         }
+        this.today = normalizeDate(new Date());
     }
 
     private void loadOrderDetails(int id) {
 //        System.out.println("Posts count:"+this.posts.size());
         this.order = user_bean.getOrderById(id);
+    }
+
+    private Date normalizeDate(Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar.getTime();
     }
 
     public class OrderDTO {
@@ -202,6 +214,12 @@ public class orderBean implements Serializable {
         this.status = status;
     }
 
+    private Date today;
+
+    public Date getToday() {
+        return today;
+    }
+
     public String addorder() {
         try {
             // Convert pickup_date and delivery_date strings to Date (adjust format if necessary)
@@ -209,7 +227,12 @@ public class orderBean implements Serializable {
 //            Date pickupDate = null;
 //            Date deliveryDate = null;
             Date orderDate = new Date();  // Set the current date if no specific date is provided
-
+            pickup_date = normalizeDate(pickup_date);
+            delivery_date = normalizeDate(delivery_date);
+            if (pickup_date.before(today) || delivery_date.before(today)) {
+                LOGGER.log(Level.SEVERE, "Pickup or delivery date cannot be in the past");
+                return null;  // or display an error message
+            }
 //            if (pickup_date != null && !pickup_date.isEmpty()) {
 //                pickupDate = dateFormat.parse(pickup_date);
 //            }
@@ -217,7 +240,6 @@ public class orderBean implements Serializable {
 //            if (delivery_date != null && !delivery_date.isEmpty()) {
 //                deliveryDate = dateFormat.parse(delivery_date);
 //            }
-
             // Add the order using user_bean (service layer)
             user_bean.addorder(customerId, orderDate, pickup_date, delivery_date, status);
 
@@ -255,10 +277,10 @@ public class orderBean implements Serializable {
         }
     }
 
-    public void deleteOrder(int orderId,int customerId) {
+    public void deleteOrder(int orderId, int customerId) {
         System.out.println("before>>>>>>>>>" + orderId);
 //        this.orderId = order.getOrderId();
-        user_bean.deleteOrder(orderId,customerId);
+        user_bean.deleteOrder(orderId, customerId);
 //        System.out.println("after>>>>>>>>>" + orderId);
     }
 
@@ -270,11 +292,16 @@ public class orderBean implements Serializable {
         return user_bean.getOrderByCustomerId(customer_id);
     }
 
+    
+    
+    
     public void updateOrder() throws ParseException {
 //        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 //        Date pickupDate = null;
 //        Date deliveryDate = null;
         Date orderDate = new Date();
+        pickup_date = normalizeDate(pickup_date);
+        delivery_date = normalizeDate(delivery_date);
 //        pickupDate = dateFormat.parse(pickup_date);
 //        deliveryDate = dateFormat.parse(delivery_date);
 
@@ -286,5 +313,6 @@ public class orderBean implements Serializable {
         ord = new ArrayList<>();
         gord = new GenericType<Collection<Tblorder>>() {
         };
+        today = new Date();
     }
 }

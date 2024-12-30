@@ -246,7 +246,7 @@ public class user_bean implements user_beanLocal {
             e.printStackTrace();
         }
     }
-    
+
     @Override
     public void deleteOrder(int order_id, int customer_id) {
 //        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
@@ -526,7 +526,8 @@ public class user_bean implements user_beanLocal {
 
     @Override
     public Collection<Tblpayment> getAllPaymentDetails() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        return em.createNamedQuery("Tblpayment.findAll").getResultList();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package mail;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Properties;
 import javax.enterprise.context.Dependent;
 import javax.mail.Message;
@@ -13,7 +14,7 @@ import javax.mail.internet.MimeMessage;
 @Dependent
 public class mail  implements Serializable{
 
-    public void sendEmail(String uemail) {
+    public void sendEmail(String uemail,int ordid,Date orderDate) {
         try {
             String host = "smtp.gmail.com";
             final String from = "pkrana020803@gmail.com"; // your Gmail account
@@ -44,9 +45,10 @@ public class mail  implements Serializable{
             MimeMessage message = new MimeMessage(session1);
             message.setFrom(new InternetAddress(from));
             message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
-            message.setSubject("Cruise Booking Information : ");
+            message.setSubject("Laundry Management");
 
-            String htmlcode = "<p style='font-size:16px'> Your package of  Person  Booked Successfully </p><h3><h4> Your Booking Number is  </h4>";
+            String htmlcode = "<p style='font-size:16px'> Thank You.</p><h3><h4> Your Laundry Order Id is:"+ordid+""
+                    + "On"+orderDate+"</h4>";
             message.setContent(htmlcode, "text/html");
             
             Transport.send(message);

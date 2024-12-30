@@ -58,12 +58,12 @@ public class Tblorder implements Serializable {
     @Basic(optional = false)
     @NotNull
     @Column(name = "pickup_date")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date pickupDate;
     @Basic(optional = false)
     @NotNull
     @Column(name = "delivery_date")
-    @Temporal(TemporalType.TIMESTAMP)
+    @Temporal(TemporalType.DATE)
     private Date deliveryDate;
     @Basic(optional = false)
     @NotNull
@@ -150,7 +150,7 @@ public class Tblorder implements Serializable {
         this.tblorderitemCollection = tblorderitemCollection;
     }
 
-    @XmlTransient
+    @JsonbTransient
     public Collection<Tblpayment> getTblpaymentCollection() {
         return tblpaymentCollection;
     }

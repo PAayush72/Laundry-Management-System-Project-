@@ -27,7 +27,7 @@
 
     </h:head>
     <h:body>
-        <header>
+       <header>
             <!-- Header Start -->
             <div class="header-area">
                 <div class="main-header header-sticky">
@@ -44,20 +44,29 @@
                                         <li class="active"><a href="home.jsf">Home</a></li>
                                         <li><a href="about_us.jsf">About</a></li>
                                         <li><a href="services.jsf">Services</a></li>
-
+                                        <li><a href="">Order</a>
+                                            <ul class="submenu">
+                                                <li><a href="displayOrders.jsf">Order Details</a></li>
+                                               
+                                               
+                                            </ul>
+                                        </li>
                                         <li><a href="contact.jsf">Contact</a></li>
                                         <li>
-                                        <h:form>
-                                            <!-- Render Login link if the user is not logged in -->
-                                            <h:panelGroup rendered="#{!loginMB.loggedIn}">
-                                                <a href="login.jsf" class="dropdown-item">Login</a>
-                                            </h:panelGroup>
+                                            <h:form>
+                                                <!-- Render Login link if the user is not logged in -->
+                                                <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                    <a href="login.jsf" class="dropdown-item">Login</a>
+                                                </h:panelGroup>
 
-                                            <!-- Render Log Out button if the user is logged in -->
-                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
-                                                <h:commandLink value="Log Out" action="#{loginMB.logout()}" class="dropdown-item" />
-                                            </h:panelGroup>
-                                        </h:form>
+                                                <!-- Render Log Out button if the user is logged in -->
+                                                
+                                                 <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                    <h:commandLink value="Log Out" action="#{loginMB.logout()}" class="dropdown-item" />
+                                                </h:panelGroup>
+                                                
+                                                
+                                            </h:form>
                                         </li>
 
                                     </ul>
@@ -67,8 +76,8 @@
                         </div>
                     </div>
                     <div class="header-right d-none d-lg-block">
-                        <a href="#" class="header-btn1"><img src="assets/img/icon/call.png" alt="" /> (08) 728 256 266</a>
-                        <a href="#" class="header-btn2"><h:panelGroup rendered="#{!loginMB.loggedIn}">
+                        
+                        <a href="#" class=""><h:panelGroup rendered="#{!loginMB.loggedIn}">
                                 Make an Appointment
                             </h:panelGroup>
 
@@ -116,7 +125,7 @@
                     <div class="row justify-content-center">
                         <div class="col-lg-6">
                             <div class="section-tittle text-center mb-55">
-                                <h2>Add New Order</h2>
+                                <h2>Update Order</h2>
                             </div>
                             <h:form class="ui-form">
                                 <div class="form-group">
@@ -144,7 +153,7 @@
                                     <h:inputText id="Status" value="#{orderBean.status}" styleClass="form-control" disabled="true"/>
                                 </div>
                                 <div class="form-group">
-                                    <h:commandButton value="Add Order" action="#{orderBean.updateOrder()}" styleClass="btn btn-primary btn-block" />
+                                    <h:commandButton value="Update Order" action="#{orderBean.updateOrder()}" styleClass="btn btn-primary btn-block" />
 
                                 </div>
                             </h:form>

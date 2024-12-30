@@ -1,15 +1,18 @@
 package cdi;
 
 import client.order;
+import ejb.PaymentEJB;
 import ejb.admin_beansLocal;
 import ejb.user_beanLocal;
 import entities.Tblorder;
 import entities.Tblorderitem;
+import entities.Tblpayment;
 import entities.Tblservice;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import javax.annotation.PostConstruct;
@@ -24,6 +27,7 @@ import javax.ejb.EJB;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.servlet.http.Part;
+import mail.mail;
 import org.primefaces.model.file.UploadedFile;
 import service.CloudinaryService;
 
@@ -31,6 +35,10 @@ import service.CloudinaryService;
 @ViewScoped
 public class orderItemBean implements Serializable {
 
+    @Inject
+    private PaymentEJB paymentEJB;
+    @Inject
+    private mail emailSender;
     @EJB
     private user_beanLocal user_bean;
 
@@ -42,11 +50,14 @@ public class orderItemBean implements Serializable {
     private Tblorderitem itm;
     private order o;
     private Response rs;
+
     private List<Tblorderitem> ordItem1;
     private Collection<Tblorderitem> ordItem;
     private GenericType<Collection<Tblorderitem>> gordItem;
     private int customerId;
     private int orderId;
+    private String order_Id;
+
     private int serviceId;
     private String material;
     private int qty;
@@ -58,11 +69,15 @@ public class orderItemBean implements Serializable {
     private int servicesId;
     private double charge;
     private double amount;
+    private String userEmail;
+    @Inject
+    private LoginMB loginMB;
     @Inject
     private CloudinaryService cloudinary;
 
     @PostConstruct
     public void init() {
+        this.userEmail = loginMB.getC().getEmail();
         try {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             if (facesContext == null) {
@@ -174,14 +189,23 @@ public class orderItemBean implements Serializable {
     }
 
     public void updateOrderItem() {
-        if (image != null) {
+        if (image != null && image.getSize() > 0) {
             try {
                 img = cloudinary.uploadImage(image);
             } catch (IOException ex) {
                 Logger.getLogger(orderItemBean.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } else {
+            img = getExistingImagePath();
         }
         user_bean.updateOrderItem(this.orderItemId, serviceId, this.orderId, material, qty, img);
+    }
+
+    private String getExistingImagePath() {
+        // Fetch the existing image path from your database or service layer
+        // For example:
+        Tblorderitem existingItem = user_bean.getAllOrderitemById(this.orderItemId);  // Get order item by ID
+        return existingItem != null ? existingItem.getPhoto() : null;  // Return the existing image or null if not found
     }
 
     public Collection<Tblorderitem> getAllOrderitemByOrderId(int order_Id) {
@@ -358,12 +382,41 @@ public class orderItemBean implements Serializable {
 
     }
 
+    public String getOrder_Id() {
+        return order_Id;
+    }
+
+    public void setOrder_Id(String order_Id) {
+        this.order_Id = order_Id;
+    }
+
     public double calculateGrandTotal(List<Tblorderitem> orderItems) {
         double grandTotal = 0.0;
-        for (Tblorderitem item : orderItems) {
-            Tblservice service = getAllServiceById(item.getServiceId().getServicesId());
-            grandTotal += item.getQty() * service.getCharge();
+
+        // Log the order items to see if they are populated
+        if (orderItems != null && !orderItems.isEmpty()) {
+            System.out.println("Order Items: " + orderItems.size() + " items found.");
+            for (Tblorderitem item : orderItems) {
+                // Log the details of each order item for debugging
+                System.out.println("Item: " + item.getMaterial() + ", Qty: " + item.getQty());
+
+                Tblservice service = getAllServiceById(item.getServiceId().getServicesId());
+
+                if (service != null) {
+                    System.out.println("Service Charge: " + service.getCharge());
+                    // Calculate the total for the item (qty * service charge)
+                    grandTotal += item.getQty() * service.getCharge();
+
+                } else {
+                    System.out.println("Service not found for Item ID: " + item.getServiceId().getServicesId());
+                }
+            }
+        } else {
+            System.out.println("No order items found or the list is null.");
         }
+
+        System.out.println("Grand Total: " + grandTotal);
+        this.amount = grandTotal;
         return grandTotal;
     }
 
@@ -372,30 +425,37 @@ public class orderItemBean implements Serializable {
         return order.getCustomerId().getCustomerId(); // Assuming there's a relationship between Tblorder and Tblcustomer
     }
 
-    public void processPayment() {
+    public String processPayment() {
         try {
+            Date orderDate = new Date();
             // Update order status to "success"
             user_bean.updateOrderStatus(orderId, "success");
 
-           
-            int customerId = getCustomerIdFromOrder(orderId); 
+            int customerId = getCustomerIdFromOrder(orderId);
 
-            
-            double amount = calculateGrandTotal(ordItem1);
-            int roundedAmount = (int) Math.round(amount) ;
-            String paymentMethod = "Credit Card";
+//            double amount1 = calculateGrandTotal(ordItem1);
+//            int roundedAmount = (int) Math.round(amount);
+            String paymentMethod = "Online Mode";
 
             // Create and add a payment record
-            user_bean.addpayment(customerId, orderId, roundedAmount, paymentMethod); // Pass all required parameters
-
+//            System.out.println("Amout1:"+amount1);
+            System.out.println("Amout:" + this.amount);
+            user_bean.addpayment(customerId, orderId, this.amount, paymentMethod); // Pass all required parameters
+            emailSender.sendEmail(userEmail, orderId, orderDate);
+            return "displayOrders?faces-redirect=true";
             // Show a success message
-            FacesContext.getCurrentInstance().addMessage(null, new javax.faces.application.FacesMessage("Payment Successful"));
+//            FacesContext.getCurrentInstance().addMessage(null, new javax.faces.application.FacesMessage("Payment Successful"));
 
         } catch (Exception e) {
             // Show a failure message
             FacesContext.getCurrentInstance().addMessage(null, new javax.faces.application.FacesMessage("Payment Failed"));
             e.printStackTrace();
+            return "order_item_details?faces-redirect=true";
         }
+    }
+
+    public Collection<Tblpayment> getAllPaymentDetails() {
+        return user_bean.getAllPaymentDetails();
     }
 
     public orderItemBean() {

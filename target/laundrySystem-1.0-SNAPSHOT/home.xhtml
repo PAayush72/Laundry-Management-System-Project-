@@ -40,10 +40,10 @@
                                         <li class="active"><a href="home.jsf">Home</a></li>
                                         <li><a href="about_us.jsf">About</a></li>
                                         <li><a href="services.jsf">Services</a></li>
-                                        <li><a href="blog.html">Order</a>
+                                        <li><a href="">Order</a>
                                             <ul class="submenu">
                                                 <li><a href="displayOrders.jsf">Order Details</a></li>
-                                                <li><a href="order_item_details.jsf">Order Item Details</a></li>
+                                               
                                                
                                             </ul>
                                         </li>
@@ -56,9 +56,12 @@
                                                 </h:panelGroup>
 
                                                 <!-- Render Log Out button if the user is logged in -->
-                                                <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                
+                                                 <h:panelGroup rendered="#{loginMB.loggedIn}">
                                                     <h:commandLink value="Log Out" action="#{loginMB.logout()}" class="dropdown-item" />
                                                 </h:panelGroup>
+                                                
+                                                
                                             </h:form>
                                         </li>
 
@@ -70,7 +73,7 @@
                     </div>
                     <div class="header-right d-none d-lg-block">
                         
-                        <a href="#" class="header-btn2"><h:panelGroup rendered="#{!loginMB.loggedIn}">
+                        <a href="#" class=""><h:panelGroup rendered="#{!loginMB.loggedIn}">
                                 Make an Appointment
                             </h:panelGroup>
 

@@ -155,7 +155,7 @@ public class LoginMB implements Serializable {
             if (roles.contains("admin")) {
                 session.setAttribute("logged-group", "admin");
 
-                return "home.jsf?faces-redirect=true";
+                return "admin.jsf?faces-redirect=true";
             } else if (roles.contains("user") || roles.contains("employee")) {
                 if (roles.contains("user")) {
                     session.setAttribute("logged-group", "user");
@@ -176,7 +176,7 @@ public class LoginMB implements Serializable {
         } catch (Exception e) {
             message = "Error: Username or Password is Incorrect!!!";
         }
-        return "error.jsf?faces-redirect=true";
+        return "login";
     }
 
     private static void addError(FacesContext context, String message) {

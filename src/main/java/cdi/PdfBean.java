@@ -58,7 +58,7 @@ public class PdfBean {
                 table.addCell(String.valueOf(item.getOrderItemId()));
                 table.addCell(item.getMaterial());
                 table.addCell(String.valueOf(item.getQty()));
-                table.addCell(String.valueOf(item.getServiceId().getServicesId()));
+                table.addCell(String.valueOf(item.getServiceId().getServiceType()));
                 Tblservice service = orderItemBean.getAllServiceById(item.getServiceId().getServicesId());
                 table.addCell(String.valueOf(service.getCharge()));
                 table.addCell(String.valueOf(item.getQty() * service.getCharge()));

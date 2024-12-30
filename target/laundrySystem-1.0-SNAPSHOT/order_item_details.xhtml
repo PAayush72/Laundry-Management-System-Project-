@@ -18,7 +18,11 @@
             th {
                 background-color: #f2f2f2;
             }
+
         </style>
+        <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+
         <link rel="manifest" href="site.webmanifest"/>
         <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico"/>
 
@@ -56,10 +60,10 @@
                                         <li class="active"><a href="home.jsf">Home</a></li>
                                         <li><a href="about_us.jsf">About</a></li>
                                         <li><a href="services.jsf">Services</a></li>
-                                        <li><a href="blog.html">Order</a>
+                                        <li><a href="">Order</a>
                                             <ul class="submenu">
                                                 <li><a href="displayOrders.jsf">Order Details</a></li>
-                                                <li><a href="order_item_details.jsf">Order Item Details</a></li>
+
 
                                             </ul>
                                         </li>
@@ -72,9 +76,12 @@
                                                 </h:panelGroup>
 
                                                 <!-- Render Log Out button if the user is logged in -->
+
                                                 <h:panelGroup rendered="#{loginMB.loggedIn}">
                                                     <h:commandLink value="Log Out" action="#{loginMB.logout()}" class="dropdown-item" />
                                                 </h:panelGroup>
+
+
                                             </h:form>
                                         </li>
 
@@ -86,7 +93,7 @@
                     </div>
                     <div class="header-right d-none d-lg-block">
 
-                        <a href="#" class="header-btn2"><h:panelGroup rendered="#{!loginMB.loggedIn}">
+                        <a href="#" class=""><h:panelGroup rendered="#{!loginMB.loggedIn}">
                                 Make an Appointment
                             </h:panelGroup>
 
@@ -105,7 +112,7 @@
         </header>
 
         <f:view>
-            <h:form>
+            <h:form id="orderForm">
                 <h1>List of Order Items</h1>
                 <h:dataTable value="#{orderItemBean.getAllOrderitemByOrderId(orderBean.order.orderId)}" var="item">
                     <h:column>
@@ -134,9 +141,9 @@
                     </h:column>
                     <h:column>
                         <f:facet name="header">
-                            <h:outputText value="ServiceId"/>
+                            <h:outputText value="Service Type"/>
                         </f:facet>
-                        <h:outputText value="#{item.serviceId.servicesId}"/>
+                        <h:outputText value="#{item.serviceId.serviceType}"/>
                     </h:column>
                     <h:column>
                         <f:facet name="header">
@@ -157,17 +164,18 @@
                         <h:outputText value="#{item.qty * orderItemBean.getAllServiceById(item.serviceId.servicesId).charge}"/>
                     </h:column>
                     <h:column>
-                        <h:form>
-                            <h:commandButton value="delete" action="#{orderItemBean.deleteOrderItem(item.orderItemId,item.orderId.orderId)}">
-                                <f:param name="orderItemId" value="#{item.orderItemId}"/>
-                                <f:param name="orderId" value="#{item.orderId}"/>
 
-                            </h:commandButton>
-                        </h:form>
+
+                        <h:commandButton value="delete" action="#{orderItemBean.deleteOrderItem(item.orderItemId,item.orderId.orderId)}" disabled="#{orderBean.order.status eq 'success'}">
+                            <f:param name="orderItemId" value="#{item.orderItemId}"/>
+                            <f:param name="orderId" value="#{item.orderId}"/>
+
+                        </h:commandButton>
+
                     </h:column>
 
                     <h:column>
-                        <h:link value="Update" outcome="updateOrderItem" style="background-color: white;color: black">
+                        <h:link value="Update" outcome="updateOrderItem" style="background-color: white;color: black" disabled="#{orderBean.order.status eq 'success'}">
                             <f:param name="orderItemId" value="#{item.orderItemId}"/>
                             <f:param name="orderId" value="#{item.orderId.orderId}"/>
                         </h:link>
@@ -175,13 +183,64 @@
                 </h:dataTable>
                 <h:panelGroup>
                     <h:outputText value="Grand Total: " />
-                    <h:outputText value="#{orderItemBean.calculateGrandTotal(orderItemBean.getAllOrderitemByOrderId(orderBean.order.orderId))}" />
+                    <h:inputText value="#{orderItemBean.calculateGrandTotal(orderItemBean.getAllOrderitemByOrderId(orderBean.order.orderId))}" readonly="true"/>
                     <h:commandButton value="Download PDF" action="#{PdfBean.generatePdf}">
                         <f:param name="ACTION" value="DOWNLOAD"/>
                     </h:commandButton>
                 </h:panelGroup>
-                 <h:commandButton value="Pay" action="#{orderItemBean.processPayment}" />
+               
+                    <!-- Hidden input fields to store Razorpay payment details -->
+                    
+
+                    <!-- Visible Pay Button -->
+                    <h:commandButton value="Pay" type="button" 
+                                     disabled="#{orderBean.order.status eq 'success'}" 
+                                     onclick="openRazorpayPayment(); return false;" />
+
+                    <!-- Hidden Command Button to Process Payment -->
+                    <h:commandButton id="hiddenPayButton" value="hiddenPay" 
+                                     action="#{orderItemBean.processPayment}" 
+                                     style="display:none;" />
+           
+
             </h:form>
         </f:view>
+
+
+        <script type="text/javascript">
+            function openRazorpayPayment() {
+                // Access total amount using the JSF EL expression
+                var totalAmount = #{orderItemBean.calculateGrandTotal(orderItemBean.getAllOrderitemByOrderId(orderBean.order.orderId))};
+
+                var options = {
+                    "key": "rzp_test_VWZZ4Jn0Rd1lpQ", // Your Razorpay key
+                    "amount": totalAmount * 100, // Amount in paise
+                    "currency": "INR",
+                    "name": "Your Company",
+                    "description": "Order Payment",
+                    "image": "path/to/logo.png",
+                    "handler": function (response) {
+                        // Trigger the hidden button to process payment in JSF
+                        document.getElementById('orderForm:hiddenPayButton').click();
+
+                        // In this version, we won't send the paymentId and signature explicitly to the backend
+                        // as we are not verifying them on the server-side.
+                        // However, you can still handle success logic here if needed.
+                    },
+                    "prefill": {
+                        "name": "#{loginMB.c.customerName}",
+                        "email": "#{loginMB.c.email}",
+                        "contact": "#{loginMB.c.phno}"
+                    },
+                    "theme": {
+                        "color": "#F37254"
+                    }
+                };
+
+                var rzp1 = new Razorpay(options);
+                rzp1.open();
+            }
+        </script>
+
     </h:body>
 </html>

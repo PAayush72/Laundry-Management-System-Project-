@@ -1,6 +1,5 @@
 package jwtrest;
 
-
 import io.jsonwebtoken.ExpiredJwtException;
 import java.io.Serializable;
 import javax.enterprise.context.RequestScoped;
@@ -66,12 +65,12 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism, 
                     System.out.println("Admin Side unauthorized");
 
                     request.getServletContext().getRequestDispatcher("/unauthorized.jsf?faces-redirect=true").forward(request, response);
-                } else if ((request.getRequestURI().contains("/user_side/") &&  (!request.getSession().getAttribute("logged-group").equals("paid-user") && !request.getSession().getAttribute("logged-group").equals("free-user"))) ) {
+                } else if ((request.getRequestURI().contains("/user_side/") && (!request.getSession().getAttribute("logged-group").equals("paid-user") && !request.getSession().getAttribute("logged-group").equals("free-user")))) {
                     // response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You are Not Authorised to view this Page . Go Back To Login");
                     System.out.println("User Side unauthorized");
                     request.getServletContext().getRequestDispatcher("/unauthorized.jsf?faces-redirect=true").forward(request, response);
 
-                } 
+                }
 //                 else if ((request.getRequestURI().contains("/user_side/") && !request.getSession().getAttribute("logged-group").equals("paid-user"))) {
 //                    // response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "You are Not Authorised to view this Page . Go Back To Login");
 //                    request.getServletContext().getRequestDispatcher("/unauthorised.jsf").forward(request, response);
@@ -83,32 +82,43 @@ public class JWTAuthenticationMechanism implements HttpAuthenticationMechanism, 
         }
         String token = extractToken(context);
 
-        if (token == null && loginBean.getEmail() != null) {
+        try {
+
+            if (token == null && loginBean.getEmail() != null) {
                 System.out.println("JWTAuthenticationMechanism - in login if");
 
-            Credential credential = new UsernamePasswordCredential(loginBean.getEmail(), new Password(loginBean.getPassword()));
-            CredentialValidationResult result = identityStoreHandler.validate(credential);
+                Credential credential = new UsernamePasswordCredential(loginBean.getEmail(), new Password(loginBean.getPassword()));
+                CredentialValidationResult result = identityStoreHandler.validate(credential);
 
-            if (result.getStatus() == CredentialValidationResult.Status.VALID) {
+                if (result.getStatus() == CredentialValidationResult.Status.VALID) {
 
-                AuthenticationStatus status = createToken(result, context);
-                loginBean.setStatus(status);
-                loginBean.setRoles(result.getCallerGroups());
-                return status;
-            } else {
-                loginBean.setMessage("Login Error : Either Login or Password is Wrong. Try Again");
-                loginBean.setStatus(AuthenticationStatus.SEND_FAILURE);
+                    AuthenticationStatus status = createToken(result, context);
+                    loginBean.setStatus(status);
+                    loginBean.setRoles(result.getCallerGroups());
+                    return status;
+                } else {
+                    loginBean.setMessage("Login Error : Either Login or Password is Wrong. Try Again");
+                    loginBean.setStatus(AuthenticationStatus.SEND_FAILURE);
+                }
+
+                // if the authentication fastatusiled, we return the unauthorized status in the http response
+                //      return context.responseUnauthorized();
             }
+            if (token != null) {
 
-            // if the authentication fastatusiled, we return the unauthorized status in the http response
-            //      return context.responseUnauthorized();
-        } else if (token != null) {
-
-            return validateToken(token, context);
-        } else if (context.isProtected()) {
-            // A protected resource is a resource for which a constraint has been defined.
-            // if there are no credentials and the resource is protected, we response with unauthorized status
-            return context.responseUnauthorized();
+                return validateToken(token, context);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        if (context.isProtected()) {
+            try {
+                loginBean.setMessage("Unauthorized access! Please log in.");
+                response.sendRedirect("login.jsf");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return context.doNothing();
         }
         // there are no credentials AND the resource is not protected, 
         // SO Instructs the container to "do nothing"

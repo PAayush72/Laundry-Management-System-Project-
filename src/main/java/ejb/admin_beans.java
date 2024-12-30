@@ -126,7 +126,7 @@ public class admin_beans implements admin_beansLocal {
 
         e.setServiceType(service_type);
         e.setCharge(charge);
-//        e.setServicesId(s);
+
         em.merge(e);
     }
 

@@ -7,7 +7,7 @@
 
         <!-- Boxicons for icons -->
         <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
-        
+
         <style>
             body {
                 background: #ffffff; /* White background */
@@ -118,30 +118,52 @@
             <h:form>
                 <!-- Name Input -->
                 <h:outputLabel value="Name" />
-                <h:inputText value="#{signup.customerName}" required="true" />
-                
+                <h:inputText value="#{signup.customerName}"
+                             required="true" requiredMessage="Customer name is required"
+                             validatorMessage="Name must be of 4 characters" id="cname">
+                    <f:validateLength minimum="4"/>
+                </h:inputText>
+                <h:message for="cname" style="color:red"/>
+
                 <!-- Address Input -->
                 <h:outputLabel value="Address" />
-                <h:inputText value="#{signup.customerAddress}" required="true"  />
-                
+                <h:inputText value="#{signup.customerAddress}" required="true"
+                             requiredMessage="Customer name is required"
+                             validatorMessage="Name must be of 4 characters" id="address">
+                    <f:validateLength minimum="4"/>
+                </h:inputText>
+                <h:message for="address" style="color:red"/>
+
                 <!-- Email Input -->
                 <h:outputLabel value="Email" />
-                <h:inputText value="#{signup.email}" required="true"  />
-                
+                <h:inputText value="#{signup.email}" required="true"  requiredMessage="Email is required"
+                             validatorMessage="email must be of 4 characters" id="email">
+                    <f:validateLength minimum="4"/>
+                </h:inputText>
+                <h:message for="email" style="color:red"/>
+
                 <!-- Phone Number Input -->
                 <h:outputLabel value="Phone Number" />
-                <h:inputText value="#{signup.phno}" required="true"  />
+                <h:inputText value="#{signup.phno}" required="true"  requiredMessage="Phone number is required"
+                             validatorMessage="Phone must be of 10 digits" id="phone">
+                    <f:validateLength minimum="10" maximum="10"/>
+                </h:inputText>
+                <h:message for="phone" style="color:red"/>
 
                 <!-- Password Input -->
                 <h:outputLabel value="Password" />
-                <h:inputSecret value="#{signup.password}" required="true" />
-                
+                <h:inputSecret value="#{signup.password}" required="true" requiredMessage="Customer password is required"
+                               validatorMessage="password must be of 4 characters" id="password">
+                    <f:validateLength minimum="4"/>
+                </h:inputSecret>
+                <h:message for="password" style="color:red"/>
+
+                <h:messages globalOnly="true" style="color: red"/>
+
                 <!-- Submit Button -->
                 <h:commandButton value="Sign Up" action="#{signup.addcust}" type="submit" />
 
-                <div class="forgot-password">
-                    <a href="#">Forgot Password?</a>
-                </div>
+                
 
                 <div class="signup">
                     <p>Already have an account? <a href="login.jsf">Login here</a></p>
