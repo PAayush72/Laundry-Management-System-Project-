@@ -25,7 +25,7 @@ public class employee {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8084/laundrySystem/webresources";
+    private static final String BASE_URI = "http://localhost:8080/laundrySystem/webresources";
 
     public employee() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

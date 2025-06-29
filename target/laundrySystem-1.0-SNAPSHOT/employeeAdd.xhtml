@@ -18,6 +18,121 @@
             th {
                 background-color: #f2f2f2;
             }
+
+            /* Form Container Styling */
+            .employee-form-container {
+                max-width: 800px;
+                margin: 60px auto;
+                padding: 40px;
+                background: #ffffff;
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+
+            .form-title {
+                color: #1C3E72;
+                font-size: 28px;
+                font-weight: 600;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            /* Form Group Styling */
+            .form-group {
+                margin-bottom: 25px;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                color: #2d3748;
+                font-weight: 500;
+                font-size: 16px;
+            }
+
+            .beautiful-input {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                font-size: 14px;
+                transition: all 0.3s ease;
+                background-color: #fff;
+            }
+
+            .beautiful-input:focus {
+                border-color: #1C3E72;
+                box-shadow: 0 0 0 3px rgba(28, 62, 114, 0.1);
+                outline: none;
+            }
+
+            /* Select Menu Styling */
+            .service-select {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                font-size: 14px;
+                background-color: #fff;
+                margin-bottom: 25px;
+                cursor: pointer;
+            }
+
+            .service-select:focus {
+                border-color: #1C3E72;
+                outline: none;
+            }
+
+            /* Button Styling */
+            .beautiful-button {
+                display: inline-block;
+                padding: 12px 30px;
+                background-color: #1C3E72;
+                color: white;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .beautiful-button:hover {
+                background-color: #153057;
+                transform: translateY(-1px);
+            }
+
+            /* Error Message Styling */
+            .error-message {
+                color: #e53e3e;
+                font-size: 14px;
+                margin-top: 5px;
+            }
+
+            /* Required Field Indicator */
+            .required-field::after {
+                content: "*";
+                color: #e53e3e;
+                margin-left: 4px;
+            }
+
+            .success-message {
+                color: #2ecc71;
+                background: #e8f8f5;
+                padding: 10px;
+                border-radius: 4px;
+                margin-bottom: 20px;
+                text-align: center;
+                font-weight: 500;
+            }
+
+            .messages {
+                list-style: none;
+                padding: 0;
+                margin-bottom: 20px;
+            }
         </style>
 
         <link rel="manifest" href="site.webmanifest"/>
@@ -47,7 +162,7 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -122,33 +237,85 @@
 
 
 
-            <h:form>
+            <div class="employee-form-container">
+                <h2 class="form-title">Add New Employee</h2>
+                <h:form id="employeeForm">
+                    <!-- Add messages component for displaying success/error messages -->
+                    <h:messages globalOnly="true" styleClass="messages" 
+                                errorClass="error-message" infoClass="success-message"/>
+
                 <div class="form-group">
-                    <label for="emp_name">Employee's Name</label>
-                    <h:inputText id="material" value="#{servicesBeans.emp_name}" class="form-control beautiful-input" />
+                        <label for="emp_name" class="required-field">Employee's Name</label>
+                        <h:inputText id="emp_name" 
+                                   value="#{servicesBeans.emp_name}" 
+                                   class="beautiful-input"
+                                   required="true"
+                                   requiredMessage="Employee name is required"
+                                   validatorMessage="Name should contain only letters">
+                            <f:validateRegex pattern="^[a-zA-Z\s]+$"/>
+                        </h:inputText>
+                        <h:message for="emp_name" styleClass="error-message" />
                 </div>
+
                 <div class="form-group">
-                    <label for="emp_address">Employee's Address</label>
-                    <h:inputText id="emp_address" value="#{servicesBeans.emp_address}" class="form-control beautiful-input" />
+                        <label for="emp_address" class="required-field">Employee's Address</label>
+                        <h:inputText id="emp_address" 
+                                   value="#{servicesBeans.emp_address}" 
+                                   class="beautiful-input"
+                                   required="true"
+                                   requiredMessage="Address is required" />
+                        <h:message for="emp_address" styleClass="error-message" />
                 </div>
+
                 <div class="form-group">
-                    <label for="emp_phno">Employee's Phone Number</label>
-                    <h:inputText id="emp_phno" value="#{servicesBeans.emp_phno}" class="form-control beautiful-input" />
+                        <label for="emp_phno" class="required-field">Employee's Phone Number</label>
+                        <h:inputText id="emp_phno" 
+                                   value="#{servicesBeans.emp_phno}" 
+                                   class="beautiful-input"
+                                   required="true"
+                                   requiredMessage="Phone number is required"
+                                   validatorMessage="Phone number must be 10 digits">
+                            <f:validateRegex pattern="\d{10}"/>
+                        </h:inputText>
+                        <h:message for="emp_phno" styleClass="error-message" />
                 </div>
+
                 <div class="form-group">
-                    <label for="salary">salary</label>
-                    <h:inputText id="salary" value="#{servicesBeans.salary}" class="form-control beautiful-input" />
+                        <label for="salary" class="required-field">Salary</label>
+                        <h:inputText id="salary" 
+                                   value="#{servicesBeans.salary}" 
+                                   class="beautiful-input"
+                                   required="true"
+                                   requiredMessage="Salary is required">
+                            <f:validateLongRange minimum="1"/>
+                            <f:convertNumber integerOnly="true"/>
+                        </h:inputText>
+                        <h:message for="salary" styleClass="error-message" />
                 </div>
-                <div class="form-group"> <label for="Service">Provide a Work</label> </div>
-                <h:selectOneMenu id="service" value="#{servicesBeans.services_id}">
+
+                    <div class="form-group">
+                        <label for="service" class="required-field">Assign Service</label>
+                        <h:selectOneMenu id="service" 
+                                       value="#{servicesBeans.services_id}"
+                                       class="service-select"
+                                       required="true"
+                                       requiredMessage="Please select a service">
                     <f:selectItem itemLabel="Select Service" itemValue="" />
-                    <f:selectItems value="#{servicesBeans.allServices}" var="s"
-                                   itemLabel="#{s.serviceType}" itemValue="#{s.servicesId}" />
+                            <f:selectItems value="#{servicesBeans.allServices}" 
+                                         var="s"
+                                         itemLabel="#{s.serviceType}" 
+                                         itemValue="#{s.servicesId}" />
                 </h:selectOneMenu>
+                        <h:message for="service" styleClass="error-message" />
+                    </div>
+
                 <div class="form-group text-center">
-                    <h:commandButton value="Add Order Item" action="#{servicesBeans.addemp()}" class="button button-contactForm boxed-btn beautiful-button" />
+                        <h:commandButton value="Add Employee" 
+                                       action="#{servicesBeans.addemp()}" 
+                                       class="beautiful-button" />
                 </div>
             </h:form>
+            </div>
 
 
             <!-- slider Area End-->
@@ -170,7 +337,7 @@
                                     <img src="assets/img/icon/services-icon1.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">We collect your clothes</a></h5>
+                                    <h5><a href="services.jsf">We collect your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -182,7 +349,7 @@
                                     <img src="assets/img/icon/services-icon2.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Wash your clothes</a></h5>
+                                    <h5><a href="services.jsf">Wash your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -194,7 +361,7 @@
                                     <img src="assets/img/icon/services-icon3.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Get delivery</a></h5>
+                                    <h5><a href="services.jsf">Get delivery</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -325,7 +492,7 @@
                                 <div class="single-footer-caption mb-30">
                                     <!-- logo -->
                                     <div class="footer-logo mb-35">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
                                     </div>
                                     <div class="footer-tittle">
                                         <div class="footer-pera">

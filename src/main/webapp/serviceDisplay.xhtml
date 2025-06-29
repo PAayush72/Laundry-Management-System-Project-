@@ -18,6 +18,80 @@
             th {
                 background-color: #f2f2f2;
             }
+
+            /* Service Table Container */
+            .service-table-container {
+                max-width: 1200px;
+                margin: 60px auto;
+                padding: 20px;
+                background: #ffffff;
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+
+            .table-title {
+                color: #1C3E72;
+                font-size: 28px;
+                font-weight: 600;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            /* Enhanced Table Styling */
+            .service-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .service-table th {
+                background-color: #1C3E72;
+                color: white;
+                padding: 15px;
+                text-align: left;
+                font-weight: 600;
+                border: none;
+            }
+
+            .service-table td {
+                padding: 12px 15px;
+                border-bottom: 1px solid #e2e8f0;
+                background-color: #ffffff;
+            }
+
+            .service-table tr:hover td {
+                background-color: #f8f9fa;
+            }
+
+            /* Action Buttons */
+            .action-button {
+                display: inline-block;
+                padding: 8px 16px;
+                margin: 0 5px;
+                border-radius: 6px;
+                text-decoration: none;
+                transition: all 0.3s ease;
+            }
+
+            .update-button {
+                background-color: #4CAF50;
+                color: white !important;
+                border: none;
+            }
+
+            .delete-button {
+                background-color: #f44336;
+                color: white !important;
+                border: none;
+            }
+
+            .action-button:hover {
+                opacity: 0.9;
+                transform: translateY(-1px);
+            }
         </style>
 
         <link rel="manifest" href="site.webmanifest"/>
@@ -47,7 +121,7 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -122,36 +196,42 @@
 
 
 
+            <div class="service-table-container">
+                <h2 class="table-title">Services Information</h2>
             <h:form>
-                <h:dataTable value="#{servicesBeans.allServices}" var="s" border="1">
+                    <h:dataTable value="#{servicesBeans.allServices}" 
+                                 var="s" 
+                                 styleClass="service-table"
+                                 headerClass="table-header"
+                                 rowClasses="table-row">
                     <h:column>
                         <f:facet name="header">ID</f:facet>
                             #{s.servicesId}
                     </h:column>
                     <h:column>
-                        <f:facet name="header">Name</f:facet>
+                            <f:facet name="header">Service Name</f:facet>
                             #{s.serviceType}
                     </h:column>
                     <h:column>
-                        <f:facet name="header">Work</f:facet>
+                            <f:facet name="header">Charge</f:facet>
                             #{s.charge}
                     </h:column>
-
-
                     <h:column>
-                        <h:link value="Update" outcome="updateService" style="background-color: white;color: black">
+                            <f:facet name="header">Actions</f:facet>
+                            <h:link value="Update" 
+                                   outcome="updateService" 
+                                   styleClass="action-button update-button">
                             <f:param name="servicesId" value="#{s.servicesId}"/>
                         </h:link>
-                    </h:column>
-                      <h:column>
-                          <h:commandButton value="Delete" action="#{servicesBeans.deleteService(s.servicesId)}" style="background-color: white;color: black">
+                            <h:commandButton value="Delete" 
+                                           action="#{servicesBeans.deleteService(s.servicesId)}" 
+                                           styleClass="action-button delete-button">
                             <f:param name="servicesId" value="#{s.servicesId}"/>
                         </h:commandButton>
                     </h:column>
-
-
                 </h:dataTable>
             </h:form>
+            </div>
 
 
             <!-- slider Area End-->
@@ -173,7 +253,7 @@
                                     <img src="assets/img/icon/services-icon1.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">We collect your clothes</a></h5>
+                                    <h5><a href="services.jsf">We collect your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -185,7 +265,7 @@
                                     <img src="assets/img/icon/services-icon2.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Wash your clothes</a></h5>
+                                    <h5><a href="services.jsf">Wash your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -197,7 +277,7 @@
                                     <img src="assets/img/icon/services-icon3.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Get delivery</a></h5>
+                                    <h5><a href="services.jsf">Get delivery</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -328,7 +408,7 @@
                                 <div class="single-footer-caption mb-30">
                                     <!-- logo -->
                                     <div class="footer-logo mb-35">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
                                     </div>
                                     <div class="footer-tittle">
                                         <div class="footer-pera">

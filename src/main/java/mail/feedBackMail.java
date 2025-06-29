@@ -10,15 +10,18 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.ejb.Stateless;
 
-@Dependent
-public class feedBackMail  implements Serializable{
+@Stateless
+public class feedBackMail implements Serializable {
 
-    public void sendEmail(String uemail,Date orderDate) {
+    public void sendEmail(String uemail, Date orderDate) {
         try {
+            System.out.println("Attempting to send email to: " + uemail);
+            
             String host = "smtp.gmail.com";
-            final String from = "pkrana020803@gmail.com"; // your Gmail account
-            final String password1 = "blhu pehf zzgv bclp"; // your Gmail app-specific password
+            final String from = "panchalaayush72@gmail.com"; // your Gmail account
+            final String password1 = "wnyx kjtm djwc yrce"; // your Gmail app-specific password
             String port = "465";
             String to = uemail;
 
@@ -52,11 +55,15 @@ public class feedBackMail  implements Serializable{
             message.setContent(htmlcode, "text/html");
             
             Transport.send(message);
-            System.out.println("Email sent successfully.");
+            System.out.println("Email sent successfully to: " + to);
         } catch (MessagingException ex1) {
+            System.err.println("MessagingException: " + ex1.getMessage());
             ex1.printStackTrace();
+            throw new RuntimeException("Failed to send email: " + ex1.getMessage());
         } catch (Exception ex) {
+            System.err.println("General Exception: " + ex.getMessage());
             ex.printStackTrace();
+            throw new RuntimeException("Failed to send email: " + ex.getMessage());
         }
     }
 

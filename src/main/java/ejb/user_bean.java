@@ -164,11 +164,12 @@ public class user_bean implements user_beanLocal {
     }
 
     @Override
-    public Tblcustomer getCustomersByEmail(String email) {
-//        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-        return (Tblcustomer) em.createNamedQuery("Tblcustomer.findByEmail")
-                .setParameter("email", email).getResultList().iterator().next();
-    }
+   public Tblcustomer getCustomersByEmail(String email) {
+    List<Tblcustomer> result = em.createNamedQuery("Tblcustomer.findByEmail", Tblcustomer.class)
+                                 .setParameter("email", email)
+                                 .getResultList();
+    return result.isEmpty() ? null : result.get(0);
+}
 
     @Override
     public Collection<Tblcustomer> getAllCustomersByAddress(String customer_address) {
@@ -546,6 +547,11 @@ public class user_bean implements user_beanLocal {
     public Collection<Tblpayment> getPaymentByMethod(String method
     ) {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    public Collection<Tblorderitem> getAllOrderitems() {
+        return em.createNamedQuery("Tblorderitem.findAll", Tblorderitem.class)
+                 .getResultList();
     }
 
 }

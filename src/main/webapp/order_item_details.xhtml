@@ -6,19 +6,217 @@
     <h:head>
 
         <style>
-            table {
-                width: 100%;
-                border-collapse: collapse;
-            }
-            th, td {
-                border: 1px solid #dddddd;
-                text-align: left;
-                padding: 8px;
-            }
-            th {
-                background-color: #f2f2f2;
+            /* Container Styling */
+            .order-details-section {
+                padding: 80px 0;
+                background-color: #f8f9fa;
             }
 
+            .details-container {
+                background: #ffffff;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                margin: 40px auto;
+                max-width: 1200px;
+            }
+
+            /* Title Styling */
+            .section-title {
+                color: #1C3E72;
+                font-size: 28px;
+                font-weight: 600;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+
+            /* Table Styling */
+            .order-items-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                background: #fff;
+                border-radius: 8px;
+                overflow: hidden;
+                margin-bottom: 20px;
+            }
+
+            .order-items-table th {
+                background: #1C3E72;
+                color: #ffffff;
+                font-weight: 500;
+                padding: 15px;
+                text-align: left;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+            .order-items-table td {
+                padding: 15px;
+                border-bottom: 1px solid #e2e8f0;
+                font-size: 14px;
+                color: #2d3748;
+                vertical-align: middle;
+            }
+
+            .order-items-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .order-items-table tr:hover {
+                background-color: #f8f9fa;
+            }
+
+            /* Image Cell Styling */
+            .photo-cell {
+                text-align: center;
+            }
+
+            .photo-cell img {
+                border-radius: 8px;
+                object-fit: cover;
+                border: 1px solid #e2e8f0;
+            }
+
+            /* Price Columns Styling */
+            .price-column {
+                text-align: right;
+                font-weight: 500;
+            }
+
+            /* Action Buttons Styling */
+            .action-button {
+                display: inline-block;
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-size: 13px;
+                font-weight: 500;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                border: none;
+                min-width: 90px;
+                text-align: center;
+            }
+
+            .delete-button {
+                background-color: #ef4444;
+                color: #ffffff !important;
+            }
+
+            .update-button {
+                background-color: #059669;
+                color: #ffffff !important;
+                margin-left: 8px;
+            }
+
+            .delete-button:hover, .update-button:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .delete-button:hover {
+                background-color: #dc2626;
+            }
+
+            .update-button:hover {
+                background-color: #047857;
+            }
+
+            /* Disabled Button State */
+            .action-button:disabled {
+                background-color: #9ca3af;
+                cursor: not-allowed;
+                opacity: 0.7;
+            }
+
+            /* Total Section Styling */
+            .total-section {
+                margin-top: 30px;
+                padding: 20px;
+                background: #f8fafc;
+                border-radius: 8px;
+                display: flex;
+                align-items: center;
+                gap: 20px;
+                flex-wrap: wrap;
+            }
+
+            .total-label {
+                font-size: 16px;
+                font-weight: 600;
+                color: #1C3E72;
+            }
+
+            .total-input {
+                padding: 8px 15px;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                font-size: 16px;
+                font-weight: 500;
+                width: 150px;
+                background-color: #fff;
+                text-align: right;
+            }
+
+            /* Action Buttons for PDF and Payment */
+            .action-buttons {
+                display: flex;
+                gap: 15px;
+                margin-left: auto;
+            }
+
+            .pdf-button, .pay-button {
+                padding: 10px 20px;
+                border-radius: 6px;
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                border: none;
+                transition: all 0.3s ease;
+            }
+
+            .pdf-button {
+                background-color: #1C3E72;
+                color: #ffffff;
+            }
+
+            .pay-button {
+                background-color: #059669;
+                color: #ffffff;
+            }
+
+            .pdf-button:hover, .pay-button:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Responsive Design */
+            @media (max-width: 992px) {
+                .details-container {
+                    margin: 20px;
+                    padding: 20px;
+                }
+
+                .order-items-table {
+                    display: block;
+                    overflow-x: auto;
+                    white-space: nowrap;
+                }
+
+                .total-section {
+                    flex-direction: column;
+                    align-items: stretch;
+                    text-align: center;
+                }
+
+                .action-buttons {
+                    margin: 20px 0 0 0;
+                    justify-content: center;
+                }
+            }
         </style>
         <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
@@ -50,7 +248,7 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -112,98 +310,106 @@
         </header>
 
         <f:view>
-            <h:form id="orderForm">
-                <h1>List of Order Items</h1>
-                <h:dataTable value="#{orderItemBean.getAllOrderitemByOrderId(orderBean.order.orderId)}" var="item">
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="OrderItemId"/>
-                        </f:facet>
-                        <h:outputText value="#{item.orderItemId}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Material"/>
-                        </f:facet>
-                        <h:outputText value="#{item.material}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Qty"/>
-                        </f:facet>
-                        <h:outputText value="#{item.qty}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Photo"/>
-                        </f:facet>
-                        <h:graphicImage value="#{item.photo}" alt="Order Photo" width="70" height="70"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Service Type"/>
-                        </f:facet>
-                        <h:outputText value="#{item.serviceId.serviceType}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="OrderId"/>
-                        </f:facet>
-                        <h:outputText value="#{item.orderId.orderId}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Service Charge"/>
-                        </f:facet>
-                        <h:outputText value="#{orderItemBean.getAllServiceById(item.serviceId.servicesId).charge}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Total Charge"/>
-                        </f:facet>
-                        <h:outputText value="#{item.qty * orderItemBean.getAllServiceById(item.serviceId.servicesId).charge}"/>
-                    </h:column>
-                    <h:column>
+            <section class="order-details-section">
+                <div class="details-container">
+                    <h1 class="section-title">List of Order Items</h1>
+                    <h:form id="orderForm">
+                        <h:dataTable value="#{orderItemBean.getAllOrderitemByOrderId(orderBean.order.orderId)}" 
+                                    var="item"
+                                    styleClass="order-items-table">
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="OrderItemId"/>
+                                </f:facet>
+                                <h:outputText value="#{item.orderItemId}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Material"/>
+                                </f:facet>
+                                <h:outputText value="#{item.material}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Qty"/>
+                                </f:facet>
+                                <h:outputText value="#{item.qty}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Photo</f:facet>
+                                <div class="photo-cell">
+                                    <h:graphicImage value="#{item.photo}" alt="Order Photo" width="70" height="70"/>
+                                </div>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="Service Type"/>
+                                </f:facet>
+                                <h:outputText value="#{item.serviceId.serviceType}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">
+                                    <h:outputText value="OrderId"/>
+                                </f:facet>
+                                <h:outputText value="#{item.orderId.orderId}"/>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Service Charge</f:facet>
+                                <div class="price-column">
+                                    <h:outputText value="#{orderItemBean.getAllServiceById(item.serviceId.servicesId).charge}"/>
+                                </div>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Total Charge</f:facet>
+                                <div class="price-column">
+                                    <h:outputText value="#{item.qty * orderItemBean.getAllServiceById(item.serviceId.servicesId).charge}"/>
+                                </div>
+                            </h:column>
+                            <h:column>
+                                <f:facet name="header">Actions</f:facet>
+                                <div class="action-buttons">
+                                    <h:commandButton value="Delete" 
+                                                   action="#{orderItemBean.deleteOrderItem(item.orderItemId,item.orderId.orderId)}" 
+                                                   styleClass="action-button delete-button"
+                                                   disabled="#{orderBean.order.status eq 'success'}"/>
+                                    
+                                    <h:link value="Update" 
+                                           outcome="updateOrderItem" 
+                                           styleClass="action-button update-button"
+                                           disabled="#{orderBean.order.status eq 'success'}">
+                                        <f:param name="orderItemId" value="#{item.orderItemId}"/>
+                                        <f:param name="orderId" value="#{item.orderId.orderId}"/>
+                                    </h:link>
+                                </div>
+                            </h:column>
+                        </h:dataTable>
 
+                        <div class="total-section">
+                            <span class="total-label">Grand Total:</span>
+                            <h:inputText value="#{orderItemBean.calculateGrandTotal(orderItemBean.getAllOrderitemByOrderId(orderBean.order.orderId))}" 
+                                        readonly="true"
+                                        styleClass="total-input"/>
+                            
+                            <div class="action-buttons">
+                                <h:commandButton value="Download PDF" 
+                                                 action="#{PdfBean.generatePdf}" 
+                                                 styleClass="pdf-button"/>
 
-                        <h:commandButton value="delete" action="#{orderItemBean.deleteOrderItem(item.orderItemId,item.orderId.orderId)}" disabled="#{orderBean.order.status eq 'success'}">
-                            <f:param name="orderItemId" value="#{item.orderItemId}"/>
-                            <f:param name="orderId" value="#{item.orderId}"/>
+                                <h:commandButton value="Pay" 
+                                                 type="button"
+                                                 styleClass="pay-button"
+                                                 disabled="#{orderBean.order.status eq 'success'}"
+                                                 onclick="openRazorpayPayment(); return false;"/>
+                            </div>
+                        </div>
 
-                        </h:commandButton>
-
-                    </h:column>
-
-                    <h:column>
-                        <h:link value="Update" outcome="updateOrderItem" style="background-color: white;color: black" disabled="#{orderBean.order.status eq 'success'}">
-                            <f:param name="orderItemId" value="#{item.orderItemId}"/>
-                            <f:param name="orderId" value="#{item.orderId.orderId}"/>
-                        </h:link>
-                    </h:column>
-                </h:dataTable>
-                <h:panelGroup>
-                    <h:outputText value="Grand Total: " />
-                    <h:inputText value="#{orderItemBean.calculateGrandTotal(orderItemBean.getAllOrderitemByOrderId(orderBean.order.orderId))}" readonly="true"/>
-                    <h:commandButton value="Download PDF" action="#{PdfBean.generatePdf}">
-                        <f:param name="ACTION" value="DOWNLOAD"/>
-                    </h:commandButton>
-                </h:panelGroup>
-               
-                    <!-- Hidden input fields to store Razorpay payment details -->
-                    
-
-                    <!-- Visible Pay Button -->
-                    <h:commandButton value="Pay" type="button" 
-                                     disabled="#{orderBean.order.status eq 'success'}" 
-                                     onclick="openRazorpayPayment(); return false;" />
-
-                    <!-- Hidden Command Button to Process Payment -->
-                    <h:commandButton id="hiddenPayButton" value="hiddenPay" 
-                                     action="#{orderItemBean.processPayment}" 
-                                     style="display:none;" />
-           
-
-            </h:form>
+                        <h:commandButton id="hiddenPayButton" 
+                                       value="hiddenPay"
+                                       action="#{orderItemBean.processPayment}"
+                                       style="display:none;"/>
+                    </h:form>
+                </div>
+            </section>
         </f:view>
 
 

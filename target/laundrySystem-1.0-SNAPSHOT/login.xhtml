@@ -1,8 +1,28 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core">
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core">
+    
     <h:head>
         <title>Login</title>
-        <h:outputLink value="resource/css/style.css" target="_blank"/>
+        <link rel="manifest" href="site.webmanifest"/>
+        <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico"/>
+
+        <!-- CSS here -->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="assets/css/owl.carousel.min.css"/>
+        <link rel="stylesheet" href="assets/css/slicknav.css"/>
+        <link rel="stylesheet" href="assets/css/flaticon.css"/>
+        <link rel="stylesheet" href="assets/css/progressbar_barfiller.css"/>
+        <link rel="stylesheet" href="assets/css/gijgo.css"/>
+        <link rel="stylesheet" href="assets/css/animate.min.css"/>
+        <link rel="stylesheet" href="assets/css/animated-headline.css"/>
+        <link rel="stylesheet" href="assets/css/magnific-popup.css"/>
+        <link rel="stylesheet" href="assets/css/fontawesome-all.min.css"/>
+        <link rel="stylesheet" href="assets/css/themify-icons.css"/>
+        <link rel="stylesheet" href="assets/css/slick.css"/>
+        <link rel="stylesheet" href="assets/css/nice-select.css"/>
+        <link rel="stylesheet" href="assets/css/style.css"/>
 
         <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous" />
@@ -16,41 +36,214 @@
     </h:head>
 
     <h:body class="bg-light">
+        <!-- Header Start -->
+        <header>
+            <div class="header-area">
+                <div class="main-header header-sticky">
+                    <!-- Logo -->
+                    <div class="header-left">
+                        <div class="logo">
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
+                        </div>
+                        <div class="menu-wrapper d-flex align-items-center">
+                            <!-- Main-menu -->
+                            <div class="main-menu d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li><h:commandLink action="#{loginMB.handleNavigation('home')}" value="Home"/></li>
+                                        <li><h:commandLink action="#{loginMB.handleNavigation('about_us')}" value="About"/></li>
+                                        <li><h:commandLink action="#{loginMB.handleNavigation('services')}" value="Services"/></li>
+                                        <li>
+                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <a href="#">Order</a>
+                                                <ul class="submenu">
+                                                    <li><h:commandLink action="#{loginMB.handleNavigation('displayOrders')}" value="Order Details"/></li>
+                                                </ul>
+                                            </h:panelGroup>
+                                        </li>
+                                        <li>
+                                            <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                <h:commandLink action="#{loginMB.handleNavigation('login')}" value="Contact"/>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <h:commandLink action="#{loginMB.handleNavigation('contact')}" value="Contact"/>
+                                            </h:panelGroup>
+                                        </li>
+                                        <li class="active">
+                                            <h:form>
+                                                <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                    <a href="login.jsf" class="dropdown-item">Login</a>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                    <h:commandLink value="Log Out" action="#{loginMB.logout()}" class="dropdown-item" />
+                                                </h:panelGroup>
+                                            </h:form>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-right d-none d-lg-block">
+                        <a href="#" class="">
+                            <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                Make an Appointment
+                            </h:panelGroup>
+                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                Welcome "#{loginMB.c.customerName}"!
+                            </h:panelGroup>
+                        </a>
+                    </div>
+                    <!-- Mobile Menu -->
+                    <div class="col-12">
+                        <div class="mobile_menu d-block d-lg-none"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <!-- Header End -->
+
         <h:form>
             <!-- Centering the form using Flexbox -->
             <div class="container d-flex justify-content-center align-items-center min-vh-100">
-                <div class="card shadow-lg p-4" style="max-width: 400px; width: 100%; border-radius: 15px;">
+                <div class="card shadow-lg p-5" style="max-width: 600px; width: 100%; border-radius: 15px;">
                     <div class="text-center mb-4">
                         <h2 class="fw-bold">Login</h2>
                     </div>
 
                     <!-- Username input -->
-                    <div class="mb-3">
-                        <h:outputLabel for="username" value="Useremail" class="form-label"/>
-                        <h:inputText value="#{loginMB.email}" class="form-control"
+                    <div class="mb-4">
+                        <h:outputLabel for="username" value="Useremail" class="form-label fs-5"/>
+                        <h:inputText value="#{loginMB.email}" class="form-control form-control-lg"
                                      required="true" requiredMessage="Email is required" id="email"/>
                         <h:message for="email" style="color: red"/>
                     </div>
 
                     <!-- Password input -->
-                    <div class="mb-3">
-                        <h:outputLabel for="password" value="Password" class="form-label"/>
-                        <h:inputSecret value="#{loginMB.password}" class="form-control" 
+                    <div class="mb-4">
+                        <h:outputLabel for="password" value="Password" class="form-label fs-5"/>
+                        <h:inputSecret value="#{loginMB.password}" class="form-control form-control-lg" 
                                        required="true" requiredMessage="Password is required" id="password"/>
                         <h:message for="password" style="color: red"/>
                         
+                        <!-- Add this right after the password input field -->
+                        <div class="mb-4">
+                            <h:outputText value="#{loginMB.message}" 
+                                          style="color: red; display: block; margin-top: 10px; font-weight: bold;"
+                                          rendered="#{not empty loginMB.message}"/>
+                                              
+                            <h:outputText value="Remaining attempts: #{loginMB.remainingAttempts}"
+                                          style="color: #{loginMB.remainingAttempts le 2 ? 'red' : '#666'}; 
+                                                 font-size: 0.9em; 
+                                                 display: block; 
+                                                 margin-top: 5px;
+                                                 font-weight: #{loginMB.remainingAttempts le 2 ? 'bold' : 'normal'}"
+                                          rendered="#{loginMB.remainingAttempts lt 3}"/>
+                        </div>
                     </div>
-                    <h:outputText value="#{loginMB.message}" style="color: red"/>
 
                     <!-- Sign In Button -->
-                    <h:commandButton value="Sign In" action="#{loginMB.login}" class="btn btn-primary w-100 mt-3 py-2"/>
+                    <h:commandButton value="Sign In" 
+                                     action="#{loginMB.login}" 
+                                     class="btn btn-primary w-100 mt-4 py-3 fs-5"
+                                     disabled="#{loginMB.userLockedOut}"/>
 
                     <!-- Sign Up link -->
-                    <div class="mt-3 text-center">
-                        <p class="small">Don't have an account? <a href="register.jsf" class="fw-bold text-decoration-none">Sign up</a></p>
+                    <div class="mt-4 text-center">
+                        <p class="fs-6">Don't have an account? <a href="register.jsf" class="fw-bold text-decoration-none">Sign up</a></p>
                     </div>
                 </div>
             </div>
         </h:form>
+
+        <!-- Footer Start -->
+        <footer>
+            <div class="footer-area footer-padding">
+                <div class="container">
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="single-footer-caption mb-30">
+                                    <!-- logo -->
+                                    <div class="footer-logo mb-35">
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                    </div>
+                                    <div class="footer-tittle">
+                                        <div class="footer-pera">
+                                            <p>Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.</p>
+                                        </div>
+                                    </div>
+                                    <!-- social -->
+                                    <div class="footer-social">
+                                        <a href="#"><i class="fab fa-twitter"></i></a>
+                                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>Services </h4>
+                                    <ul>
+                                        <li><a href="#">- Dry Cleaning</a></li>
+                                        <li><a href="#">- Dry Clean</a></li>
+                                        <li><a href="#">- Ironing Services</a></li>
+                                        <li><a href="#">- Laundry Service London</a></li>
+                                        <li><a href="#">- Laundry App</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>Get in touch</h4>
+                                    <ul>
+                                        <li class="number"><a href="#">(90) 898 789-8957</a></li>
+                                        <li><a href="#">laundry@567.com</a></li>
+                                        <li><a href="#">789/A, Green road NYC-9089</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer End -->
+
+        <!-- Scroll Up -->
+        <div id="back-top">
+            <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+        </div>
+
+        <!-- JS here -->
+        <script src="assets/js/vendor/modernizr-3.5.0.min.js"></script>
+        <script src="assets/js/vendor/jquery-1.12.4.min.js"></script>
+        <script src="assets/js/popper.min.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/jquery.slicknav.min.js"></script>
+        <script src="assets/js/owl.carousel.min.js"></script>
+        <script src="assets/js/slick.min.js"></script>
+        <script src="assets/js/wow.min.js"></script>
+        <script src="assets/js/animated.headline.js"></script>
+        <script src="assets/js/jquery.magnific-popup.js"></script>
+        <script src="assets/js/gijgo.min.js"></script>
+        <script src="assets/js/jquery.nice-select.min.js"></script>
+        <script src="assets/js/jquery.sticky.js"></script>
+        <script src="assets/js/jquery.barfiller.js"></script>
+        <script src="assets/js/jquery.counterup.min.js"></script>
+        <script src="assets/js/waypoints.min.js"></script>
+        <script src="assets/js/jquery.countdown.min.js"></script>
+        <script src="assets/js/hover-direction-snake.min.js"></script>
+        <script src="assets/js/contact.js"></script>
+        <script src="assets/js/jquery.form.js"></script>
+        <script src="assets/js/jquery.validate.min.js"></script>
+        <script src="assets/js/mail-script.js"></script>
+        <script src="assets/js/jquery.ajaxchimp.min.js"></script>
+        <script src="assets/js/plugins.js"></script>
+        <script src="assets/js/main.js"></script>
     </h:body>
 </html>

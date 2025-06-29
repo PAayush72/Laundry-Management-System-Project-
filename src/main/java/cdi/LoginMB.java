@@ -24,6 +24,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import java.util.concurrent.ConcurrentHashMap;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Named(value = "loginMB")
 @SessionScoped
@@ -118,6 +121,18 @@ public class LoginMB implements Serializable {
     private AuthenticationStatus status;
     private Set<String> roles;
 
+    private static final int MAX_ATTEMPTS = 3;
+    private static final int LOCK_TIME_MINUTES = 1;
+    private static final ConcurrentHashMap<String, Integer> failedAttempts = new ConcurrentHashMap<>();
+    private static final ConcurrentHashMap<String, LocalDateTime> lockTime = new ConcurrentHashMap<>();
+
+    public int getRemainingAttempts() {
+        if (email == null || email.trim().isEmpty()) {
+            return MAX_ATTEMPTS;
+        }
+        return MAX_ATTEMPTS - failedAttempts.getOrDefault(email, 0);
+    }
+
     public LoginMB() {
 
     }
@@ -127,12 +142,19 @@ public class LoginMB implements Serializable {
         cl = new customer();
         gc = new GenericType<Tblcustomer>() {
         };
+        if (email == null) {
+            email = "";
+        }
     }
 
-    // Getters and setters for email, password, securityContext, message, status, and roles
     public String login() {
         FacesContext context = FacesContext.getCurrentInstance();
+        
         try {
+            if (isUserLockedOut()) {
+                return "login";
+            }
+
             HttpServletRequest request = (HttpServletRequest) context.getExternalContext().getRequest();
             HttpServletResponse response = (HttpServletResponse) context.getExternalContext().getResponse();
 
@@ -149,32 +171,37 @@ public class LoginMB implements Serializable {
 
             rs = cl.getCustomersByEmail(Response.class, email);
             c = rs.readEntity(gc);
-            session.setAttribute("user-id", c.getCustomerId());
-            session.setAttribute("loginMB", this);  // Add this lin
-            System.out.println("customer id>>>" + c.getCustomerId());
-            if (roles.contains("admin")) {
-                session.setAttribute("logged-group", "admin");
+            
+            if (c != null && roles != null && !roles.isEmpty()) {
+                session.setAttribute("user-id", c.getCustomerId());
+                session.setAttribute("loginMB", this);
+                
+                resetAttempts();
 
-                return "admin.jsf?faces-redirect=true";
-            } else if (roles.contains("user") || roles.contains("employee")) {
-                if (roles.contains("user")) {
-                    session.setAttribute("logged-group", "user");
-                    session.setAttribute("user-email", email);
-                    session.setAttribute("user-name", username);
-//                    session.setAttribute("user-id", id);
-
-                } else if (roles.contains("employee")) {
-                    session.setAttribute("logged-group", "employee");
-                    session.setAttribute("user-email", email);
-                    session.setAttribute("user-name", username);
-//                    session.setAttribute("user-id", id);
-
+                System.out.println("customer id>>>" + c.getCustomerId());
+                if (roles.contains("admin")) {
+                    session.setAttribute("logged-group", "admin");
+                    return "admin.jsf?faces-redirect=true";
+                } else if (roles.contains("user") || roles.contains("employee")) {
+                    if (roles.contains("user")) {
+                        session.setAttribute("logged-group", "user");
+                        session.setAttribute("user-email", email);
+                        session.setAttribute("user-name", username);
+                    } else if (roles.contains("employee")) {
+                        session.setAttribute("logged-group", "employee");
+                        session.setAttribute("user-email", email);
+                        session.setAttribute("user-name", username);
+                    }
+                    System.out.println("session>>>>" + session.getAttribute("user-email"));
+                    return "home.jsf?faces-redirect=true";
                 }
-                System.out.println("session>>>>" + session.getAttribute("user-email"));
-                return "home.jsf?faces-redirect=true";
             }
+            
+            handleFailedAttempt();
+            
         } catch (Exception e) {
-            message = "Error: Username or Password is Incorrect!!!";
+            handleFailedAttempt();
+            e.printStackTrace();
         }
         return "login";
     }
@@ -184,11 +211,12 @@ public class LoginMB implements Serializable {
     }
 
     public String logout() {
+        resetAttempts();
         try {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             HttpServletRequest request = (HttpServletRequest) facesContext.getExternalContext().getRequest();
 
-            HttpSession session = request.getSession(false); // Get the current session, don't create a new one if it doesn't exist
+            HttpSession session = request.getSession(false);
             if (session != null) {
                 session.invalidate();
             }
@@ -201,7 +229,7 @@ public class LoginMB implements Serializable {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null; // Navigation case is handled by the redirect
+        return null;
     }
 
     public boolean isLoggedIn() {
@@ -216,5 +244,45 @@ public class LoginMB implements Serializable {
 
     public void navigateToRegisterPage() throws IOException {
         FacesContext.getCurrentInstance().getExternalContext().redirect("../register.jsf");
+    }
+
+    public boolean isUserLockedOut() {
+        if (email == null || email.trim().isEmpty()) {
+            return false;
+        }
+
+        Integer attempts = failedAttempts.get(email);
+        if (attempts != null && attempts >= MAX_ATTEMPTS) {
+            LocalDateTime lockoutTime = lockTime.get(email);
+            if (lockoutTime != null) {
+                long minutesSinceLockout = ChronoUnit.MINUTES.between(lockoutTime, LocalDateTime.now());
+                if (minutesSinceLockout < LOCK_TIME_MINUTES) {
+                    long remainingMinutes = LOCK_TIME_MINUTES - minutesSinceLockout;
+                    message = "Account is temporarily locked. Please try again in " + remainingMinutes + " minute" + (remainingMinutes != 1 ? "s" : "") + ".";
+                    return true;
+                } else {
+                    resetAttempts();
+                }
+            }
+        }
+        return false;
+    }
+
+    private void resetAttempts() {
+        failedAttempts.remove(email);
+        lockTime.remove(email);
+    }
+
+    private void handleFailedAttempt() {
+        int attempts = failedAttempts.getOrDefault(email, 0) + 1;
+        failedAttempts.put(email, attempts);
+
+        if (attempts >= MAX_ATTEMPTS) {
+            lockTime.put(email, LocalDateTime.now());
+            message = "Too many failed attempts. Account is locked for " + LOCK_TIME_MINUTES + " minute.";
+        } else {
+            int remaining = MAX_ATTEMPTS - attempts;
+            message = "Error: Username or Password is Incorrect! " + remaining + " attempt" + (remaining != 1 ? "s" : "") + " remaining.";
+        }
     }
 }

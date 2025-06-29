@@ -44,6 +44,7 @@ public class adminServlet extends HttpServlet {
             out.println("<title>Servlet adminServlet</title>");
             out.println("</head>");
             out.println("<body>");
+//            services.addservice("Test", 200);
 //            out.println("<h1>Servlet adminServlet at " + request.getContextPath() + "</h1>");
 //            services.addservice("Washing", 250);
 //            services.addEmployee("Raj", 2, 3000);

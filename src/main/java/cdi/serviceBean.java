@@ -16,6 +16,8 @@ import javax.inject.Named;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 
 /**
  *
@@ -35,6 +37,7 @@ public class serviceBean {
     Collection<Tblservice> service = new ArrayList<>();
     GenericType<Collection<Tblservice>> gservice;
     private int services_id;
+    private String message; // Add this property for success/error messages
 
     @PostConstruct
     public void init() {
@@ -106,26 +109,59 @@ public class serviceBean {
     }
 
     public void setCharge(int charge) {
-        this.charge = charge;
+        try {
+            // Validate the charge
+            if (charge <= 0) {
+                FacesContext.getCurrentInstance().addMessage("charge",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Service charge must be greater than 0", null));
+                return;
+            }
+            this.charge = charge;
+        } catch (NumberFormatException e) {
+            FacesContext.getCurrentInstance().addMessage("charge",
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                "Please enter a valid number", null));
+        }
     }
 
-    public void addservice() {
-        s.addservice(service_type, String.valueOf(service_type));
+    public String getMessage() {
+        return message;
     }
- public Collection<Tblservice> getAllServices() {
+    
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String addservice() {
+        try {
+            // Validate before adding
+            if (service_type == null || service_type.trim().isEmpty()) {
+                message = "Error: Service type is required";
+                return null;
+            }
+            
+            if (charge <= 0) {
+                message = "Error: Service charge must be greater than 0";
+                return null;
+            }
+            
+            s.addservice(service_type, String.valueOf(charge));
+            message = "Service added successfully!";
+            return "serviceDisplay.jsf?faces-redirect=true";
+        } catch (Exception e) {
+            message = "Error adding service: " + e.getMessage();
+            return null;
+        }
+    }
+
+    public Collection<Tblservice> getAllServices() {
         return allServices;
     }
 
     public void setAllServices(Collection<Tblservice> allServices) {
         this.allServices = allServices;
     }
-//    public Collection<Tblservice> getAllServices() {
-////        rs = s.getAllServices(Response.class);
-////        service = rs.readEntity(gservice);
-////       return service;
-//
-//        return admin_beans.getAllServices();
-//    }
 
     public Collection<Tblservice> getAllServiceById(int services_id) {
         rs = s.getAllServiceById(Response.class, String.valueOf(services_id));

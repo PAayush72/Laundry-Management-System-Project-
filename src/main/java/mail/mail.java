@@ -17,8 +17,8 @@ public class mail  implements Serializable{
     public void sendEmail(String uemail,int ordid,Date orderDate) {
         try {
             String host = "smtp.gmail.com";
-            final String from = "pkrana020803@gmail.com"; // your Gmail account
-            final String password1 = "blhu pehf zzgv bclp"; // your Gmail app-specific password
+            final String from = "panchalaayush72@gmail.com"; // your Gmail account
+            final String password1 = "wnyx kjtm djwc yrce"; // your Gmail app-specific password
             String port = "465";
             String to = uemail;
 

@@ -18,6 +18,108 @@
             th {
                 background-color: #f2f2f2;
             }
+
+            /* Employee Table Container */
+            .employee-table-container {
+                max-width: 1200px;
+                margin: 60px auto;
+                padding: 20px;
+                background: #ffffff;
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+
+            .table-title {
+                color: #1C3E72;
+                font-size: 28px;
+                font-weight: 600;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            /* Enhanced Table Styling */
+            .employee-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+
+            .employee-table th {
+                background-color: #1C3E72;
+                color: white;
+                padding: 15px;
+                text-align: left;
+                font-weight: 600;
+                border: none;
+            }
+
+            .employee-table td {
+                padding: 12px 15px;
+                border-bottom: 1px solid #e2e8f0;
+                background-color: #ffffff;
+                vertical-align: middle;
+            }
+
+            .employee-table tr:hover td {
+                background-color: #f8f9fa;
+            }
+
+            /* Column Specific Styling */
+            .id-column {
+                width: 80px;
+                text-align: center;
+            }
+
+            .name-column {
+                min-width: 200px;
+            }
+
+            .work-column {
+                min-width: 150px;
+            }
+
+            .salary-column {
+                min-width: 120px;
+                text-align: right;
+            }
+
+            /* Delete Button Styling */
+            .delete-button {
+                background-color: #dc3545;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-size: 14px;
+                text-transform: capitalize;
+            }
+
+            .delete-button:hover {
+                background-color: #c82333;
+                transform: translateY(-1px);
+            }
+
+            /* Responsive Table */
+            @media (max-width: 768px) {
+                .employee-table-container {
+                    margin: 20px 10px;
+                    padding: 15px;
+                }
+
+                .employee-table th,
+                .employee-table td {
+                    padding: 10px;
+                }
+
+                .table-title {
+                    font-size: 24px;
+                }
+            }
         </style>
 
         <link rel="manifest" href="site.webmanifest"/>
@@ -47,7 +149,7 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -122,36 +224,45 @@
 
 
 
+            <div class="employee-table-container">
+                <h2 class="table-title">Employee Information</h2>
             <h:form>
-                <h:dataTable value="#{servicesBeans.allEmployee}" var="s" border="1">
+                    <h:dataTable value="#{servicesBeans.allEmployee}" 
+                                 var="s" 
+                                 styleClass="employee-table"
+                                 headerClass="table-header"
+                                 rowClasses="table-row">
                     <h:column>
                         <f:facet name="header">ID</f:facet>
-                            #{s.empId}
+                            <h:outputText value="#{s.empId}" styleClass="id-column"/>
                     </h:column>
+
                     <h:column>
                         <f:facet name="header">Name</f:facet>
-                            #{s.empName}
+                            <h:outputText value="#{s.empName}" styleClass="name-column"/>
                     </h:column>
+
                     <h:column>
                         <f:facet name="header">Work</f:facet>
-                            #{s.servicesId.serviceType}
+                            <h:outputText value="#{s.servicesId.serviceType}" styleClass="work-column"/>
                     </h:column>
+
                     <h:column>
                         <f:facet name="header">Salary</f:facet>
-                            #{s.salary}
+                            <h:outputText value="#{s.salary}" styleClass="salary-column"/>
                     </h:column>
-                    <h:column>
 
-                        
-                            <h:commandButton value="delete" action="#{servicesBeans.deleteEmp(s.empId)}">
+                    <h:column>
+                            <f:facet name="header">Actions</f:facet>
+                            <h:commandButton value="Delete" 
+                                           action="#{servicesBeans.deleteEmp(s.empId)}"
+                                           styleClass="delete-button">
                                 <f:param name="delete" value="#{s.empId}"/>
                             </h:commandButton>
-                       
                     </h:column>
-
-                    <!-- Add more columns as needed -->
                 </h:dataTable>
             </h:form>
+            </div>
 
 
             <!-- slider Area End-->
@@ -173,7 +284,7 @@
                                     <img src="assets/img/icon/services-icon1.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">We collect your clothes</a></h5>
+                                    <h5><a href="services.jsf">We collect your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -185,7 +296,7 @@
                                     <img src="assets/img/icon/services-icon2.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Wash your clothes</a></h5>
+                                    <h5><a href="services.jsf">Wash your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -197,7 +308,7 @@
                                     <img src="assets/img/icon/services-icon3.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Get delivery</a></h5>
+                                    <h5><a href="services.jsf">Get delivery</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -328,7 +439,7 @@
                                 <div class="single-footer-caption mb-30">
                                     <!-- logo -->
                                     <div class="footer-logo mb-35">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
                                     </div>
                                     <div class="footer-tittle">
                                         <div class="footer-pera">

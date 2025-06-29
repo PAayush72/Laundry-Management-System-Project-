@@ -30,43 +30,43 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
                             <div class="main-menu d-none d-lg-block">
                                 <nav>
                                     <ul id="navigation">
-                                        <li class="active"><a href="home.jsf">Home</a></li>
-                                        <li><a href="about_us.jsf">About</a></li>
+                                        <li><a href="home.jsf">Home</a></li>
+                                        <li class="active"><a href="about_us.jsf">About</a></li>
                                         <li><a href="services.jsf">Services</a></li>
-                                        <li><a href="">Order</a>
-                                            <ul class="submenu">
-                                                <li><a href="displayOrders.jsf">Order Details</a></li>
-                                               
-                                               
-                                            </ul>
+                                        <li>
+                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <a href="#">Order</a>
+                                                <ul class="submenu">
+                                                    <li><a href="displayOrders.jsf">Order Details</a></li>
+                                                </ul>
+                                            </h:panelGroup>
                                         </li>
-                                        <li><a href="contact.jsf">Contact</a></li>
+                                        <li>
+                                            <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                <a href="login.jsf">Contact</a>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <a href="contact.jsf">Contact</a>
+                                            </h:panelGroup>
+                                        </li>
                                         <li>
                                             <h:form>
-                                                <!-- Render Login link if the user is not logged in -->
                                                 <h:panelGroup rendered="#{!loginMB.loggedIn}">
                                                     <a href="login.jsf" class="dropdown-item">Login</a>
                                                 </h:panelGroup>
-
-                                                <!-- Render Log Out button if the user is logged in -->
-                                                
-                                                 <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <h:panelGroup rendered="#{loginMB.loggedIn}">
                                                     <h:commandLink value="Log Out" action="#{loginMB.logout()}" class="dropdown-item" />
                                                 </h:panelGroup>
-                                                
-                                                
                                             </h:form>
                                         </li>
-
                                     </ul>
-
                                 </nav>
                             </div>
                         </div>
@@ -154,7 +154,7 @@
                                     <img src="assets/img/icon/services-icon1.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">We collect your clothes</a></h5>
+                                    <h5><a href="services.jsf">We collect your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -166,7 +166,7 @@
                                     <img src="assets/img/icon/services-icon2.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Wash your clothes</a></h5>
+                                    <h5><a href="services.jsf">Wash your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -178,7 +178,7 @@
                                     <img src="assets/img/icon/services-icon3.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Get delivery</a></h5>
+                                    <h5><a href="services.jsf">Get delivery</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -217,7 +217,7 @@
                                     <div class="single-footer-caption mb-30">
                                         <!-- logo -->
                                         <div class="footer-logo mb-35">
-                                            <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                            <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
                                         </div>
                                         <div class="footer-tittle">
                                             <div class="footer-pera">

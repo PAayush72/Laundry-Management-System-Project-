@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <html lang="en"
-      xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
+
     <h:head>
 
         <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico"/>
@@ -25,6 +28,218 @@
         <h:outputStylesheet name="primefaces.css" library="primefaces" />
         <!-- PrimeFaces JS after jQuery and jQuery UI -->
         <h:outputScript name="primefaces.js" library="primefaces" />
+        
+        <style>
+            /* Form Container Styling */
+            .order-form {
+                padding: 80px 0;
+                background-color: #f8f9fa;
+            }
+
+            .form-card {
+                background: #ffffff;
+                padding: 40px;
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                margin-bottom: 40px;
+            }
+
+            /* Form Group Styling */
+            .form-group {
+                margin-bottom: 25px;
+                position: relative;
+            }
+
+            .form-group label {
+                display: block;
+                font-weight: 500;
+                margin-bottom: 10px;
+                color: #2d3748;
+                font-size: 15px;
+            }
+
+            /* Input Fields Styling */
+            .form-control {
+                width: 100% !important;
+                padding: 12px 15px !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 8px !important;
+                font-size: 14px !important;
+                transition: all 0.3s ease !important;
+                background-color: #fff !important;
+                height: 45px !important;
+                line-height: 1.5 !important;
+            }
+
+            .form-control:focus {
+                border-color: #1C3E72 !important;
+                box-shadow: 0 0 0 3px rgba(28, 62, 114, 0.1) !important;
+                outline: none !important;
+            }
+
+            /* Calendar Styling */
+            .ui-calendar {
+                width: 100% !important;
+                display: flex !important;
+            }
+
+            .ui-calendar input {
+                width: 100% !important;
+                padding: 12px 15px !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 8px 0 0 8px !important;
+                font-size: 14px !important;
+                height: 45px !important;
+                background-color: #fff !important;
+            }
+
+            .ui-calendar .ui-trigger-calendar {
+                background: #1C3E72 !important;
+                border: none !important;
+                color: #fff !important;
+                width: 45px !important;
+                height: 45px !important;
+                border-radius: 0 8px 8px 0 !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: center !important;
+                cursor: pointer !important;
+                transition: background-color 0.3s ease !important;
+            }
+
+            .ui-calendar .ui-trigger-calendar:hover {
+                background: #15305A !important;
+            }
+
+            /* Calendar Popup Styling */
+            .ui-datepicker {
+                padding: 15px !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 8px !important;
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+                background: #fff !important;
+            }
+
+            .ui-datepicker-header {
+                background: #1C3E72 !important;
+                color: #fff !important;
+                border-radius: 6px 6px 0 0 !important;
+                padding: 10px !important;
+            }
+
+            .ui-datepicker-calendar th {
+                padding: 8px !important;
+                color: #2d3748 !important;
+            }
+
+            .ui-datepicker-calendar td {
+                padding: 2px !important;
+            }
+
+            .ui-datepicker-calendar a {
+                text-align: center !important;
+                padding: 8px !important;
+                border-radius: 4px !important;
+                transition: all 0.3s ease !important;
+            }
+
+            .ui-datepicker-calendar a:hover {
+                background: #e2e8f0 !important;
+            }
+
+            /* Disabled Input Styling */
+            .form-control:disabled {
+                background-color: #f8f9fa !important;
+                cursor: not-allowed !important;
+                opacity: 0.7 !important;
+            }
+
+            /* Error Message Styling */
+            .error-message {
+                color: #dc2626 !important;
+                font-size: 12px !important;
+                margin-top: 5px !important;
+                display: block !important;
+            }
+
+            /* Submit Button Styling */
+            .btn-primary {
+                background: #1C3E72 !important;
+                color: #ffffff !important;
+                padding: 12px 30px !important;
+                border: none !important;
+                border-radius: 8px !important;
+                font-weight: 500 !important;
+                font-size: 16px !important;
+                cursor: pointer !important;
+                transition: all 0.3s ease !important;
+                width: 100% !important;
+                height: 50px !important;
+            }
+
+            .btn-primary:hover {
+                background: #15305A !important;
+                transform: translateY(-1px) !important;
+                box-shadow: 0 4px 12px rgba(28, 62, 114, 0.2) !important;
+            }
+
+            /* Section Title Styling */
+            .section-tittle {
+                margin-bottom: 40px !important;
+            }
+
+            .section-tittle h2 {
+                color: #1C3E72 !important;
+                font-size: 32px !important;
+                font-weight: 600 !important;
+                margin-bottom: 15px !important;
+            }
+
+            /* Responsive Adjustments */
+            @media (max-width: 768px) {
+                .order-form {
+                    padding: 40px 0;
+                }
+
+                .form-card {
+                    padding: 25px;
+                }
+
+                .btn-primary {
+                    height: 45px !important;
+                }
+            }
+
+            /* Add this to your existing styles */
+            .date-helper-text {
+                font-size: 12px;
+                color: #666;
+                margin-top: 5px;
+                display: block;
+            }
+
+            /* Update calendar styling for disabled state */
+            .ui-calendar.ui-state-disabled {
+                opacity: 0.6;
+                cursor: not-allowed;
+            }
+
+            .ui-calendar.ui-state-disabled input,
+            .ui-calendar.ui-state-disabled .ui-trigger-calendar {
+                cursor: not-allowed !important;
+            }
+
+            /* Highlight available date range in calendar */
+            .ui-datepicker-calendar .available-date {
+                background-color: #e8f5e9 !important;
+            }
+
+            .ui-datepicker-calendar .unavailable-date {
+                background-color: #ffebee !important;
+                opacity: 0.5;
+                cursor: not-allowed !important;
+            }
+        </style>
     </h:head>
     <h:body>
         <header>
@@ -34,7 +249,7 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -127,41 +342,69 @@
                             <div class="section-tittle text-center mb-55">
                                 <h2>Add New Order</h2>
                             </div>
-                            <h:form class="ui-form">
-                                <div class="form-group">
-                                    <label for="CustomerId">Customer ID</label>
-                                    <h:inputText id="CustomerId" value="#{orderBean.customerId}" styleClass="form-control"  disabled="true" />
-                                </div>
-                                <div class="form-group">
-                                    <label for="PickupDate">Pickup Date</label>
-                                    <!-- Use PrimeFaces Calendar widget -->
-                                    <p:calendar id="PickupDate" value="#{orderBean.pickup_date}" pattern="yyyy-MM-dd"
-                                                showOn="button" required="true">
-                                        <f:validator validatorId="pastDateValidator" />
-                                        <f:facet name="feedback">
-                                            <h:message for="PickupDate" styleClass="error-message" />
-                                        </f:facet>
-                                    </p:calendar>
-                                </div>
-                                <div class="form-group">
-                                    <label for="DeliveryDate">Delivery Date</label>
-                                    <!-- Use PrimeFaces Calendar widget -->
-                                    <p:calendar id="DeliveryDate" value="#{orderBean.delivery_date}" pattern="yyyy-MM-dd"
-                                                showOn="button" required="true">
-                                        <f:validator validatorId="pastDateValidator" />
-                                        <f:facet name="feedback">
-                                            <h:message for="DeliveryDate" styleClass="error-message" />
-                                        </f:facet>
-                                    </p:calendar>
-                                </div>
-                                <div class="form-group">
-                                    <label for="Status">Status</label>
-                                    <h:inputText id="Status" value="#{orderBean.status}" styleClass="form-control" disabled="true"/>
-                                </div>
-                                <div class="form-group">
-                                    <h:commandButton type="submit" value="Add Order" action="#{orderBean.addorder()}" styleClass="btn btn-primary btn-block" />
-                                </div>
-                            </h:form>
+                          <h:form class="form-card">
+    <!-- Customer ID -->
+    <div class="form-group">
+        <label for="CustomerId">Customer ID</label>
+        <h:inputText id="CustomerId" value="#{orderBean.customerId}" 
+                     styleClass="form-control" disabled="true" />
+    </div>
+
+    <!-- Pickup Date -->
+    <div class="form-group">
+        <label for="PickupDate">Pickup Date</label>
+        <p:calendar id="PickupDate"
+                    value="#{orderBean.pickup_date}"
+                    pattern="yyyy-MM-dd"
+                    mindate="#{orderBean.today}"
+                    required="true"
+                    showOn="button"
+                    navigator="true"
+                   styleClass="form-control">
+            <p:ajax event="dateSelect" update="DeliveryDate" />
+        </p:calendar>
+        <h:message for="PickupDate" styleClass="error-message" />
+    </div>
+
+    <!-- Delivery Date -->
+    <div class="form-group">
+        <label for="DeliveryDate">Delivery Date</label>
+        <p:calendar id="DeliveryDate"
+                    value="#{orderBean.delivery_date}"
+                    pattern="yyyy-MM-dd"
+                    mindate="#{orderBean.pickup_date}"
+                   maxdate="#{orderBean.maxDeliveryDate}"
+                    required="true"
+                    showOn="button"
+                    navigator="true"
+                   styleClass="form-control"
+                   disabled="#{empty orderBean.pickup_date}">
+        </p:calendar>
+        <h:message for="DeliveryDate" styleClass="error-message" />
+        <span class="date-helper-text">
+            <i class="fas fa-info-circle"></i>
+            #{empty orderBean.pickup_date ? 'Please select a pickup date first' : 'Delivery date must be within 10 days of pickup date'}
+        </span>
+    </div>
+
+    <!-- Status -->
+    <div class="form-group">
+        <label for="Status">Status</label>
+        <h:inputText id="Status" value="#{orderBean.status}" 
+                     styleClass="form-control" disabled="true"/>
+    </div>
+
+    <!-- Validation Messages -->
+    <h:messages globalOnly="true" styleClass="error-message" layout="list" />
+
+    <!-- Submit Button -->
+    <div class="form-group">
+        <h:commandButton value="Add Order"
+                         action="#{orderBean.addorder()}"
+                        styleClass="btn btn-primary"/>
+    </div>
+</h:form>
+
                         </div>
                     </div>
                 </div>

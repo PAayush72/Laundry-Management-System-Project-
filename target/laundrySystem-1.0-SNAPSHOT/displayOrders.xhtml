@@ -17,6 +17,194 @@
             th {
                 background-color: #f2f2f2;
             }
+            /* Table Container Styling */
+            .orders-section {
+                padding: 80px 0;
+                background-color: #f8f9fa;
+            }
+
+            .table-container {
+                background: #ffffff;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+                margin: 40px auto;
+                max-width: 1200px;
+            }
+
+            /* Table Header Styling */
+            .table-title {
+                color: #1C3E72;
+                font-size: 28px;
+                font-weight: 600;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+
+            /* Table Styling */
+            .data-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                background: #fff;
+                border-radius: 8px;
+                overflow: hidden;
+                margin-bottom: 20px;
+            }
+
+            .data-table th {
+                background: #1C3E72;
+                color: #ffffff;
+                font-weight: 500;
+                padding: 15px;
+                text-align: left;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+            .data-table td {
+                padding: 15px;
+                border-bottom: 1px solid #e2e8f0;
+                font-size: 14px;
+                color: #2d3748;
+                vertical-align: middle;
+            }
+
+            .data-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .data-table tr:hover {
+                background-color: #f8f9fa;
+            }
+
+            /* Status Cell Styling */
+            .status-cell {
+                font-weight: 500;
+            }
+
+            .status-pending {
+                color: #f59e0b;
+            }
+
+            .status-success {
+                color: #10b981;
+            }
+
+            /* Updated Action Buttons Styling */
+            .actions-column {
+                white-space: nowrap;
+                min-width: 300px;
+                text-align: center;
+            }
+
+            .action-buttons-container {
+                display: flex;
+                gap: 8px;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .action-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-size: 13px;
+                font-weight: 500;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                min-width: 90px;
+                border: none;
+                cursor: pointer;
+            }
+
+            .view-button {
+                background-color: #1C3E72;
+                color: #ffffff !important;
+            }
+
+            .delete-button {
+                background-color: #ef4444;
+                color: #ffffff !important;
+            }
+
+            .update-button {
+                background-color: #059669;
+                color: #ffffff !important;
+            }
+
+            .action-button:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            .view-button:hover {
+                background-color: #15305A;
+            }
+
+            .delete-button:hover {
+                background-color: #dc2626;
+            }
+
+            .update-button:hover {
+                background-color: #047857;
+            }
+
+            /* Date Formatting */
+            .date-cell {
+                white-space: nowrap;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 992px) {
+                .table-container {
+                    padding: 20px;
+                    margin: 20px;
+                }
+
+                .data-table {
+                    display: block;
+                    overflow-x: auto;
+                    white-space: nowrap;
+                }
+
+                .action-button {
+                    min-width: 80px;
+                    padding: 6px 12px;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .table-title {
+                    font-size: 24px;
+                }
+
+                .data-table th,
+                .data-table td {
+                    padding: 10px;
+                    font-size: 13px;
+                }
+
+            @media (max-width: 576px) {
+            /* Responsive adjustments for action buttons */
+            @media (max-width: 768px) {
+                .actions-column {
+                    min-width: 250px;
+
+                .table-container {
+                .action-buttons-container {
+                    flex-direction: column;
+                    gap: 5px;
+
+                .table-title {
+                .action-button {
+                    width: 100%;
+                    margin: 2px 0;
+
         </style>
         <link rel="manifest" href="site.webmanifest"/>
         <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico"/>
@@ -45,7 +233,7 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -151,85 +339,84 @@
             <!--?  Map Area start  -->
 
             <!-- Map Area End -->
+
+            <section class="orders-section">
+                <div class="table-container">
+                    <h1 class="table-title">Order Details</h1>
+                    <h:form>
+                        <h:dataTable value="#{orderBean.getOrderByCustomerId(loginMB.c.customerId)}" 
+                                    var="item"
+                                    styleClass="data-table"
+                                    headerClass="table-header"
+                                    rowClasses="table-row">
+                            <h:column>
+                                <f:facet name="header">Order ID</f:facet>
+                                <h:outputText value="#{item.orderId}"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Order Date</f:facet>
+                                <h:outputText value="#{item.orderDate}" styleClass="date-cell">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Pickup Date</f:facet>
+                                <h:outputText value="#{item.pickupDate}" styleClass="date-cell">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Delivery Date</f:facet>
+                                <h:outputText value="#{item.deliveryDate}" styleClass="date-cell">
+                                    <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
+                                </h:outputText>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Status</f:facet>
+                                <h:outputText value="#{item.status}" 
+                                            styleClass="status-cell #{item.status eq 'success' ? 'status-success' : 'status-pending'}"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Customer ID</f:facet>
+                                <h:outputText value="#{item.customerId.customerId}"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Actions</f:facet>
+                                <div class="actions-column">
+                                    <div class="action-buttons-container">
+                                        <h:link value="View Details" 
+                                               outcome="order_item_details" 
+                                               styleClass="action-button view-button">
+                                            <f:param name="orderId" value="#{item.orderId}"/>
+                                        </h:link>
+
+                                        <h:panelGroup rendered="#{item.status ne 'success'}">
+                                            <h:commandButton value="Delete" 
+                                                           action="#{orderBean.deleteOrder(item.orderId, loginMB.c.customerId)}"
+                                                           styleClass="action-button delete-button">
+                                                <f:param name="orderId" value="#{item.orderId}"/>
+                                            </h:commandButton>
+
+                                            <h:link value="Update" 
+                                                   outcome="updateOrder" 
+                                                   styleClass="action-button update-button">
+                                                <f:param name="orderId" value="#{item.orderId}"/>
+                                            </h:link>
+                                        </h:panelGroup>
+                                    </div>
+                                </div>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </div>
+            </section>
         </main>
-        <f:view>
-
-
-            <h:form>
-                <h1><h:outputText value="Order Detail"/></h1>
-                <h:dataTable value="#{orderBean.getOrderByCustomerId(loginMB.c.customerId)}" var="item">
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="OrderId"/>
-                        </f:facet>
-                        <h:outputText value="#{item.orderId}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="OrderDate"/>
-                        </f:facet>
-                        <h:outputText value="#{item.orderDate}">
-                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="PickupDate"/>
-                        </f:facet>
-                        <h:outputText value="#{item.pickupDate}">
-                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="DeliveryDate"/>
-                        </f:facet>
-                        <h:outputText value="#{item.deliveryDate}">
-                            <f:convertDateTime pattern="MM/dd/yyyy HH:mm:ss" />
-                        </h:outputText>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Status"/>
-                        </f:facet>
-                        <h:outputText value="#{item.status}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="CustomerId"/>
-                        </f:facet>
-                        <h:outputText value="#{item.customerId.customerId}"/>
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">
-                            <h:outputText value="Order Item Detail"/>
-                        </f:facet>
-                        <h:link value="Order Item Detail" outcome="order_item_details" style="background-color: white;color: black">
-                            <f:param name="orderId" value="#{item.orderId}"/>
-                                   </h:link>
-                    </h:column>
-                    <h:column>
-                        <h:panelGroup rendered="#{item.status ne 'success'}">
-                           
-                                <h:commandButton value="delete" action="#{orderBean.deleteOrder(item.orderId, loginMB.c.customerId)}">
-                                    <f:param name="orderId" value="#{item.orderId}"/>
-                                </h:commandButton>
-                            
-                        </h:panelGroup>
-                    </h:column>
-                    <h:column>
-                        <h:panelGroup rendered="#{item.status ne 'success'}">
-                            <h:link value="Update" outcome="updateOrder" style="background-color: white;color: black">
-                                <f:param name="orderId" value="#{item.orderId}"/>
-                            </h:link>
-                        </h:panelGroup>
-                    </h:column>
-
-                </h:dataTable>
-
-            </h:form>
-        </f:view>
-
 
         <footer>
             <!-- Footer Start-->
@@ -241,7 +428,7 @@
                                 <div class="single-footer-caption mb-30">
                                     <!-- logo -->
                                     <div class="footer-logo mb-35">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
                                     </div>
                                     <div class="footer-tittle">
                                         <div class="footer-pera">
@@ -357,4 +544,6 @@
 
     </h:body>
 </html>
+
+
 

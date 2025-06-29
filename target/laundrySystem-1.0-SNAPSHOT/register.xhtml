@@ -1,174 +1,257 @@
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:h="http://xmlns.jcp.org/jsf/html" xmlns:f="http://xmlns.jcp.org/jsf/core">
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
     <h:head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Login/Signup Form</title>
+        <title>Register</title>
+        <link rel="manifest" href="site.webmanifest"/>
+        <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico"/>
 
-        <!-- Boxicons for icons -->
-        <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet' />
-
-        <style>
-            body {
-                background: #ffffff; /* White background */
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                height: 100vh;
-                margin: 0;
-                font-family: Arial, sans-serif;
-            }
-
-            h1 {
-                color: #333;
-                text-transform: uppercase;
-                letter-spacing: 2px;
-                margin-bottom: 40px;
-            }
-
-            .form-container {
-                background: #fff;
-                padding: 30px;
-                border-radius: 15px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                width: 100%;
-                max-width: 450px;
-                text-align: center;
-                border: 1px solid #ddd;
-            }
-
-            .form-container label {
-                display: block;
-                font-size: 14px;
-                margin-bottom: 8px;
-                text-align: left;
-                color: #333;
-            }
-
-            .form-container input {
-                width: 100%;
-                padding: 14px;
-                margin-bottom: 15px;
-                border: 2px solid #ddd;
-                border-radius: 8px;
-                font-size: 16px;
-                outline: none;
-                transition: all 0.3s ease;
-                background: transparent;
-                color: #333;
-            }
-
-            .form-container input:focus {
-                border-color: #1aaf75;
-                box-shadow: 0 0 10px rgba(26, 175, 117, 0.3);
-            }
-
-            .form-container input::placeholder {
-                color: #bbb;
-            }
-
-            .form-container input[type="submit"] {
-                background-color: #1aaf75;
-                color: #fff;
-                border: none;
-                cursor: pointer;
-                transition: background-color 0.3s ease;
-                font-size: 18px;
-                padding: 15px;
-            }
-
-            .form-container input[type="submit"]:hover {
-                background-color: #109f67;
-            }
-
-            .form-container .forgot-password {
-                text-align: left;
-                font-size: 12px;
-                color: #666;
-            }
-
-            .form-container .forgot-password a {
-                color: #1aaf75;
-                text-decoration: none;
-            }
-
-            .form-container .forgot-password a:hover {
-                text-decoration: underline;
-            }
-
-            .form-container .signup {
-                font-size: 14px;
-                margin-top: 20px;
-            }
-
-            .form-container .signup a {
-                color: #3857af;
-                text-decoration: none;
-            }
-
-            .form-container .signup a:hover {
-                text-decoration: underline;
-            }
-
-        </style>
+        <!-- CSS here -->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="assets/css/owl.carousel.min.css"/>
+        <link rel="stylesheet" href="assets/css/slicknav.css"/>
+        <link rel="stylesheet" href="assets/css/flaticon.css"/>
+        <link rel="stylesheet" href="assets/css/progressbar_barfiller.css"/>
+        <link rel="stylesheet" href="assets/css/gijgo.css"/>
+        <link rel="stylesheet" href="assets/css/animate.min.css"/>
+        <link rel="stylesheet" href="assets/css/animated-headline.css"/>
+        <link rel="stylesheet" href="assets/css/magnific-popup.css"/>
+        <link rel="stylesheet" href="assets/css/fontawesome-all.min.css"/>
+        <link rel="stylesheet" href="assets/css/themify-icons.css"/>
+        <link rel="stylesheet" href="assets/css/slick.css"/>
+        <link rel="stylesheet" href="assets/css/nice-select.css"/>
+        <link rel="stylesheet" href="assets/css/style.css"/>
     </h:head>
+    
     <h:body>
-        <div class="form-container">
-            <h1>Signup</h1>
-            <h:form>
-                <!-- Name Input -->
-                <h:outputLabel value="Name" />
-                <h:inputText value="#{signup.customerName}"
-                             required="true" requiredMessage="Customer name is required"
-                             validatorMessage="Name must be of 4 characters" id="cname">
-                    <f:validateLength minimum="4"/>
-                </h:inputText>
-                <h:message for="cname" style="color:red"/>
-
-                <!-- Address Input -->
-                <h:outputLabel value="Address" />
-                <h:inputText value="#{signup.customerAddress}" required="true"
-                             requiredMessage="Customer name is required"
-                             validatorMessage="Name must be of 4 characters" id="address">
-                    <f:validateLength minimum="4"/>
-                </h:inputText>
-                <h:message for="address" style="color:red"/>
-
-                <!-- Email Input -->
-                <h:outputLabel value="Email" />
-                <h:inputText value="#{signup.email}" required="true"  requiredMessage="Email is required"
-                             validatorMessage="email must be of 4 characters" id="email">
-                    <f:validateLength minimum="4"/>
-                </h:inputText>
-                <h:message for="email" style="color:red"/>
-
-                <!-- Phone Number Input -->
-                <h:outputLabel value="Phone Number" />
-                <h:inputText value="#{signup.phno}" required="true"  requiredMessage="Phone number is required"
-                             validatorMessage="Phone must be of 10 digits" id="phone">
-                    <f:validateLength minimum="10" maximum="10"/>
-                </h:inputText>
-                <h:message for="phone" style="color:red"/>
-
-                <!-- Password Input -->
-                <h:outputLabel value="Password" />
-                <h:inputSecret value="#{signup.password}" required="true" requiredMessage="Customer password is required"
-                               validatorMessage="password must be of 4 characters" id="password">
-                    <f:validateLength minimum="4"/>
-                </h:inputSecret>
-                <h:message for="password" style="color:red"/>
-
-                <h:messages globalOnly="true" style="color: red"/>
-
-                <!-- Submit Button -->
-                <h:commandButton value="Sign Up" action="#{signup.addcust}" type="submit" />
-
-                
-
-                <div class="signup">
-                    <p>Already have an account? <a href="login.jsf">Login here</a></p>
+        <!-- Header Start -->
+        <header>
+            <div class="header-area">
+                <div class="main-header header-sticky">
+                    <!-- Logo -->
+                    <div class="header-left">
+                        <div class="logo">
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
+                        </div>
+                        <div class="menu-wrapper d-flex align-items-center">
+                            <!-- Main-menu -->
+                            <div class="main-menu d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li><a href="home.jsf">Home</a></li>
+                                        <li><a href="about_us.jsf">About</a></li>
+                                        <li><a href="services.jsf">Services</a></li>
+                                        <li>
+                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <a href="#">Order</a>
+                                                <ul class="submenu">
+                                                    <li><a href="displayOrders.jsf">Order Details</a></li>
+                                                </ul>
+                                            </h:panelGroup>
+                                        </li>
+                                        <li>
+                                            <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                <a href="login.jsf">Contact</a>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <a href="contact.jsf">Contact</a>
+                                            </h:panelGroup>
+                                        </li>
+                                        <li class="active">
+                                            <h:form>
+                                                <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                    <a href="login.jsf" class="dropdown-item">Login</a>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                    <h:commandLink value="Log Out" action="#{loginMB.logout()}" class="dropdown-item" />
+                                                </h:panelGroup>
+                                            </h:form>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Mobile Menu -->
+                    <div class="col-12">
+                        <div class="mobile_menu d-block d-lg-none"></div>
+                    </div>
                 </div>
-            </h:form>
+            </div>
+        </header>
+        <!-- Header End -->
+
+        <!-- Registration Form Section -->
+        <main style="padding: 100px 0;">
+            <div class="container d-flex justify-content-center align-items-center">
+                <div class="card shadow-lg p-4" style="max-width: 500px; width: 100%; border-radius: 15px;">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold">Sign Up</h2>
+                    </div>
+                    <h:form>
+                        <!-- Name -->
+                        <div class="mb-3">
+                            <h:outputLabel for="cname" value="Full Name" class="form-label"/>
+                            <h:inputText id="cname" value="#{signup.customerName}" 
+                                       required="true" requiredMessage="Name is required"
+                                       class="form-control">
+                                <f:validateLength minimum="4" />
+                            </h:inputText>
+                            <h:message for="cname" class="text-danger small"/>
+                        </div>
+
+                        <!-- Address -->
+                        <div class="mb-3">
+                            <h:outputLabel for="address" value="Address" class="form-label"/>
+                            <h:inputText id="address" value="#{signup.customerAddress}" 
+                                       required="true" requiredMessage="Address is required"
+                                       class="form-control">
+                                <f:validateLength minimum="4" />
+                            </h:inputText>
+                            <h:message for="address" class="text-danger small"/>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <h:outputLabel for="email" value="Email" class="form-label"/>
+                            <h:inputText id="email" value="#{signup.email}" 
+                                       required="true" requiredMessage="Email is required"
+                                       validatorMessage="Please enter a valid email (e.g., user@example.com)"
+                                       class="form-control">
+                                <f:validateRegex pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$" />
+                            </h:inputText>
+                            <h:message for="email" class="text-danger small"/>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            <h:outputLabel for="phone" value="Phone Number" class="form-label"/>
+                            <h:inputText id="phone" value="#{signup.phno}" 
+                                       required="true" requiredMessage="Phone number is required"
+                                       validatorMessage="Please enter a valid 10-digit phone number"
+                                       class="form-control">
+                                <f:validateRegex pattern="^[0-9]{10}$" />
+                            </h:inputText>
+                            <h:message for="phone" class="text-danger small"/>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <h:outputLabel for="password" value="Password" class="form-label"/>
+                            <h:inputSecret id="password" value="#{signup.password}" 
+                                         required="true" requiredMessage="Password is required"
+                                         class="form-control">
+                                <f:validateLength minimum="4" />
+                            </h:inputSecret>
+                            <h:message for="password" class="text-danger small"/>
+                        </div>
+
+                        <!-- Global messages -->
+                        <h:messages globalOnly="true" class="text-danger small mb-3"/>
+
+                        <!-- Submit Button -->
+                        <h:commandButton value="Sign Up" action="#{signup.addcust}" 
+                                       class="btn btn-primary w-100 py-2 mt-3"/>
+
+                        <!-- Link to Login -->
+                        <div class="text-center mt-3">
+                            <p class="small">Already have an account? <a href="login.jsf" class="fw-bold text-decoration-none">Login here</a></p>
+                        </div>
+                    </h:form>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer Start -->
+        <footer>
+            <div class="footer-area footer-padding">
+                <div class="container">
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="single-footer-caption mb-30">
+                                    <!-- logo -->
+                                    <div class="footer-logo mb-35">
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                    </div>
+                                    <div class="footer-tittle">
+                                        <div class="footer-pera">
+                                            <p>Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis viverra ornare, eros dolor interdum nulla.</p>
+                                        </div>
+                                    </div>
+                                    <!-- social -->
+                                    <div class="footer-social">
+                                        <a href="#"><i class="fab fa-twitter"></i></a>
+                                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>Services </h4>
+                                    <ul>
+                                        <li><a href="#">- Dry Cleaning</a></li>
+                                        <li><a href="#">- Dry Clean</a></li>
+                                        <li><a href="#">- Ironing Services</a></li>
+                                        <li><a href="#">- Laundry Service London</a></li>
+                                        <li><a href="#">- Laundry App</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>Get in touch</h4>
+                                    <ul>
+                                        <li class="number"><a href="#">(90) 898 789-8957</a></li>
+                                        <li><a href="#">laundry@567.com</a></li>
+                                        <li><a href="#">789/A, Green road NYC-9089</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+        <!-- Footer End -->
+
+        <!-- Scroll Up -->
+        <div id="back-top">
+            <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
         </div>
+
+        <!-- JS here -->
+        <script src="assets/js/vendor/modernizr-3.5.0.min.js"></script>
+        <script src="assets/js/vendor/jquery-1.12.4.min.js"></script>
+        <script src="assets/js/popper.min.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <script src="assets/js/jquery.slicknav.min.js"></script>
+        <script src="assets/js/owl.carousel.min.js"></script>
+        <script src="assets/js/slick.min.js"></script>
+        <script src="assets/js/wow.min.js"></script>
+        <script src="assets/js/animated.headline.js"></script>
+        <script src="assets/js/jquery.magnific-popup.js"></script>
+        <script src="assets/js/gijgo.min.js"></script>
+        <script src="assets/js/jquery.nice-select.min.js"></script>
+        <script src="assets/js/jquery.sticky.js"></script>
+        <script src="assets/js/jquery.barfiller.js"></script>
+        <script src="assets/js/jquery.counterup.min.js"></script>
+        <script src="assets/js/waypoints.min.js"></script>
+        <script src="assets/js/jquery.countdown.min.js"></script>
+        <script src="assets/js/hover-direction-snake.min.js"></script>
+        <script src="assets/js/contact.js"></script>
+        <script src="assets/js/jquery.form.js"></script>
+        <script src="assets/js/jquery.validate.min.js"></script>
+        <script src="assets/js/mail-script.js"></script>
+        <script src="assets/js/jquery.ajaxchimp.min.js"></script>
+        <script src="assets/js/plugins.js"></script>
+        <script src="assets/js/main.js"></script>
     </h:body>
 </html>

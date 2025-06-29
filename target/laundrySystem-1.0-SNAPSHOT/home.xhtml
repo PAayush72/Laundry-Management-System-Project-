@@ -1,7 +1,12 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{serviceBean.getAllServices()}"/>
+    </f:metadata>
     <h:head>
         <link rel="manifest" href="site.webmanifest"/>
         <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico"/>
@@ -21,6 +26,50 @@
         <link rel="stylesheet" href="assets/css/slick.css"/>
         <link rel="stylesheet" href="assets/css/nice-select.css"/>
         <link rel="stylesheet" href="assets/css/style.css"/>
+        <style type="text/css">
+            .pricing-section {
+                padding: 80px 0;
+                background: #f8f9fa;
+            }
+            
+            .single-cat {
+                transition: all 0.3s ease;
+            }
+            
+            .single-cat:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
+            }
+            
+            .pricing h3 {
+                margin: 0;
+                font-weight: bold;
+            }
+            
+            .btn-primary {
+                background: #1C3E72;
+                border: none;
+                padding: 10px 30px;
+                border-radius: 5px;
+                color: white;
+                text-decoration: none;
+                display: inline-block;
+                transition: all 0.3s ease;
+            }
+            
+            .btn-primary:hover {
+                background: #152f56;
+                transform: translateY(-2px);
+            }
+            
+            .mt-20 {
+                margin-top: 20px;
+            }
+            
+            .mb-30 {
+                margin-bottom: 30px;
+            }
+        </style>
     </h:head>
     <h:body>
         <header>
@@ -30,7 +79,7 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -40,33 +89,33 @@
                                         <li class="active"><a href="home.jsf">Home</a></li>
                                         <li><a href="about_us.jsf">About</a></li>
                                         <li><a href="services.jsf">Services</a></li>
-                                        <li><a href="">Order</a>
-                                            <ul class="submenu">
-                                                <li><a href="displayOrders.jsf">Order Details</a></li>
-                                               
-                                               
-                                            </ul>
+                                        <li>
+                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <a href="#">Order</a>
+                                                <ul class="submenu">
+                                                    <li><a href="displayOrders.jsf">Order Details</a></li>
+                                                </ul>
+                                            </h:panelGroup>
                                         </li>
-                                        <li><a href="contact.jsf">Contact</a></li>
+                                        <li>
+                                            <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                <a href="login.jsf">Contact</a>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <a href="contact.jsf">Contact</a>
+                                            </h:panelGroup>
+                                        </li>
                                         <li>
                                             <h:form>
-                                                <!-- Render Login link if the user is not logged in -->
                                                 <h:panelGroup rendered="#{!loginMB.loggedIn}">
                                                     <a href="login.jsf" class="dropdown-item">Login</a>
                                                 </h:panelGroup>
-
-                                                <!-- Render Log Out button if the user is logged in -->
-                                                
-                                                 <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <h:panelGroup rendered="#{loginMB.loggedIn}">
                                                     <h:commandLink value="Log Out" action="#{loginMB.logout()}" class="dropdown-item" />
                                                 </h:panelGroup>
-                                                
-                                                
                                             </h:form>
                                         </li>
-
                                     </ul>
-
                                 </nav>
                             </div>
                         </div>
@@ -133,7 +182,7 @@
                                     <img src="assets/img/icon/services-icon1.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">We collect your clothes</a></h5>
+                                    <h5><a href="services.jsf">We collect your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -145,7 +194,7 @@
                                     <img src="assets/img/icon/services-icon2.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Wash your clothes</a></h5>
+                                    <h5><a href="services.jsf">Wash your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -157,7 +206,7 @@
                                     <img src="assets/img/icon/services-icon3.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Get delivery</a></h5>
+                                    <h5><a href="services.jsf">Get delivery</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -230,7 +279,50 @@
                     </div>
                 </div>
             </section>
-            <!-- Offer-services End  -->
+            <!-- Add the pricing section RIGHT HERE, before the "Want To work" section -->
+            <section class="pricing-section pb-70">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7 col-lg-8">
+                            <div class="section-tittle text-center mb-55">
+                                <span class="element">Pricing</span>
+                                <h2>Our Service Prices</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h:form>
+                            <div class="row justify-content-center">
+                                <ui:repeat value="#{serviceBean.allServices}" var="service">
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-30">
+                                        <div class="single-cat text-center" style="background: #ffffff; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); padding: 30px; height: 100%;">
+                                            <div class="cat-icon mb-30">
+                                                <img src="assets/img/icon/services-icon1.svg" alt=""/>
+                                            </div>
+                                            <div class="cat-cap">
+                                                <h5>#{service.serviceType}</h5>
+                                                <div class="pricing mt-20">
+                                                    <h3 style="color: #1C3E72; font-size: 2.5rem;">
+                                                        ₹#{service.charge}
+                                                        <span style="font-size: 1rem; color: #666;">/item</span>
+                                                    </h3>
+                                                </div>
+                                                <p class="mt-20">Quality laundry service at the best price</p>
+                                                <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                    <a href="login.jsf" class="btn btn-primary mt-20">Book Now</a>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                    <a href="orderPlace.jsf" class="btn btn-primary mt-20">Book Now</a>
+                                                </h:panelGroup>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ui:repeat>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </section>
             <!--? Want To work -->
             <section class="container">
                 <section class="wantToWork-area" data-background="assets/img/gallery/section_bg01.png">
@@ -348,7 +440,7 @@
                                 <div class="single-footer-caption mb-30">
                                     <!-- logo -->
                                     <div class="footer-logo mb-35">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
                                     </div>
                                     <div class="footer-tittle">
                                         <div class="footer-pera">

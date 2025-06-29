@@ -18,6 +18,149 @@
             th {
                 background-color: #f2f2f2;
             }
+
+            /* Admin Dashboard Styling */
+            .admin-container {
+                padding: 40px 20px;
+                background-color: #f8f9fa;
+                min-height: calc(100vh - 200px);
+            }
+
+            .dashboard-title {
+                color: #1C3E72;
+                font-size: 28px;
+                font-weight: 600;
+                margin-bottom: 30px;
+                text-align: center;
+            }
+
+            /* Enhanced Table Styling */
+            .admin-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                background: #ffffff;
+                border-radius: 8px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                margin: 20px 0;
+            }
+
+            .admin-table th {
+                background-color: #1C3E72;
+                color: #ffffff;
+                font-weight: 500;
+                padding: 15px;
+                text-align: left;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+            .admin-table td {
+                padding: 12px 15px;
+                border-bottom: 1px solid #e2e8f0;
+                font-size: 14px;
+                color: #2d3748;
+                vertical-align: middle;
+            }
+
+            .admin-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .admin-table tr:nth-child(even) {
+                background-color: #f8f9fa;
+            }
+
+            .admin-table tr:hover {
+                background-color: #edf2f7;
+                transition: background-color 0.3s ease;
+            }
+
+            /* Action Buttons */
+            .action-button {
+                padding: 8px 16px;
+                border-radius: 6px;
+                font-size: 13px;
+                font-weight: 500;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                cursor: pointer;
+                border: none;
+                display: inline-block;
+                text-align: center;
+                min-width: 100px;
+                margin: 2px;
+            }
+
+            .view-button {
+                background-color: #1C3E72;
+                color: #ffffff;
+            }
+
+            .edit-button {
+                background-color: #059669;
+                color: #ffffff;
+            }
+
+            .delete-button {
+                background-color: #dc2626;
+                color: #ffffff;
+            }
+
+            .action-button:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            }
+
+            /* Stats Cards */
+            .stats-container {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+
+            .stat-card {
+                background: #ffffff;
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                text-align: center;
+            }
+
+            .stat-number {
+                font-size: 24px;
+                font-weight: 600;
+                color: #1C3E72;
+                margin: 10px 0;
+            }
+
+            .stat-label {
+                color: #4a5568;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .admin-container {
+                    padding: 20px 10px;
+                }
+
+                .admin-table {
+                    display: block;
+                    overflow-x: auto;
+                    white-space: nowrap;
+                }
+
+                .stats-container {
+                    grid-template-columns: 1fr;
+                }
+            }
         </style>
 
         <link rel="manifest" href="site.webmanifest"/>
@@ -47,7 +190,7 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -118,52 +261,40 @@
         </header>
 
         <main>
-            <!--? slider Area Start-->
+            <div class="admin-container">
+                <h1 class="dashboard-title">Customer List</h1>
 
+                <!-- Stats Section -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-number">#{customer.customers.size()}</div>
+                        <div class="stat-label">Total Customers</div>
+                    </div>
+                    <!-- Add more stat cards as needed -->
+                </div>
 
-
+                <!-- Customer Table -->
             <h:form>
-                <h:dataTable value="#{customer.customers}" var="cust" border="1">
+                    <h:dataTable value="#{customer.customers}" 
+                                var="cust" 
+                                styleClass="admin-table">
                     <h:column>
                         <f:facet name="header">ID</f:facet>
                             #{cust.customerId}
                     </h:column>
+                        
                     <h:column>
                         <f:facet name="header">Name</f:facet>
                             #{cust.customerName}
                     </h:column>
+                        
                     <h:column>
                         <f:facet name="header">Email</f:facet>
                             #{cust.email}
                     </h:column>
-                    <!-- Add more columns as needed -->
                 </h:dataTable>
             </h:form>
-
-
-            <!-- slider Area End-->
-            <!--? Services Area Start -->
-
-
-            <!-- Services End -->
-            <!--? Offer-services Start  -->
-
-            <!-- Offer-services End  -->
-            <!--? Want To work -->
-
-            <!-- Want To work End -->
-            <!-- Testimonials_start -->
-
-            <!-- Testimonials_end -->
-            <!--? Company achievement Start -->
-
-            <!-- Company achievement End -->
-            <!--? About Area  -->
-
-            <!-- About Area End -->
-            <!--?  Map Area start  -->
-
-            <!-- Map Area End -->
+            </div>
         </main>
 
         <footer>
@@ -176,7 +307,7 @@
                                 <div class="single-footer-caption mb-30">
                                     <!-- logo -->
                                     <div class="footer-logo mb-35">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
                                     </div>
                                     <div class="footer-tittle">
                                         <div class="footer-pera">

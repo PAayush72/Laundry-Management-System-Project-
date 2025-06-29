@@ -1,7 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:h="http://xmlns.jcp.org/jsf/html">
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
     <h:head>
         <link rel="manifest" href="site.webmanifest"/>
         <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico"/>
@@ -21,6 +23,17 @@
         <link rel="stylesheet" href="assets/css/slick.css"/>
         <link rel="stylesheet" href="assets/css/nice-select.css"/>
         <link rel="stylesheet" href="assets/css/style.css"/>
+
+        <!-- Add this script at the end of head -->
+        <script type="text/javascript">
+            // Disable jQuery form handling for our contact form
+            $(document).ready(function() {
+                $("#contactForm").unbind('submit').submit(function(e) {
+                    // Let JSF handle the submission
+                    return true;
+                });
+            });
+        </script>
     </h:head>
     <h:body>
         <header>
@@ -30,7 +43,7 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -116,35 +129,69 @@
                             <h2 class="contact-title">Get in Touch</h2>
                         </div>
                         <div class="col-lg-8">
-                            <form class="form-contact contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
+                            <h:form id="contactForm" class="form-contact contact_form">
+                                <!-- Add messages component at the top of the form -->
+                                <h:messages globalOnly="false" styleClass="messages"
+                                    errorClass="alert alert-danger"
+                                    infoClass="alert alert-success"/>
+                                
                                 <div class="row">
                                     <div class="col-12">
                                         <div class="form-group">
-                                            <textarea class="form-control w-100" name="message" id="message" cols="30" rows="9" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Message'" placeholder=" Enter Message"></textarea>
+                                            <h:inputTextarea class="form-control w-100" id="message" 
+                                                value="#{servicesBeans.message}"
+                                                rows="9" 
+                                                required="true"
+                                                requiredMessage="Please enter your message"
+                                                pt:placeholder="Enter Message"/>
+                                            <h:message for="message" styleClass="text-danger"/>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <input class="form-control valid" name="name" id="name" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter your name'" placeholder="Enter your name"/>
+                                            <h:inputText class="form-control valid" 
+                                                id="name"
+                                                value="#{servicesBeans.name}"
+                                                required="true"
+                                                requiredMessage="Please enter your name"
+                                                pt:placeholder="Enter your name"/>
+                                            <h:message for="name" styleClass="text-danger"/>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <input class="form-control valid" name="email" id="email" type="email" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter email address'" placeholder="Email"/>
+                                            <h:inputText class="form-control valid" 
+                                                id="email"
+                                                value="#{servicesBeans.email}"
+                                                required="true"
+                                                requiredMessage="Please enter your email"
+                                                validatorMessage="Invalid email format"
+                                                pt:placeholder="Email">
+                                                <f:validateRegex pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"/>
+                                            </h:inputText>
+                                            <h:message for="email" styleClass="text-danger"/>
                                         </div>
                                     </div>
                                     <div class="col-12">
                                         <div class="form-group">
-                                            <input class="form-control" name="subject" id="subject" type="text" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Enter Subject'" placeholder="Enter Subject"/>
+                                            <h:inputText class="form-control" 
+                                                id="subject"
+                                                value="#{servicesBeans.subject}"
+                                                required="true"
+                                                requiredMessage="Please enter a subject"
+                                                pt:placeholder="Enter Subject"/>
+                                            <h:message for="subject" styleClass="text-danger"/>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group mt-3">
-                                    <h:form>
-                                        <h:commandButton action="#{servicesBeans.sendFeedBackMail()}" value="send" class="button button-contactForm boxed-btn"/>
-                                    </h:form>
+                                    <h:commandButton action="#{servicesBeans.sendFeedBackMail()}" 
+                                        value="Send Message" 
+                                        class="button button-contactForm boxed-btn">
+                                        <f:ajax execute="@form" render="@form"/>
+                                    </h:commandButton>
                                 </div>
-                            </form>
+                            </h:form>
                         </div>
                         <div class="col-lg-3 offset-lg-1">
                             <div class="media contact-info">
@@ -186,7 +233,7 @@
                                 <div class="single-footer-caption mb-30">
                                     <!-- logo -->
                                     <div class="footer-logo mb-35">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
                                     </div>
                                     <div class="footer-tittle">
                                         <div class="footer-pera">
@@ -289,15 +336,21 @@
         <script src="./assets/js/hover-direction-snake.min.js"></script>
 
         <!-- contact js -->
+        <!--
         <script src="./assets/js/contact.js"></script>
         <script src="./assets/js/jquery.form.js"></script>
         <script src="./assets/js/jquery.validate.min.js"></script>
         <script src="./assets/js/mail-script.js"></script>
         <script src="./assets/js/jquery.ajaxchimp.min.js"></script>
+        -->
 
         <!-- Jquery Plugins, main Jquery -->
         <script src="./assets/js/plugins.js"></script>
         <script src="./assets/js/main.js"></script>
+
+        <h:messages globalOnly="true" styleClass="messages"
+            errorClass="alert alert-danger"
+            infoClass="alert alert-success"/>
     </h:body>
 </html>
 

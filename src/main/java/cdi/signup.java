@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSF/JSFManagedBean.java to edit this template
- */
 package cdi;
 
 import client.customer;
@@ -10,12 +6,8 @@ import entities.Tblcustomer;
 import javax.inject.Named;
 import javax.enterprise.context.SessionScoped;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -23,10 +15,6 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import org.glassfish.soteria.identitystores.hash.Pbkdf2PasswordHashImpl;
 
-/**
- *
- * @author LENOVO
- */
 @Named(value = "signup")
 @SessionScoped
 public class signup implements Serializable {
@@ -34,10 +22,10 @@ public class signup implements Serializable {
     @Inject
     private user_beanLocal ubl;
 
-    customer ebl;
-    Response rs;
-//    Pbk d;
-    Pbkdf2PasswordHashImpl pb;
+    private customer ebl;
+    private Response rs;
+    private Pbkdf2PasswordHashImpl pb;
+
     private String customerName;
     private String customerAddress;
     private String email;
@@ -45,18 +33,14 @@ public class signup implements Serializable {
     private String password;
     private int role_id = 1;
 
-    Tblcustomer current;
-    Collection<Tblcustomer> cust;
-    GenericType<Collection<Tblcustomer>> gcust;
+    private Tblcustomer current;
+    private Collection<Tblcustomer> cust;
+    private GenericType<Collection<Tblcustomer>> gcust;
 
-    /**
-     * Creates a new instance of signup
-     */
     public signup() {
         ebl = new customer();
         cust = new ArrayList<>();
-        gcust = new GenericType<Collection<Tblcustomer>>() {
-        };
+        gcust = new GenericType<Collection<Tblcustomer>>() {};
     }
 
     @PostConstruct
@@ -69,6 +53,57 @@ public class signup implements Serializable {
         parameters.put("Pbkdf2PasswordHash.KeySizeBytes", "32");
         pb.initialize(parameters);
     }
+
+   public String addcust() {
+    try {
+        if (customerName == null || customerName.trim().length() < 4) {
+            showMessage("Name must be at least 4 characters.");
+            return null;
+        }
+
+        if (customerAddress == null || customerAddress.trim().length() < 4) {
+            showMessage("Address must be at least 4 characters.");
+            return null;
+        }
+
+        if (email == null || !email.matches("^[\\w\\.-]+@[\\w\\.-]+\\.\\w{2,4}$")) {
+            showMessage("Invalid email format.");
+            return null;
+        }
+
+        // Check for duplicate email
+       Tblcustomer existing = ubl.getCustomersByEmail(email);
+            if (existing != null) {
+            showMessage("An account with this email already exists.");
+            return null;
+}
+
+        if (phno == null || !phno.matches("\\d{10}")) {
+            showMessage("Phone number must be 10 digits.");
+            return null;
+        }
+
+        if (password == null || password.length() < 4) {
+            showMessage("Password must be at least 4 characters.");
+            return null;
+        }
+
+        String hashedPassword = pb.generate(password.toCharArray());
+        ubl.addCustomer(customerName, customerAddress, email, phno, hashedPassword, role_id);
+
+        return "login";
+    } catch (Exception e) {
+        showMessage("Error adding customer: " + e.getMessage());
+        return null;
+    }
+}
+
+    private void showMessage(String msg) {
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR, msg, null));
+    }
+
+    // Getters and Setters
 
     public customer getEbl() {
         return ebl;
@@ -165,29 +200,4 @@ public class signup implements Serializable {
     public void setGcust(GenericType<Collection<Tblcustomer>> gcust) {
         this.gcust = gcust;
     }
-
-    public String addcust() {
-        try {
-
-//            System.out.println("Method triggerd:"+email);
-//            Tblcustomer c = ubl.getCustomersByEmail(email);
-//            System.out.println("Customer email:"+c);
-//            if (c != null) {
-//                System.out.println("If triggerd");
-//                FacesMessage emailExistError = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Username Already Exists", null);
-//                FacesContext.getCurrentInstance().addMessage(null, emailExistError);
-//                return null;
-//            }
-//            System.out.println("Else triggerd");s
-            String hashedPassword = pb.generate(password.toCharArray());
-//            ebl.addCustomer(customerName, customerAddress, email, phno, hashedPassword, String.valueOf(role_id));
-            ubl.addCustomer(customerName, customerAddress, email, phno, hashedPassword, role_id);
-            return "login";
-        } catch (Exception e) {
-            FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error adding customer", e.getMessage()));
-            return null;
-        }
-
-    }
-
 }

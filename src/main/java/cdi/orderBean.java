@@ -20,6 +20,7 @@ import javax.ws.rs.core.Response;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import mail.mail;
@@ -45,10 +46,15 @@ public class orderBean implements Serializable {
     private Date pickup_date;
     private Date order_date;
 
-    private String status = "Not";
+    private String status = "not";
 
     @Inject
     private LoginMB loginMB;
+
+    // Add these new properties
+    private String filterStatus;
+    private Integer filterCustomerId;
+    private Collection<Tblorder> filteredOrders;
 
     @PostConstruct
     public void init() {
@@ -221,61 +227,48 @@ public class orderBean implements Serializable {
     }
 
     public String addorder() {
-        try {
-            // Convert pickup_date and delivery_date strings to Date (adjust format if necessary)
-//            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-//            Date pickupDate = null;
-//            Date deliveryDate = null;
-            Date orderDate = new Date();  // Set the current date if no specific date is provided
-            pickup_date = normalizeDate(pickup_date);
-            delivery_date = normalizeDate(delivery_date);
-            if (pickup_date.before(today) || delivery_date.before(today)) {
-                LOGGER.log(Level.SEVERE, "Pickup or delivery date cannot be in the past");
-                return null;  // or display an error message
-            }
-//            if (pickup_date != null && !pickup_date.isEmpty()) {
-//                pickupDate = dateFormat.parse(pickup_date);
-//            }
-//
-//            if (delivery_date != null && !delivery_date.isEmpty()) {
-//                deliveryDate = dateFormat.parse(delivery_date);
-//            }
-            // Add the order using user_bean (service layer)
-            user_bean.addorder(customerId, orderDate, pickup_date, delivery_date, status);
+    try {
+        Date orderDate = new Date(); // Today
 
-            // Fetch all orders for the customer (a collection of orders)
-            Collection<Tblorder> orders = user_bean.getOrderByCustomerId(customerId);
+        pickup_date = normalizeDate(pickup_date);
+        delivery_date = normalizeDate(delivery_date);
 
-            // If you need to find the latest order (e.g., based on orderDate or some other criteria)
-            Tblorder latestOrder = null;
-            for (Tblorder order1 : orders) {
-                if (latestOrder == null || order1.getOrderDate().after(latestOrder.getOrderDate())) {
-                    latestOrder = order1;  // Find the latest order
-                }
-            }
-
-            // Log the generated order ID
-            if (latestOrder != null) {
-                System.out.println("Order ID generated: " + latestOrder.getOrderId());
-
-                // Store the latest order in the session
-                FacesContext facesContext = FacesContext.getCurrentInstance();
-                HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
-                session.setAttribute("orderBean", latestOrder);  // Store the latest order in session
-
-                // Log session storage
-                System.out.println("Stored Order ID in session: " + latestOrder.getOrderId());
-            } else {
-                System.out.println("No orders found for this customer.");
-            }
-//            emailSender.sendEmail(userEmail);
-            // Return a redirect to the order item page
-            return "orderItem?faces-redirect=true";  // Redirect to the next page
-        } catch (Exception e) {
-            LOGGER.log(Level.SEVERE, "Error in addorder method: {0}", e.getMessage());
+        if (pickup_date.before(today)) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Pickup date cannot be in the past", null));
             return null;
         }
+
+        if (delivery_date.before(pickup_date)) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Delivery date must be after pickup date", null));
+            return null;
+        }
+
+        user_bean.addorder(customerId, orderDate, pickup_date, delivery_date, status);
+
+        Collection<Tblorder> orders = user_bean.getOrderByCustomerId(customerId);
+        Tblorder latestOrder = null;
+        for (Tblorder o : orders) {
+            if (latestOrder == null || o.getOrderDate().after(latestOrder.getOrderDate())) {
+                latestOrder = o;
+            }
+        }
+
+        if (latestOrder != null) {
+            HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+            session.setAttribute("orderBean", latestOrder);
+        }
+
+        return "orderItem?faces-redirect=true";
+
+    } catch (Exception e) {
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error placing order: " + e.getMessage(), null));
+        return null;
     }
+}
+
 
     public void deleteOrder(int orderId, int customerId) {
         System.out.println("before>>>>>>>>>" + orderId);
@@ -285,7 +278,7 @@ public class orderBean implements Serializable {
     }
 
     public Collection<Tblorder> getAllOrders() {
-        return user_bean.getAllOrders();
+        return filteredOrders != null ? filteredOrders : user_bean.getAllOrders();
     }
 
     public Collection<Tblorder> getOrderByCustomerId(int customer_id) {
@@ -314,5 +307,86 @@ public class orderBean implements Serializable {
         gord = new GenericType<Collection<Tblorder>>() {
         };
         today = new Date();
+        filteredOrders = null;
+    }
+
+    public Date getMaxDeliveryDate() {
+        if (pickup_date == null) {
+            return null;
+        }
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(pickup_date);
+        cal.add(Calendar.DAY_OF_MONTH, 10); // Add 10 days to pickup date
+        return cal.getTime();
+    }
+
+    // Add getters and setters
+    public String getFilterStatus() {
+        return filterStatus;
+    }
+
+    public void setFilterStatus(String filterStatus) {
+        this.filterStatus = filterStatus;
+    }
+
+    public Integer getFilterCustomerId() {
+        return filterCustomerId;
+    }
+
+    public void setFilterCustomerId(Integer filterCustomerId) {
+        this.filterCustomerId = filterCustomerId;
+    }
+
+    // Add filter method
+    public void applyFilters() {
+        try {
+            Collection<Tblorder> allOrders = user_bean.getAllOrders();
+            filteredOrders = new ArrayList<>();
+            
+            // Debug prints for filter values
+            System.out.println("Applying filters:");
+            System.out.println("Status filter: " + filterStatus);
+            System.out.println("Customer ID filter: " + filterCustomerId);
+            
+            for (Tblorder order : allOrders) {
+                boolean matches = true;
+                
+                // Filter by status
+                if (filterStatus != null && !filterStatus.isEmpty() && !filterStatus.equals("all")) {
+                    matches = order.getStatus().equals(filterStatus);
+                    System.out.println("Status check for order " + order.getOrderId() + 
+                                     ": " + order.getStatus() + " equals " + filterStatus + 
+                                     " = " + matches);
+                }
+                
+                // Filter by customer ID
+                if (filterCustomerId != null && filterCustomerId > 0) {
+                    matches = matches && order.getCustomerId().getCustomerId() == filterCustomerId;
+                    System.out.println("Customer ID check for order " + order.getOrderId() + 
+                                     ": " + order.getCustomerId().getCustomerId() + 
+                                     " equals " + filterCustomerId + " = " + matches);
+                }
+                
+                // Add order to filtered list if it matches all criteria
+                if (matches) {
+                    filteredOrders.add(order);
+                    System.out.println("Added matching order: ID=" + order.getOrderId() + 
+                                     ", Status=" + order.getStatus() + 
+                                     ", Customer ID=" + order.getCustomerId().getCustomerId());
+                }
+            }
+            
+            System.out.println("Filter complete. Found " + filteredOrders.size() + " matching orders");
+            
+            if (filteredOrders.isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "No orders found matching the selected criteria.", null));
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error applying filters: " + e.getMessage(), null));
+        }
     }
 }

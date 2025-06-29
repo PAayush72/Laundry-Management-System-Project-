@@ -18,6 +18,150 @@
             th {
                 background-color: #f2f2f2;
             }
+
+            /* Service Form Container */
+            .service-form-container {
+                max-width: 800px;
+                margin: 60px auto;
+                padding: 40px;
+                background: #ffffff;
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            }
+
+            .form-title {
+                color: #1C3E72;
+                font-size: 28px;
+                font-weight: 600;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+
+            /* Form Group Styling */
+            .form-group {
+                margin-bottom: 25px;
+            }
+
+            .form-group label {
+                display: block;
+                margin-bottom: 8px;
+                color: #2d3748;
+                font-size: 14px;
+                font-weight: 500;
+                text-transform: capitalize;
+            }
+
+            .beautiful-input {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                font-size: 14px;
+                color: #4a5568;
+                transition: all 0.3s ease;
+                background-color: #f8fafc;
+            }
+
+            .beautiful-input:focus {
+                outline: none;
+                border-color: #1C3E72;
+                box-shadow: 0 0 0 3px rgba(28, 62, 114, 0.1);
+                background-color: #ffffff;
+            }
+
+            /* Button Styling */
+            .beautiful-button {
+                display: inline-block;
+                padding: 12px 30px;
+                background-color: #1C3E72;
+                color: #ffffff;
+                border: none;
+                border-radius: 8px;
+                font-size: 16px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                width: auto;
+                min-width: 200px;
+            }
+
+            .beautiful-button:hover {
+                background-color: #153057;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(28, 62, 114, 0.2);
+            }
+
+            .beautiful-button:active {
+                transform: translateY(0);
+                box-shadow: none;
+            }
+
+            /* Error Message Styling */
+            .error-message {
+                color: #dc2626;
+                font-size: 12px;
+                margin-top: 5px;
+            }
+
+            /* Success Message Styling */
+            .success-message {
+                color: #059669;
+                font-size: 14px;
+                text-align: center;
+                padding: 10px;
+                margin-top: 20px;
+                background-color: #d1fae5;
+                border-radius: 6px;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 768px) {
+                .service-form-container {
+                    margin: 20px;
+                    padding: 20px;
+                }
+
+                .beautiful-button {
+                    width: 100%;
+                }
+            }
+
+            .message {
+                padding: 15px;
+                margin-bottom: 20px;
+                border-radius: 8px;
+                text-align: center;
+                font-size: 14px;
+            }
+
+            .success-message {
+                background-color: #d1fae5;
+                color: #059669;
+                border: 1px solid #059669;
+            }
+
+            .error-message {
+                background-color: #fee2e2;
+                color: #dc2626;
+                border: 1px solid #dc2626;
+            }
+
+            /* Add these to your existing styles */
+            .beautiful-input.invalid {
+                border-color: #dc2626;
+                background-color: #fee2e2;
+            }
+
+            .error-message {
+                display: block;
+                color: #dc2626;
+                font-size: 12px;
+                margin-top: 5px;
+                padding: 5px;
+                border-radius: 4px;
+            }
         </style>
         
         <link rel="manifest" href="site.webmanifest"/>
@@ -47,7 +191,7 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -122,19 +266,49 @@
 
 
 
+            <div class="service-form-container">
+                <h2 class="form-title">Add New Service</h2>
+
             <h:form>
+                    <!-- Add message display -->
+                    <h:panelGroup rendered="#{not empty serviceBean.message}">
+                        <div class="#{serviceBean.message.contains('Error') ? 'error-message' : 'success-message'}">
+                            #{serviceBean.message}
+                        </div>
+                    </h:panelGroup>
+
                  <div class="form-group">
-                                        <label for="orderId">service_type</label>
-                                        <h:inputText id="service_type" value="#{servicesBeans.service_type}"  class="form-control beautiful-input" />
+                        <label for="service_type">Service Type</label>
+                        <h:inputText id="service_type" 
+                                   value="#{serviceBean.service_type}"  
+                                   class="beautiful-input" 
+                                   required="true"
+                                   requiredMessage="Please enter service type"/>
+                        <h:message for="service_type" styleClass="error-message"/>
                                     </div>
+
                <div class="form-group">
-                                        <label for="orderId">charge</label>
-                                        <h:inputText id="charge" value="#{servicesBeans.charge}"  class="form-control beautiful-input" />
+                        <label for="charge">Service Charge</label>
+                        <h:inputText id="charge" 
+                                   value="#{serviceBean.charge}"  
+                                   class="beautiful-input"
+                                   required="true"
+                                   requiredMessage="Please enter service charge"
+                                   type="number"
+                                   min="1">
+                            <f:validateLongRange minimum="1" />
+                            <f:ajax event="blur" render="chargeError" />
+                        </h:inputText>
+                        <h:message id="chargeError" for="charge" styleClass="error-message"/>
                                     </div>
+
                 <div class="form-group text-center">
-                    <h:commandButton value="Add Service" action="#{servicesBeans.addservices()}" class="button button-contactForm boxed-btn beautiful-button" />
+                        <h:commandButton value="Add Service" 
+                                       action="#{serviceBean.addservice()}" 
+                                       class="beautiful-button"/>
                                     </div>
             </h:form>
+            </div>
 
 
             <!-- slider Area End-->
@@ -156,7 +330,7 @@
                                     <img src="assets/img/icon/services-icon1.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">We collect your clothes</a></h5>
+                                    <h5><a href="services.jsf">We collect your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -168,7 +342,7 @@
                                     <img src="assets/img/icon/services-icon2.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Wash your clothes</a></h5>
+                                    <h5><a href="services.jsf">Wash your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -180,7 +354,7 @@
                                     <img src="assets/img/icon/services-icon3.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Get delivery</a></h5>
+                                    <h5><a href="services.jsf">Get delivery</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -311,7 +485,7 @@
                                 <div class="single-footer-caption mb-30">
                                     <!-- logo -->
                                     <div class="footer-logo mb-35">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
                                     </div>
                                     <div class="footer-tittle">
                                         <div class="footer-pera">

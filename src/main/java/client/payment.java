@@ -24,7 +24,7 @@ public class payment {
 
     private WebTarget webTarget;
     private Client client;
-    private static final String BASE_URI = "http://localhost:8084/laundrySystem/resources";
+    private static final String BASE_URI = "http://localhost:8080/laundrySystem/resources";
 
     public payment() {
         client = javax.ws.rs.client.ClientBuilder.newClient();

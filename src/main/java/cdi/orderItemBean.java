@@ -4,6 +4,7 @@ import client.order;
 import ejb.PaymentEJB;
 import ejb.admin_beansLocal;
 import ejb.user_beanLocal;
+import ejb.user_bean;
 import entities.Tblorder;
 import entities.Tblorderitem;
 import entities.Tblpayment;
@@ -24,12 +25,17 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import java.util.logging.Logger;
 import javax.ejb.EJB;
+import javax.faces.application.FacesMessage;
 import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.servlet.http.Part;
 import mail.mail;
 import org.primefaces.model.file.UploadedFile;
 import service.CloudinaryService;
+import java.util.HashMap;
+import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.TreeMap;
 
 @Named(value = "orderItemBean")
 @ViewScoped
@@ -75,9 +81,30 @@ public class orderItemBean implements Serializable {
     @Inject
     private CloudinaryService cloudinary;
 
+    // Add these new properties
+    private String filterPaymentMethod;
+    private Date filterStartDate;
+    private Date filterEndDate;
+    private Double filterMinAmount;
+    private Double filterMaxAmount;
+    private Collection<Tblpayment> filteredPayments;
+
+    // Add statistics properties
+    private double totalRevenue;
+    private int totalTransactions;
+    private Map<String, Integer> paymentMethodStats;
+    private Map<String, Double> dailyRevenue;
+
+    // Add this new property in orderItemBean.java
+    private Map<String, ServiceSummary> serviceStats;
+
     @PostConstruct
     public void init() {
         this.userEmail = loginMB.getC().getEmail();
+        
+        // Add this line to initialize statistics when bean is created
+        calculateDashboardStats();
+        
         try {
             FacesContext facesContext = FacesContext.getCurrentInstance();
             if (facesContext == null) {
@@ -145,43 +172,78 @@ public class orderItemBean implements Serializable {
         // Placeholder to load user details if needed
     }
 
-    public void addorderItem() {
-        System.out.println("Method Triggered");
-        System.out.println("Service Id: " + serviceId);
+public void addorderItem() {
+    System.out.println("Method Triggered");
+    System.out.println("Service Id: " + serviceId);
 
-        // Upload image if present
-        if (image != null) {
-            try {
-                img = cloudinary.uploadImage(image);
-            } catch (IOException ex) {
-                Logger.getLogger(orderItemBean.class.getName()).log(Level.SEVERE, null, ex);
-            }
+    try {
+        // === VALIDATIONS ===
+        if (serviceId <= 0) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please select a valid service.", null));
+            return;
         }
 
-        // Create and set order item details
+        if (material == null || material.trim().length() < 3) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Material must be at least 3 characters.", null));
+            return;
+        }
+
+        if (qty <= 0) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Quantity must be greater than 0.", null));
+            return;
+        }
+
+       if (image == null || image.getSize() == 0) {
+    FacesContext context = FacesContext.getCurrentInstance();
+    String clientId = context.getViewRoot()
+        .findComponent("orderForm:photoUpload")
+        .getClientId(context);
+    context.addMessage(clientId,
+        new FacesMessage(FacesMessage.SEVERITY_ERROR, "Please upload a valid JPG or PNG image", null));
+    return;
+}
+
+        // === IMAGE UPLOAD ===
+        img = cloudinary.uploadImage(image);
+
+        // === OBJECT CREATION ===
         Tblorderitem t = new Tblorderitem();
         Tblorder odr = new Tblorder();
         Tblservice ser = new Tblservice();
 
-        t.setMaterial(material);
         ser.setServicesId(serviceId);
-        t.setServiceId(ser);
-        t.setQty(qty);
         odr.setOrderId(orderId);
+
+        t.setMaterial(material);
+        t.setQty(qty);
+        t.setPhoto(img);
+        t.setServiceId(ser);
         t.setOrderId(odr);
 
-        // Add order item to the database via user_bean
+        // === DATABASE CALL ===
         user_bean.addorderItem(serviceId, orderId, material, qty, img);
 
-        // Ensure the orderItemId is set before storing in the session
-//        this.orderItemId = t.getOrderItemId(); // Set the generated orderItemId here (assumes it gets populated)
-        System.out.println("Order Item ID set to: " + this.orderItemId);
+        // === SUCCESS MESSAGE & REDIRECT ===
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_INFO, "Order item added successfully.", null));
 
-        // Store orderItemId in session
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(true);
-        session.setAttribute("orderItemId", this.orderItemId);
+        // Delay a bit to allow message display if needed (optional)
+        FacesContext.getCurrentInstance().getExternalContext()
+            .redirect("displayOrders.jsf");
+
+    } catch (IOException ex) {
+        Logger.getLogger(orderItemBean.class.getName()).log(Level.SEVERE, null, ex);
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Image upload failed: " + ex.getMessage(), null));
+    } catch (Exception e) {
+        FacesContext.getCurrentInstance().addMessage(null,
+            new FacesMessage(FacesMessage.SEVERITY_ERROR, "Failed to add order item: " + e.getMessage(), null));
+        e.printStackTrace();
     }
+}
 
     public void displayOrderItems(int orderId) {
         this.orderId = orderId;
@@ -455,7 +517,10 @@ public class orderItemBean implements Serializable {
     }
 
     public Collection<Tblpayment> getAllPaymentDetails() {
-        return user_bean.getAllPaymentDetails();
+        Collection<Tblpayment> payments = user_bean.getAllPaymentDetails();
+        // Recalculate stats whenever payments are retrieved
+        calculateDashboardStats();
+        return payments;
     }
 
     public orderItemBean() {
@@ -465,5 +530,143 @@ public class orderItemBean implements Serializable {
         ordItem = new ArrayList<>();
         gordItem = new GenericType<Collection<Tblorderitem>>() {
         };
+    }
+
+    // Modify this method to calculate stats without filters
+    public void calculateDashboardStats() {
+        try {
+            Collection<Tblpayment> allPayments = user_bean.getAllPaymentDetails();
+            Collection<Tblorderitem> allOrderItems = user_bean.getAllOrderitem();
+            
+            // Initialize maps
+            serviceStats = new HashMap<>();
+            dailyRevenue = new TreeMap<>();
+            totalRevenue = 0;
+            
+            // Calculate service statistics
+            if (allOrderItems != null) {
+                for (Tblorderitem item : allOrderItems) {
+                    if (item != null && item.getServiceId() != null) {
+                        Tblservice service = item.getServiceId();
+                        String serviceName = service.getServiceType();
+                        int quantity = item.getQty();
+                        double serviceCharge = service.getCharge();
+                        
+                        ServiceSummary summary = serviceStats.computeIfAbsent(serviceName, k -> new ServiceSummary());
+                        summary.addItems(quantity);
+                        summary.addRevenue(quantity * serviceCharge);
+                    }
+                }
+            }
+            
+            // Calculate revenue statistics
+            if (allPayments != null) {
+                for (Tblpayment payment : allPayments) {
+                    if (payment != null && payment.getAmount() > 0 && payment.getOrderId() != null && payment.getOrderId().getOrderDate() != null) {
+                        totalRevenue += payment.getAmount();
+                        
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                        String dateKey = dateFormat.format(payment.getOrderId().getOrderDate());
+                        dailyRevenue.merge(dateKey, payment.getAmount(), Double::sum);
+                    }
+                }
+                totalTransactions = allPayments.size();
+            }
+            
+            System.out.println("Service Statistics calculated: " + serviceStats.size() + " services found");
+            System.out.println("Daily Revenue entries: " + dailyRevenue.size() + " days found");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error calculating statistics: " + e.getMessage(), null));
+        }
+    }
+
+    // Add this inner class to track both quantity and revenue for each service
+    public static class ServiceSummary implements Serializable {
+        private int quantity;
+        private double revenue;
+        
+        public ServiceSummary() {
+            this.quantity = 0;
+            this.revenue = 0.0;
+        }
+        
+        public void addItems(int qty) {
+            this.quantity += qty;
+        }
+        
+        public void addRevenue(double amount) {
+            this.revenue += amount;
+        }
+        
+        public int getQuantity() {
+            return quantity;
+        }
+        
+        public double getRevenue() {
+            return revenue;
+        }
+        
+        @Override
+        public String toString() {
+            return String.format("{quantity: %d, revenue: %.2f}", quantity, revenue);
+        }
+    }
+
+    // Update the getter to return the new format
+    public Map<String, ServiceSummary> getServiceStats() {
+        return serviceStats;
+    }
+
+    // Keep only these getters
+    public double getTotalRevenue() {
+        return totalRevenue;
+    }
+
+    public int getTotalTransactions() {
+        return totalTransactions;
+    }
+
+    public Map<String, Integer> getPaymentMethodStats() {
+        return paymentMethodStats;
+    }
+
+    public Map<String, Double> getDailyRevenue() {
+        return dailyRevenue;
+    }
+
+    public String getServiceStatsJson() {
+        StringBuilder json = new StringBuilder("{");
+        boolean first = true;
+        for (Map.Entry<String, ServiceSummary> entry : serviceStats.entrySet()) {
+            if (!first) {
+                json.append(",");
+            }
+            json.append(String.format("\"%s\":{\"quantity\":%d,\"revenue\":%.2f}",
+                entry.getKey(),
+                entry.getValue().getQuantity(),
+                entry.getValue().getRevenue()));
+            first = false;
+        }
+        json.append("}");
+        return json.toString();
+    }
+
+    public String getDailyRevenueJson() {
+        StringBuilder json = new StringBuilder("{");
+        boolean first = true;
+        for (Map.Entry<String, Double> entry : dailyRevenue.entrySet()) {
+            if (!first) {
+                json.append(",");
+            }
+            json.append(String.format("\"%s\":%.2f",
+                entry.getKey(),
+                entry.getValue()));
+            first = false;
+        }
+        json.append("}");
+        return json.toString();
     }
 }

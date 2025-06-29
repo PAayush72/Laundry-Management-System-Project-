@@ -81,6 +81,7 @@ public interface user_beanLocal {
 
     Collection<Tblorderitem> getAllOrderitem();
 
+    
     Collection<Tblorderitem> getAllOrderitemByServiceId(int service_id);
 
     List<Tblorderitem> getAllOrderitemByOrderId(int order_id);
@@ -103,5 +104,5 @@ public interface user_beanLocal {
     Collection<Tblpayment> getPaymentByOrderId(int order_id);
 
     Collection<Tblpayment> getPaymentByMethod(String method);
-
+    
 }

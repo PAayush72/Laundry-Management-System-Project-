@@ -49,6 +49,7 @@ rest\EmployeeResource.class
 mail\mail.class
 cdi\Customer.class
 ejb\RazorpayService.class
+cdi\orderItemBean$ServiceSummary.class
 jwtrest\Constant.class
 client\customer.class
 mail\feedBackMail.class

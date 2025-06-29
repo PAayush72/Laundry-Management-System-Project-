@@ -2,7 +2,8 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:f="http://xmlns.jcp.org/jsf/core">
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
 
         <style>
@@ -17,6 +18,264 @@
             }
             th {
                 background-color: #f2f2f2;
+            }
+
+            /* Payment Section */
+            .payment-section {
+                padding: 40px 20px;
+                background-color: #f8f9fa;
+                min-height: calc(100vh - 300px);
+            }
+
+            /* Payment Table Container */
+            .payment-table-container {
+                max-width: 1200px;
+                margin: 0 auto;
+                background: #ffffff;
+                padding: 30px;
+                border-radius: 15px;
+                box-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            }
+
+            /* Table Title */
+            .payment-title {
+                color: #1C3E72;
+                font-size: 28px;
+                font-weight: 600;
+                text-align: center;
+                margin-bottom: 30px;
+                position: relative;
+                padding-bottom: 15px;
+            }
+
+            .payment-title:after {
+                content: '';
+                position: absolute;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 80px;
+                height: 3px;
+                background: #1C3E72;
+                border-radius: 2px;
+            }
+
+            /* Enhanced Table Styling */
+            .payment-table {
+                width: 100%;
+                border-collapse: separate;
+                border-spacing: 0;
+                margin-bottom: 20px;
+                border-radius: 10px;
+                overflow: hidden;
+                box-shadow: 0 0 0 1px #e2e8f0;
+            }
+
+            .payment-table th {
+                background: #1C3E72;
+                color: #ffffff;
+                font-weight: 500;
+                padding: 16px;
+                text-align: left;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                border: none;
+            }
+
+            .payment-table td {
+                padding: 16px;
+                border-bottom: 1px solid #e2e8f0;
+                font-size: 14px;
+                color: #2d3748;
+                vertical-align: middle;
+                transition: all 0.2s ease;
+            }
+
+            .payment-table tr:last-child td {
+                border-bottom: none;
+            }
+
+            .payment-table tr:hover td {
+                background-color: #f8f9fa;
+            }
+
+            /* Column Specific Styling */
+            .id-column {
+                width: 100px;
+                text-align: center;
+            }
+
+            .amount-column {
+                text-align: right;
+                font-family: monospace;
+                font-weight: 500;
+            }
+
+            /* Payment Method Badge */
+            .payment-method {
+                display: inline-block;
+                padding: 6px 12px;
+                border-radius: 20px;
+                font-size: 13px;
+                font-weight: 500;
+                text-transform: capitalize;
+                background-color: #e2e8f0;
+                color: #1a202c;
+            }
+
+            .method-card {
+                background-color: #ebf8ff;
+                color: #2b6cb0;
+            }
+
+            .method-cash {
+                background-color: #f0fff4;
+                color: #2f855a;
+            }
+
+            .method-upi {
+                background-color: #faf5ff;
+                color: #6b46c1;
+            }
+
+            /* Amount Formatting */
+            .amount {
+                font-weight: 600;
+                color: #2d3748;
+            }
+
+            .currency-symbol {
+                font-size: 0.85em;
+                margin-right: 2px;
+            }
+
+            /* Responsive Design */
+            @media (max-width: 1200px) {
+                .payment-table-container {
+                    margin: 0 20px;
+                }
+            }
+
+            @media (max-width: 992px) {
+                .payment-table {
+                    display: block;
+                    overflow-x: auto;
+                    white-space: nowrap;
+                }
+
+                .payment-table-container {
+                    padding: 20px;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .payment-title {
+                    font-size: 24px;
+                }
+
+                .payment-table th,
+                .payment-table td {
+                    padding: 12px;
+                }
+
+                .payment-method {
+                    padding: 4px 8px;
+                    font-size: 12px;
+                }
+            }
+
+            @media (max-width: 576px) {
+                .payment-section {
+                    padding: 20px 10px;
+                }
+
+                .payment-table-container {
+                    padding: 15px;
+                }
+
+                .payment-title {
+                    font-size: 20px;
+                }
+
+                .payment-table th,
+                .payment-table td {
+                    padding: 10px;
+                    font-size: 13px;
+                }
+            }
+
+            /* Add custom styles */
+            .dashboard-stats {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                margin-bottom: 30px;
+            }
+            
+            .stat-card {
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            }
+            
+            .stat-card h3 {
+                margin: 0;
+                color: #666;
+                font-size: 14px;
+            }
+            
+            .stat-card .value {
+                font-size: 24px;
+                font-weight: bold;
+                color: #1C3E72;
+                margin: 10px 0;
+            }
+            
+            .charts-container {
+                display: grid;
+                grid-template-columns: repeat(2, 1fr);
+                gap: 20px;
+                margin: 20px 0;
+            }
+            
+            .chart-card {
+                background: white;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+                height: 400px;
+                display: flex;
+                flex-direction: column;
+            }
+            
+            .chart-title {
+                text-align: center;
+                color: #1C3E72;
+                margin-bottom: 20px;
+                font-size: 18px;
+                font-weight: bold;
+                flex: 0 0 auto;
+            }
+            
+            .chart-container {
+                flex: 1;
+                position: relative;
+                height: 100% !important;
+                width: 100% !important;
+            }
+            
+            canvas {
+                max-width: 100%;
+                height: auto !important;
+            }
+
+            /* Make charts responsive on smaller screens */
+            @media (max-width: 992px) {
+                .charts-container {
+                    grid-template-columns: 1fr;
+                }
             }
         </style>
 
@@ -38,6 +297,9 @@
         <link rel="stylesheet" href="assets/css/slick.css"/>
         <link rel="stylesheet" href="assets/css/nice-select.css"/>
         <link rel="stylesheet" href="assets/css/style.css"/>
+
+        <!-- Add Chart.js with a specific version -->
+        <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
     </h:head>
     <h:body>
         <header>
@@ -47,7 +309,7 @@
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -122,34 +384,89 @@
 
 
 
-            <h:form>
-                <h:dataTable value="#{orderItemBean.allPaymentDetails}" var="s" border="1">
-                     <h:column>
-                        <f:facet name="header">Pay Id</f:facet>
-                            #{s.payId}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Customer Id</f:facet>
-                            #{s.customerId.customerId}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Order Id</f:facet>
-                            #{s.orderId.orderId}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Amount</f:facet>
-                            #{s.amount}
-                    </h:column>
-                    <h:column>
-                        <f:facet name="header">Payment Method</f:facet>
-                            #{s.method}
-                    </h:column>
-                   
+            <section class="payment-section">
+                <div class="payment-table-container">
+                    <h2 class="payment-title">Payment Dashboard</h2>
+                    
+                    <!-- Statistics Cards -->
+                    <h:panelGroup id="statsContainer">
+                        <div class="dashboard-stats">
+                            <div class="stat-card">
+                                <h3>Total Revenue</h3>
+                                <div class="value">
+                                    ₹<h:outputText value="#{orderItemBean.totalRevenue}">
+                                        <f:convertNumber pattern="#,##0.00" />
+                                    </h:outputText>
+                                </div>
+                            </div>
+                            
+                            <div class="stat-card">
+                                <h3>Total Transactions</h3>
+                                <div class="value">
+                                    <h:outputText value="#{orderItemBean.totalTransactions}" />
+                                </div>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                    
+                    <!-- Charts Container -->
+                    <h:panelGroup id="chartsContainer">
+                        <div class="charts-container">
+                            <!-- Service Distribution Chart -->
+                            <div class="chart-card">
+                                <h3 class="chart-title">Services Distribution</h3>
+                                <div class="chart-container">
+                                    <canvas id="serviceChart"></canvas>
+                                </div>
+                            </div>
+                            <!-- Daily Revenue Chart -->
+                            <div class="chart-card">
+                                <h3 class="chart-title">Daily Revenue</h3>
+                                <div class="chart-container">
+                                    <canvas id="revenueChart"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </h:panelGroup>
+                    
+                    <!-- Payments Table -->
+                    <h:form id="paymentsTable">
+                        <h:dataTable value="#{orderItemBean.allPaymentDetails}" 
+                                    var="s" 
+                                    styleClass="payment-table"
+                                    headerClass="table-header"
+                                    rowClasses="table-row">
+                            <h:column>
+                                <f:facet name="header">Payment ID</f:facet>
+                                <h:outputText value="#{s.payId}" styleClass="id-column"/>
+                            </h:column>
 
-                    <!-- Add more columns as needed -->
-                </h:dataTable>
-            </h:form>
+                            <h:column>
+                                <f:facet name="header">Customer ID</f:facet>
+                                <h:outputText value="#{s.customerId.customerId}" styleClass="id-column"/>
+                            </h:column>
 
+                            <h:column>
+                                <f:facet name="header">Order ID</f:facet>
+                                <h:outputText value="#{s.orderId.orderId}" styleClass="id-column"/>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Amount</f:facet>
+                                <h:outputText value="#{s.amount}" styleClass="amount-column">
+                                    <f:convertNumber type="currency" currencySymbol="₹" />
+                                </h:outputText>
+                            </h:column>
+
+                            <h:column>
+                                <f:facet name="header">Payment Method</f:facet>
+                                <h:outputText value="#{s.method}" 
+                                            styleClass="payment-method method-#{s.method.toLowerCase()}"/>
+                            </h:column>
+                        </h:dataTable>
+                    </h:form>
+                </div>
+            </section>
 
             <!-- slider Area End-->
             <!--? Services Area Start -->
@@ -170,7 +487,7 @@
                                     <img src="assets/img/icon/services-icon1.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">We collect your clothes</a></h5>
+                                    <h5><a href="services.jsf">We collect your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -182,7 +499,7 @@
                                     <img src="assets/img/icon/services-icon2.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Wash your clothes</a></h5>
+                                    <h5><a href="services.jsf">Wash your clothes</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -194,7 +511,7 @@
                                     <img src="assets/img/icon/services-icon3.svg" alt=""/>
                                 </div>
                                 <div class="cat-cap">
-                                    <h5><a href="services.html">Get delivery</a></h5>
+                                    <h5><a href="services.jsf">Get delivery</a></h5>
                                     <p>The automated process starts as soon as your clothes go into the machine. The outcome
                                         is gleaming clothes!</p>
                                 </div>
@@ -325,7 +642,7 @@
                                 <div class="single-footer-caption mb-30">
                                     <!-- logo -->
                                     <div class="footer-logo mb-35">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
                                     </div>
                                     <div class="footer-tittle">
                                         <div class="footer-pera">
@@ -438,6 +755,135 @@
         <!-- Jquery Plugins, main Jquery -->
         <script src="assets/js/plugins.js"></script>
         <script src="assets/js/main.js"></script>
+
+        <script type="text/javascript">
+        //<![CDATA[
+            function initializeCharts() {
+                try {
+                    // Service Distribution Chart
+                    var serviceCtx = document.getElementById('serviceChart');
+                    if (serviceCtx) {
+                        var serviceData = #{orderItemBean.serviceStatsJson};
+                        var labels = Object.keys(serviceData);
+                        var quantities = labels.map(function(label) { return serviceData[label].quantity; });
+                        var revenues = labels.map(function(label) { return serviceData[label].revenue; });
+
+                        new Chart(serviceCtx, {
+                            type: 'pie',
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    data: quantities,
+                                    backgroundColor: [
+                                        '#1C3E72',
+                                        '#4CAF50',
+                                        '#FFC107',
+                                        '#FF5722',
+                                        '#9C27B0',
+                                        '#2196F3'
+                                    ]
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'bottom',
+                                        labels: {
+                                            boxWidth: 12,
+                                            padding: 15,
+                                            font: {
+                                                size: 11
+                                            }
+                                        }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function(context) {
+                                                var label = context.label || '';
+                                                var value = context.raw;
+                                                var revenue = revenues[context.dataIndex];
+                                                return [
+                                                    label,
+                                                    'Quantity: ' + value,
+                                                    'Revenue: ₹' + revenue.toFixed(2)
+                                                ];
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+
+                    // Daily Revenue Chart
+                    var revenueCtx = document.getElementById('revenueChart');
+                    if (revenueCtx) {
+                        var revenueData = #{orderItemBean.dailyRevenueJson};
+                        var dates = Object.keys(revenueData);
+                        var values = Object.values(revenueData);
+
+                        new Chart(revenueCtx, {
+                            type: 'line',
+                            data: {
+                                labels: dates,
+                                datasets: [{
+                                    label: 'Daily Revenue',
+                                    data: values,
+                                    borderColor: '#1C3E72',
+                                    backgroundColor: 'rgba(28, 62, 114, 0.1)',
+                                    fill: true,
+                                    tension: 0.4
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        position: 'top',
+                                        labels: {
+                                            font: {
+                                                size: 11
+                                            }
+                                        }
+                                    }
+                                },
+                                scales: {
+                                    y: {
+                                        beginAtZero: true,
+                                        ticks: {
+                                            callback: function(value) {
+                                                return '₹' + value;
+                                            },
+                                            font: {
+                                                size: 10
+                                            }
+                                        }
+                                    },
+                                    x: {
+                                        ticks: {
+                                            font: {
+                                                size: 10
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                    }
+                } catch (error) {
+                    console.error('Error initializing charts:', error);
+                }
+            }
+
+            // Call initializeCharts when the document is ready
+            document.addEventListener('DOMContentLoaded', function() {
+                initializeCharts();
+            });
+        //]]>
+        </script>
 
     </h:body>
 </html>

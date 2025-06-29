@@ -23,85 +23,333 @@
         <link rel="stylesheet" href="assets/css/nice-select.css"/>
         <link rel="stylesheet" href="assets/css/style.css"/>
         <style>
-            /* Form Card Styling */
+            /* Form Styling */
+            .order-form {
+                padding: 80px 0;
+            }
+
             .form-card {
-                background: #fff;
-                padding: 30px;
-                border-radius: 10px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+                background: #ffffff;
+                padding: 40px;
+                border-radius: 15px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
                 margin-bottom: 40px;
             }
 
+            /* Form Controls */
             .form-group {
-                margin-bottom: 20px;
+                margin-bottom: 25px;
+                position: relative;
             }
 
             .form-group label {
-                font-weight: 600;
-                margin-bottom: 10px;
                 display: block;
-                color: #333;
+                font-weight: 500;
+                margin-bottom: 10px;
+                color: #2d3748;
+                font-size: 15px;
             }
 
-            .beautiful-input {
-                padding: 12px;
-                border-radius: 10px;
-                border: 1px solid #ddd;
-                transition: border-color 0.3s, box-shadow 0.3s;
+            .beautiful-input,
+            .form-control {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                font-size: 14px;
+                transition: all 0.3s ease;
+                background-color: #fff;
             }
 
-            .beautiful-input:focus {
-                border-color: #007bff;
-                box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
+            .beautiful-input:focus,
+            .form-control:focus {
+                border-color: #1C3E72;
+                box-shadow: 0 0 0 3px rgba(28, 62, 114, 0.1);
                 outline: none;
             }
 
-            .beautiful-input-file {
-                padding: 12px;
-                border-radius: 10px;
-                border: 1px solid #ddd;
-                transition: border-color 0.3s, box-shadow 0.3s;
+            /* Enhanced Select Menu Styling */
+            .form-control {
+                width: 100%;
+                padding: 12px 15px;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                font-size: 14px;
+                transition: all 0.3s ease;
+                background-color: #fff;
             }
 
-            .beautiful-input-file:focus {
-                border-color: #007bff;
-                box-shadow: 0 0 8px rgba(0, 123, 255, 0.2);
-                outline: none;
+            /* Remove default select styling */
+            select.form-control,
+            .form-control select,
+            h\:selectOneMenu.form-control {
+                -webkit-appearance: none;
+                -moz-appearance: none;
+                appearance: none;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%232d3748' viewBox='0 0 16 16'%3E%3Cpath d='M8 11l-4-4h8l-4 4z'/%3E%3C/svg%3E");
+                background-repeat: no-repeat;
+                background-position: right 15px center;
+                padding-right: 40px !important;
+                background-color: #fff !important;
             }
 
-            
+            /* Remove default arrow in IE */
+            select.form-control::-ms-expand,
+            .form-control select::-ms-expand,
+            h\:selectOneMenu.form-control::-ms-expand {
+                display: none;
+            }
 
-            .beautiful-button:hover {
-                background-color: #0056b3;
-                box-shadow: 0 4px 15px rgba(0, 91, 187, 0.4);
+            /* Updated Select Menu and Dropdown Styling */
+            .ui-selectonemenu {
+                display: block !important;
+                width: 100% !important;
+                height: 45px !important;
+                border: 1px solid #e2e8f0 !important;
+                border-radius: 8px !important;
+                background: #fff !important;
+                position: relative !important;
+            }
+
+            .ui-selectonemenu .ui-selectonemenu-label {
+                display: block !important;
+                width: 100% !important;
+                height: 43px !important;
+                line-height: 43px !important;
+                padding: 0 15px !important;
+                font-size: 14px !important;
+                color: #333 !important;
+                background: transparent !important;
+                border: none !important;
+            }
+
+            .ui-selectonemenu .ui-selectonemenu-trigger {
+                position: absolute !important;
+                top: 0 !important;
+                right: 0 !important;
+                width: 43px !important;
+                height: 43px !important;
+                padding: 0 !important;
+                border-left: 1px solid #e2e8f0 !important;
+                background: #fff !important;
+                border-radius: 0 8px 8px 0 !important;
+            }
+
+            .ui-selectonemenu .ui-selectonemenu-trigger .ui-icon {
+                position: absolute !important;
+                top: 50% !important;
+                left: 50% !important;
+                transform: translate(-50%, -50%) !important;
+                margin: 0 !important;
+                background-image: none !important;
+            }
+
+            .ui-selectonemenu .ui-selectonemenu-trigger .ui-icon:before {
+                content: '\25BC' !important;
+                font-size: 12px !important;
+                color: #666 !important;
+            }
+
+            /* Dropdown Panel Styling */
+            .ui-selectonemenu-panel {
+                border: 1px solid #e2e8f0 !important;
+                background: #fff !important;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1) !important;
+                border-radius: 8px !important;
+                margin-top: 5px !important;
+                padding: 5px 0 !important;
+            }
+
+            .ui-selectonemenu-panel .ui-selectonemenu-list {
+                padding: 0 !important;
+            }
+
+            .ui-selectonemenu-panel .ui-selectonemenu-list-item {
+                padding: 10px 15px !important;
+                margin: 0 !important;
+                font-size: 14px !important;
+                color: #333 !important;
+                border: none !important;
+                background: #fff !important;
+                transition: background-color 0.2s ease !important;
+            }
+
+            .ui-selectonemenu-panel .ui-selectonemenu-list-item:hover {
+                background-color: #f8f9fa !important;
+                cursor: pointer !important;
+            }
+
+            .ui-selectonemenu-panel .ui-selectonemenu-list-item.ui-state-highlight {
+                background-color: #1C3E72 !important;
+                color: #fff !important;
+            }
+
+            /* Focus State */
+            .ui-selectonemenu:hover,
+            .ui-selectonemenu.ui-state-focus {
+                border-color: #1C3E72 !important;
+                box-shadow: 0 0 0 3px rgba(28, 62, 114, 0.1) !important;
+            }
+
+            /* Error State */
+            .ui-selectonemenu.ui-state-error {
+                border-color: #dc2626 !important;
+            }
+
+            /* Error Message */
+            .error-message {
+                color: #dc2626 !important;
+                font-size: 12px !important;
+                margin-top: 5px !important;
+                display: block !important;
+            }
+
+            /* Make dropdown panel visible above other elements */
+            .ui-selectonemenu-panel {
+                z-index: 9999 !important;
+            }
+
+            /* File Upload Styling */
+            .ui-fileupload-simple {
+                width: 100%;
+            }
+
+            .ui-fileupload-simple input[type="file"] {
+                padding: 8px;
+                border: 1px dashed #e2e8f0;
+                border-radius: 8px;
+                width: 100%;
+                background: #f8fafc;
+            }
+
+            /* Button Styling */
+            .beautiful-button,
+            .boxed-btn {
+                background: #1C3E72;
+                color: #ffffff;
+                padding: 12px 30px;
+                border: none;
+                border-radius: 8px;
+                font-weight: 500;
+                font-size: 16px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                width: auto;
+                min-width: 200px;
+            }
+
+            .beautiful-button:hover,
+            .boxed-btn:hover {
+                background: #15305A;
+                transform: translateY(-1px);
+                box-shadow: 0 4px 12px rgba(28, 62, 114, 0.2);
+            }
+
+            /* PrimeFaces Growl Customization */
+            .ui-growl {
+                top: 20px;
+                right: 20px;
             }
 
             /* Responsive Adjustments */
-            @media (max-width: 767px) {
+            @media (max-width: 768px) {
                 .form-card {
-                    padding: 20px;
+                    padding: 25px;
                 }
 
+                .beautiful-button,
+                .boxed-btn {
+                    width: 100%;
+                    min-width: auto;
+                }
+
+                .order-form {
+                    padding: 40px 0;
+                }
+            }
+
+            /* Section Title Enhancement */
                 .section-tittle {
                     margin-bottom: 40px;
                 }
 
-                .beautiful-button {
-                    padding: 10px 15px;
-                }
+            .section-tittle h2 {
+                color: #1C3E72;
+                font-size: 32px;
+                font-weight: 600;
+                margin-bottom: 15px;
             }
 
+            /* PrimeFaces SelectOneMenu Custom Styling */
+            .select-menu-custom {
+                width: 100% !important;
+            }
+
+            .select-menu-custom .ui-selectonemenu-label {
+                padding: 8px 15px !important;
+                }
+
+            .ui-selectonemenu {
+                padding-right: 2px !important;
+                min-height: 45px !important;
+            }
+
+            .ui-selectonemenu-panel {
+                background: #ffffff !important;
+            }
+
+            .ui-selectonemenu-panel .ui-selectonemenu-list {
+                padding: 0 !important;
+            }
+
+            .ui-selectonemenu-panel .ui-selectonemenu-item {
+                padding: 8px 15px !important;
+                border: none !important;
+                cursor: pointer !important;
+            }
+
+            .ui-selectonemenu-panel .ui-selectonemenu-item:hover {
+                background-color: #f0f0f0 !important;
+            }
+
+            .ui-selectonemenu-trigger {
+                cursor: pointer !important;
+                width: 32px !important;
+                padding: 0 6px !important;
+            }
+
+            /* Filter styling */
+            .ui-selectonemenu-filter-container {
+                padding: 8px !important;
+            }
+
+            .ui-selectonemenu-filter {
+                width: 100% !important;
+                padding: 6px !important;
+            }
+
+            /* Panel positioning */
+            .ui-selectonemenu-panel.ui-shadow {
+                box-shadow: 0 2px 10px rgba(0,0,0,0.1) !important;
+                margin-top: 1px !important;
+            }
+
+            /* Selected item styling */
+            .ui-state-highlight {
+                background-color: #1C3E72 !important;
+                color: #ffffff !important;
+            }
         </style>
     </h:head>
     <h:body>
-     <header>
+        <header>
             <!-- Header Start -->
             <div class="header-area">
                 <div class="main-header header-sticky">
                     <!-- Logo -->
                     <div class="header-left">
                         <div class="logo">
-                            <a href="index.html"><img src="assets/img/logo/logo.png" alt="" /></a>
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
                         </div>
                         <div class="menu-wrapper  d-flex align-items-center">
                             <!-- Main-menu -->
@@ -114,25 +362,27 @@
                                         <li><a href="">Order</a>
                                             <ul class="submenu">
                                                 <li><a href="displayOrders.jsf">Order Details</a></li>
-                                               
-                                               
+
+
                                             </ul>
                                         </li>
                                         <li><a href="contact.jsf">Contact</a></li>
                                         <li>
                                             <h:form>
+
                                                 <!-- Render Login link if the user is not logged in -->
                                                 <h:panelGroup rendered="#{!loginMB.loggedIn}">
                                                     <a href="login.jsf" class="dropdown-item">Login</a>
                                                 </h:panelGroup>
 
                                                 <!-- Render Log Out button if the user is logged in -->
-                                                
-                                                 <h:panelGroup rendered="#{loginMB.loggedIn}">
+
+                                                <h:panelGroup rendered="#{loginMB.loggedIn}">
                                                     <h:commandLink value="Log Out" action="#{loginMB.logout()}" class="dropdown-item" />
                                                 </h:panelGroup>
-                                                
-                                                
+
+
+
                                             </h:form>
                                         </li>
 
@@ -143,7 +393,7 @@
                         </div>
                     </div>
                     <div class="header-right d-none d-lg-block">
-                        
+
                         <a href="#" class=""><h:panelGroup rendered="#{!loginMB.loggedIn}">
                                 Make an Appointment
                             </h:panelGroup>
@@ -194,40 +444,87 @@
                                 <h2>Add New Order Item</h2>
                             </div>
                             <div class="form-card">
-                                <h:form enctype="multipart/form-data">
+                                <h:form id="orderForm" enctype="multipart/form-data">
+<p:growl id="growl" showDetail="true" life="3000" />
 
+                                    <!-- Order ID (Read-only) -->
                                     <div class="form-group">
                                         <label for="orderId">Order ID</label>
-                                        <h:inputText id="orderId" value="#{orderItemBean.orderId}" disabled="true" class="form-control beautiful-input" />
+                                        <h:inputText id="orderId"
+                                                     value="#{orderItemBean.orderId}"
+                                                     disabled="true"
+                                                     class="form-control beautiful-input" />
                                     </div>
-                                    <h:outputLabel for="service" value="Choose a service" />
-                                    <h:selectOneMenu id="service" value="#{orderItemBean.serviceId}">
-                                        <f:selectItem itemLabel="Select Service" itemValue="" />
-                                        <f:selectItems value="#{servicesBeans.allServices}" var="s"
-                                                       itemLabel="#{s.serviceType}" itemValue="#{s.servicesId}" />
-                                    </h:selectOneMenu>
-                                    <br/>
-                                    <br/>   
+
+                                    <!-- Service Dropdown -->
+                                    <div class="form-group">
+                                        <label for="service">Choose a service</label>
+                                        <h:selectOneMenu id="service"
+                                                         value="#{orderItemBean.serviceId}"
+                                                         required="true"
+                                                         requiredMessage="Please select a service"
+                                                         styleClass="form-control">
+                                            <f:selectItem itemLabel="Select Service" itemValue="" />
+                                            <f:selectItems value="#{servicesBeans.allServices}" 
+                                                           var="s"
+                                                           itemLabel="#{s.serviceType}" 
+                                                           itemValue="#{s.servicesId}" />
+                                        </h:selectOneMenu>
+                                        <h:message for="service" styleClass="error-message" />
+                                    </div>
+
+                                    <!-- Material Input -->
                                     <div class="form-group">
                                         <label for="material">Material</label>
-                                        <h:inputText id="material" value="#{orderItemBean.material}" class="form-control beautiful-input" />
+                                        <h:inputText id="material"
+                                                     value="#{orderItemBean.material}"
+                                                     required="true"
+                                                     requiredMessage="Material is required"
+                                                     class="form-control beautiful-input">
+                                            <f:validateLength minimum="3" maximum="50" />
+                                        </h:inputText>
+                                        <h:message for="material" style="color:red;" />
                                     </div>
+
+                                    <!-- Quantity Input -->
                                     <div class="form-group">
                                         <label for="qty">Quantity</label>
-                                        <h:inputText id="qty" value="#{orderItemBean.qty}" class="form-control beautiful-input" />
+                                        <h:inputText id="qty"
+                                                     value="#{orderItemBean.qty}"
+                                                     required="true"
+                                                     requiredMessage="Please enter quantity"
+                                                     class="form-control beautiful-input">
+                                            <f:validateLongRange minimum="1" maximum="999" />
+                                        </h:inputText>
+                                        <h:message for="qty" style="color:red;">Please enter a valid quantity of clothes</h:message>
                                     </div>
+
+
+                                    <!-- Photo Upload -->
                                     <div class="form-group">
-                                        <label for="photo">Upload Photo</label>
+                                        <label for="photoUpload">Upload Photo</label>
                                         <p:fileUpload 
+                                            id="photoUpload"
                                             value="#{orderItemBean.image}" 
                                             mode="simple" 
-                                            accept="image/*" 
-                                            widgetVar="postUploadImage" />
+                                            accept=".jpg,.jpeg,.png"
+                                            allowTypes="/(\.|\/)(jpg|jpeg|png)$/"
+                                            label="Choose File"
+                                            styleClass="form-control-file" />
+                                        <h:message for="photoUpload" style="color:red;" />
                                     </div>
+
+
+                                    <!-- Submit Button -->
                                     <div class="form-group text-center">
-                                        <h:commandButton value="Add Order Item" action="#{orderItemBean.addorderItem()}" class="button button-contactForm boxed-btn beautiful-button" />
+                                        <h:commandButton value="Add Order Item"
+                                                         action="#{orderItemBean.addorderItem()}"
+                                                         class="button button-contactForm boxed-btn beautiful-button" />
                                     </div>
+
                                 </h:form>
+
+
                             </div>
                         </div>
                     </div>
@@ -298,7 +595,7 @@
                                 <div class="single-footer-caption mb-30">
                                     <!-- logo -->
                                     <div class="footer-logo mb-35">
-                                        <a href="index.html"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
                                     </div>
                                     <div class="footer-tittle">
                                         <div class="footer-pera">

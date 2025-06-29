@@ -26,13 +26,14 @@ import javax.ws.rs.core.GenericType;
 import javax.ws.rs.core.Response;
 import mail.feedBackMail;
 import mail.mail;
+import javax.faces.application.FacesMessage;
 
 /**
  *
  * @author LENOVO
  */
 @Named(value = "servicesBeans")
-@ViewScoped
+@RequestScoped
 public class servicesBeans implements Serializable {
 
     @EJB
@@ -52,7 +53,7 @@ public class servicesBeans implements Serializable {
     @Inject
     private LoginMB loginMB;
     @Inject
-    private feedBackMail emailSender;
+ 
 
     @PostConstruct
     public void init() {
@@ -227,12 +228,7 @@ public class servicesBeans implements Serializable {
 
     }
 
-    public void sendFeedBackMail() {
-
-        Date orderDate = new Date();
-        emailSender.sendEmail(userEmail, orderDate);
-    }
-
+   
     public void deleteService(int services_id) {
         admin_beans.deleteservice(services_id);
     }
@@ -241,8 +237,57 @@ public class servicesBeans implements Serializable {
         admin_beans.addservice(service_type, charge);
     }
 
-    public void addemp() {
-        admin_beans.addEmployee(emp_name, services_id, salary, emp_address, emp_phno);
+    public String addemp() {
+        try {
+            // Validate salary
+            if (salary <= 0) {
+                FacesContext.getCurrentInstance().addMessage("salary",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Salary must be greater than 0", null));
+                return null;
+            }
+
+            // Validate phone number format (10 digits)
+            if (emp_phno == null || !emp_phno.matches("\\d{10}")) {
+                FacesContext.getCurrentInstance().addMessage("emp_phno",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Phone number must be 10 digits", null));
+                return null;
+            }
+
+            // Validate name (no numbers or special characters)
+            if (emp_name == null || !emp_name.matches("^[a-zA-Z\\s]+$")) {
+                FacesContext.getCurrentInstance().addMessage("emp_name",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Name should contain only letters", null));
+                return null;
+            }
+
+            // Validate address is not empty
+            if (emp_address == null || emp_address.trim().isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage("emp_address",
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                    "Address cannot be empty", null));
+                return null;
+            }
+
+            // If all validations pass, add the employee
+            // Convert salary to String since that's what the method expects
+            admin_beans.addEmployee(emp_name, services_id, salary, emp_address, emp_phno);
+            
+            // Add success message
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_INFO, 
+                "Employee added successfully!", null));
+
+            // Redirect to employee display page
+            return "employeeDisplay?faces-redirect=true";
+        } catch (Exception e) {
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, 
+                "Error adding employee: " + e.getMessage(), null));
+            return null;
+        }
     }
 
     public Collection<Tblemployee> getAllEmployee() {
@@ -269,6 +314,75 @@ public class servicesBeans implements Serializable {
         gservice = new GenericType<Collection<Tblservice>>() {
         };
         emp = new ArrayList<>();
+    }
+
+    private String message;
+    private String name;
+    private String email;
+    private String subject;
+    
+    @Inject
+    private feedBackMail feedBackMail;
+    
+    // Getters and setters for all properties
+    
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getSubject() {
+        return subject;
+    }
+
+    public void setSubject(String subject) {
+        this.subject = subject;
+    }
+
+    public String sendFeedBackMail() {
+        try {
+            // Create a more detailed email message
+            String emailBody = "Name: " + name + "\n" +
+                             "Email: " + email + "\n" +
+                             "Subject: " + subject + "\n" +
+                             "Message: " + message;
+                             
+            feedBackMail.sendEmail(email, new Date());
+            
+            // Clear the form after successful send
+            this.message = "";
+            this.name = "";
+            this.email = "";
+            this.subject = "";
+            
+            FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_INFO, "Success", "Your message has been sent."));
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace(); // This will help with debugging
+            FacesContext.getCurrentInstance().addMessage(null, 
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "Failed to send message: " + e.getMessage()));
+            return null;
+        }
     }
 
 }

@@ -51,7 +51,7 @@ public class CloudinaryService {
             options.put("public_id", generateUniqueImageName(uploadedFile.getFileName(), ".jpg"));
             options.put("resource_type", "auto");
 
-            String uploadPreset = "LaundrySystem";  // Replace with your actual upload preset name
+            String uploadPreset = "thapastore";  // Replace with your actual upload preset name
             options.put("upload_preset", uploadPreset);
 
             // Upload image to Cloudinary
