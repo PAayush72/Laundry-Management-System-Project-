@@ -1,0 +1,559 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <f:metadata>
+        <f:event type="preRenderView" listener="#{serviceBean.getAllServices()}"/>
+    </f:metadata>
+    <h:head>
+        <link rel="manifest" href="site.webmanifest"/>
+        <link rel="shortcut icon" type="image/x-icon" href="assets/img/favicon.ico"/>
+
+        <!-- CSS here -->
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="assets/css/owl.carousel.min.css"/>
+        <link rel="stylesheet" href="assets/css/slicknav.css"/>
+        <link rel="stylesheet" href="assets/css/flaticon.css"/>
+        <link rel="stylesheet" href="assets/css/progressbar_barfiller.css"/>
+        <link rel="stylesheet" href="assets/css/gijgo.css"/>
+        <link rel="stylesheet" href="assets/css/animate.min.css"/>
+        <link rel="stylesheet" href="assets/css/animated-headline.css"/>
+        <link rel="stylesheet" href="assets/css/magnific-popup.css"/>
+        <link rel="stylesheet" href="assets/css/fontawesome-all.min.css"/>
+        <link rel="stylesheet" href="assets/css/themify-icons.css"/>
+        <link rel="stylesheet" href="assets/css/slick.css"/>
+        <link rel="stylesheet" href="assets/css/nice-select.css"/>
+        <link rel="stylesheet" href="assets/css/style.css"/>
+        <style type="text/css">
+            .pricing-section {
+                padding: 80px 0;
+                background: #f8f9fa;
+            }
+            
+            .single-cat {
+                transition: all 0.3s ease;
+            }
+            
+            .single-cat:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 5px 20px rgba(0,0,0,0.15) !important;
+            }
+            
+            .pricing h3 {
+                margin: 0;
+                font-weight: bold;
+            }
+            
+            .btn-primary {
+                background: #1C3E72;
+                border: none;
+                padding: 10px 30px;
+                border-radius: 5px;
+                color: white;
+                text-decoration: none;
+                display: inline-block;
+                transition: all 0.3s ease;
+            }
+            
+            .btn-primary:hover {
+                background: #152f56;
+                transform: translateY(-2px);
+            }
+            
+            .mt-20 {
+                margin-top: 20px;
+            }
+            
+            .mb-30 {
+                margin-bottom: 30px;
+            }
+        </style>
+    </h:head>
+    <h:body>
+        <header>
+            <!-- Header Start -->
+            <div class="header-area">
+                <div class="main-header header-sticky">
+                    <!-- Logo -->
+                    <div class="header-left">
+                        <div class="logo">
+                            <a href="home.jsf"><img src="assets/img/logo/logo.png" alt="" /></a>
+                        </div>
+                        <div class="menu-wrapper  d-flex align-items-center">
+                            <!-- Main-menu -->
+                            <div class="main-menu d-none d-lg-block">
+                                <nav>
+                                    <ul id="navigation">
+                                        <li class="active"><a href="home.jsf">Home</a></li>
+                                        <li><a href="about_us.jsf">About</a></li>
+                                        <li><a href="services.jsf">Services</a></li>
+                                        <li>
+                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <a href="#">Order</a>
+                                                <ul class="submenu">
+                                                    <li><a href="displayOrders.jsf">Order Details</a></li>
+                                                </ul>
+                                            </h:panelGroup>
+                                        </li>
+                                        <li>
+                                            <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                <a href="login.jsf">Contact</a>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <a href="contact.jsf">Contact</a>
+                                            </h:panelGroup>
+                                        </li>
+                                        <li>
+                                            <h:form>
+                                                <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                    <a href="login.jsf" class="dropdown-item">Login</a>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                    <h:commandLink value="Log Out" action="#{loginMB.logout()}" class="dropdown-item" />
+                                                </h:panelGroup>
+                                            </h:form>
+                                        </li>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="header-right d-none d-lg-block">
+                        
+                        <a href="#" class=""><h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                Make an Appointment
+                            </h:panelGroup>
+
+                            <!-- Render Log Out button if the user is logged in -->
+                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                Welcome"#{loginMB.c.customerName}"!
+                            </h:panelGroup></a>
+                    </div>
+                    <!-- Mobile Menu -->
+                    <div class="col-12">
+                        <div class="mobile_menu d-block d-lg-none"></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Header End -->
+        </header>
+
+        <main>
+            <!--? slider Area Start-->
+            <section class="slider-area hero-overly">
+                <div class="slider-active">
+                    <!-- Single Slider -->
+                    <div class="single-slider slider-height d-flex align-items-center">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-xl-7 col-lg-9 col-md-10 col-sm-9">
+                                    <div class="hero__caption">
+                                        <h1 data-animation="fadeInLeft" data-delay="0.2s">Quality laundry service in your
+                                            city</h1>
+                                        <p data-animation="fadeInLeft" data-delay="0.4s">We take care about cleenness of
+                                            your cloth</p>
+                                        <a href="#" class="btn hero-btn" data-animation="fadeInLeft"
+                                           data-delay="0.7s">Explore Services</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- slider Area End-->
+            <!--? Services Area Start -->
+            <section class="services-area pt-top border-bottom pb-20 mb-60">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7 col-lg-8">
+                            <div class="section-tittle text-center mb-55">
+                                <span class="element">Our Process</span>
+                                <h2>This is how we work</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="single-cat text-center">
+                                <div class="cat-icon">
+                                    <img src="assets/img/icon/services-icon1.svg" alt=""/>
+                                </div>
+                                <div class="cat-cap">
+                                    <h5><a href="services.jsf">We collect your clothes</a></h5>
+                                    <p>The automated process starts as soon as your clothes go into the machine. The outcome
+                                        is gleaming clothes!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="single-cat text-center">
+                                <div class="cat-icon">
+                                    <img src="assets/img/icon/services-icon2.svg" alt=""/>
+                                </div>
+                                <div class="cat-cap">
+                                    <h5><a href="services.jsf">Wash your clothes</a></h5>
+                                    <p>The automated process starts as soon as your clothes go into the machine. The outcome
+                                        is gleaming clothes!</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="single-cat text-center">
+                                <div class="cat-icon">
+                                    <img src="assets/img/icon/services-icon3.svg" alt=""/>
+                                </div>
+                                <div class="cat-cap">
+                                    <h5><a href="services.jsf">Get delivery</a></h5>
+                                    <p>The automated process starts as soon as your clothes go into the machine. The outcome
+                                        is gleaming clothes!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Services End -->
+            <!--? Offer-services Start  -->
+            <section class="offer-services pb-bottom2">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7 col-lg-8">
+                            <div class="section-tittle text-center mb-55">
+                                <span class="element">Services</span>
+                                <h2>Services we offer</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row no-gutters">
+                        <div class="col-lg-6 col-md-6">
+                            <div class="single-offers">
+                                <img src="assets/img/gallery/offers1.png" alt="" class=" w-100"/>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="single-offers">
+                                <img src="assets/img/gallery/offers2.png" alt="" class=" w-100"/>
+                                <div class="offers-caption text-center">
+                                    <div class="cat-icon">
+                                        <img src="assets/img/icon/offers-icon1.png" alt=""/>
+                                    </div>
+                                    <div class="cat-cap">
+                                        <h5>
+                                            <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                <a href="services.jsf">Cloth laundry</a>
+                                            </h:panelGroup>
+                                            <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                <a href="orderPlace.jsf">Cloth laundry</a>
+                                            </h:panelGroup>
+                                        </h5>
+                                        <p>The automated process starts as soon as your clothes go into the machine. The
+                                            outcome is gleaming clothes!!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="single-offers">
+                                <img src="assets/img/gallery/offers2.png" alt="" class=" w-100"/>
+                                <div class="offers-caption text-center">
+                                    <div class="cat-icon">
+                                        <img src="assets/img/icon/offers-icon1.png" alt=""/>
+                                    </div>
+                                    <div class="cat-cap">
+                                        <h5><a href="services.jsf">Cloth ironing</a></h5>
+                                        <p>The automated process starts as soon as your clothes go into the machine. The
+                                            outcome is gleaming clothes!!</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 col-md-6">
+                            <div class="single-offers">
+                                <img src="assets/img/gallery/offers4.png" alt="" class=" w-100"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Add the pricing section RIGHT HERE, before the "Want To work" section -->
+            <section class="pricing-section pb-70">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7 col-lg-8">
+                            <div class="section-tittle text-center mb-55">
+                                <span class="element">Pricing</span>
+                                <h2>Our Service Prices</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <h:form>
+                            <div class="row justify-content-center">
+                                <ui:repeat value="#{serviceBean.allServices}" var="service">
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-30">
+                                        <div class="single-cat text-center" style="background: #ffffff; border-radius: 15px; box-shadow: 0 0 15px rgba(0,0,0,0.1); padding: 30px; height: 100%;">
+                                            <div class="cat-icon mb-30">
+                                                <img src="assets/img/icon/services-icon1.svg" alt=""/>
+                                            </div>
+                                            <div class="cat-cap">
+                                                <h5>#{service.serviceType}</h5>
+                                                <div class="pricing mt-20">
+                                                    <h3 style="color: #1C3E72; font-size: 2.5rem;">
+                                                        ₹#{service.charge}
+                                                        <span style="font-size: 1rem; color: #666;">/item</span>
+                                                    </h3>
+                                                </div>
+                                                <p class="mt-20">Quality laundry service at the best price</p>
+                                                <h:panelGroup rendered="#{!loginMB.loggedIn}">
+                                                    <a href="login.jsf" class="btn btn-primary mt-20">Book Now</a>
+                                                </h:panelGroup>
+                                                <h:panelGroup rendered="#{loginMB.loggedIn}">
+                                                    <a href="orderPlace.jsf" class="btn btn-primary mt-20">Book Now</a>
+                                                </h:panelGroup>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ui:repeat>
+                            </div>
+                        </h:form>
+                    </div>
+                </div>
+            </section>
+            <!--? Want To work -->
+            <section class="container">
+                <section class="wantToWork-area" data-background="assets/img/gallery/section_bg01.png">
+                    <div class="wants-wrapper w-padding2">
+                        <div class="row align-items-center justify-content-between">
+                            <div class="col-xl-8 col-lg-9 col-md-7">
+                                <div class="wantToWork-caption wantToWork-caption2">
+                                    <h2>Call us for a service</h2>
+                                    <p>We deliver the goods to the most complicated places on earth</p>
+                                </div>
+                            </div>
+                            <div class="col-xl-3 col-lg-3 col-md-5">
+                                <a href="#" class="btn wantToWork-btn"><img src="assets/img/icon/call2.png" alt=""/> Learn
+                                    More</a>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </section>
+            <!-- Want To work End -->
+            <!-- Testimonials_start -->
+
+            <!-- Testimonials_end -->
+            <!--? Company achievement Start -->
+            <section class="services-area section-padding40 fix">
+                <div class="container">
+                    <div class="row justify-content-center">
+                        <div class="col-xl-7 col-lg-8">
+                            <div class="section-tittle text-center mb-55">
+                                <span class="element">Fun Fact</span>
+                                <h2>Company achievement</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="single-cat text-center">
+                                <div class="cat-cap">
+                                    <span>4000</span>
+                                    <p>The automated process starts as soon as your clothes go into the machine.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="single-cat text-center">
+                                <div class="cat-cap">
+                                    <span>300+</span>
+                                    <p>The automated process starts as soon as your clothes go into the machine.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div class="single-cat text-center">
+                                <div class="cat-cap">
+                                    <span>95%</span>
+                                    <p>The automated process starts as soon as your clothes go into the machine.</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12">
+                                <div class="bottom-bt">
+                                    <img src="assets/img/gallery/company-bg.png" alt=""/>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Company achievement End -->
+            <!--? About Area  -->
+            <section class="about-area2 pb-bottom mt-30">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 col-md-12">
+                            <!-- about-img -->
+                            <div class="about-img ">
+                                <img src="assets/img/gallery/about1.png" alt=""/>
+                            </div>
+                        </div>
+                        <div class="col-lg-4 col-md-12">
+                            <div class="about-caption mb-50">
+                                <!-- Section Tittle -->
+                                <div class="section-tittle mb-25">
+                                    <h2>About company</h2>
+                                </div>
+                                <p class="mb-20">
+                                    The automated process starts as soon as your clothes go into the machine. The outcome is
+                                    gleaming clothes!
+                                </p>
+                                <p class="mb-30">The automated process starts as soon as your clothes go into the machine.
+                                    The outcome is gleaming clothes!</p>
+
+                                <a href="about_us.jsf" class="btn">About Us</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- About Area End -->
+            <!--?  Map Area start  -->
+            <div class="Map-area">
+                <img src="assets/img/gallery/Map.png" alt="" class="w-100"/>
+            </div>
+            <!-- Map Area End -->
+        </main>
+
+        <footer>
+            <!-- Footer Start-->
+            <div class="footer-area footer-padding">
+                <div class="container">
+                    <div class="row d-flex justify-content-between">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="single-footer-caption mb-30">
+                                    <!-- logo -->
+                                    <div class="footer-logo mb-35">
+                                        <a href="home.jsf"><img src="assets/img/logo/logo2_footer.png" alt=""/></a>
+                                    </div>
+                                    <div class="footer-tittle">
+                                        <div class="footer-pera">
+                                            <p>Suspendisse varius enim in eros elementum tristique. Duis cursus, mi quis
+                                                viverra ornare, eros dolor interdum nulla.</p>
+                                        </div>
+                                    </div>
+                                    <!-- social -->
+                                    <div class="footer-social">
+                                        <a href="#"><i class="fab fa-twitter"></i></a>
+                                        <a href="https://bit.ly/sai4ull"><i class="fab fa-facebook-f"></i></a>
+                                        <a href="#"><i class="fab fa-pinterest-p"></i></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>Services </h4>
+                                    <ul>
+                                        <li><a href="#">- Dry Cleaning</a></li>
+                                        <li><a href="#">- Dry Clean</a></li>
+                                        <li><a href="#">- Ironing Services</a></li>
+                                        <li><a href="#">- Laundry Service London</a></li>
+                                        <li><a href="#">- Laundry App</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xl-3 col-lg-4 col-md-4 col-sm-6">
+                            <div class="single-footer-caption mb-50">
+                                <div class="footer-tittle">
+                                    <h4>Get in touch</h4>
+                                    <ul>
+                                        <li class="number"><a href="#">(90) 898 789-8957</a></li>
+                                        <li><a href="#">laundry@567.com</a></li>
+                                        <li><a href="#">789/A, Green road NYC-9089</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- footer-bottom area -->
+            <div class="footer-bottom-area section-bg2" data-background="assets/img/gallery/footer-bg.png"/>
+            <div class="container">
+                <div class="footer-border">
+                    <div class="row d-flex align-items-center">
+                        <div class="col-xl-12 ">
+                            <div class="footer-copy-right text-center">
+                                <p><!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+
+
+                                    <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer End-->
+        </footer>
+        <!-- Scroll Up -->
+        <div id="back-top">
+            <a title="Go to Top" href="#"> <i class="fas fa-level-up-alt"></i></a>
+        </div>
+
+        <!-- JS here -->
+
+        <script src="assets/js/vendor/modernizr-3.5.0.min.js"></script>
+        <!-- Jquery, Popper, Bootstrap -->
+        <script src="assets/js/vendor/jquery-1.12.4.min.js"></script>
+        <script src="assets/js/popper.min.js"></script>
+        <script src="assets/js/bootstrap.min.js"></script>
+        <!-- Jquery Mobile Menu -->
+        <script src="assets/js/jquery.slicknav.min.js"></script>
+
+        <!-- Jquery Slick , Owl-Carousel Plugins -->
+        <script src="assets/js/owl.carousel.min.js"></script>
+        <script src="assets/js/slick.min.js"></script>
+        <!-- One Page, Animated-HeadLin -->
+        <script src="assets/js/wow.min.js"></script>
+        <script src="assets/js/animated.headline.js"></script>
+        <script src="assets/js/jquery.magnific-popup.js"></script>
+
+        <!-- Date Picker -->
+        <script src="assets/js/gijgo.min.js"></script>
+        <!-- Nice-select, sticky -->
+        <script src="assets/js/jquery.nice-select.min.js"></script>
+        <script src="assets/js/jquery.sticky.js"></script>
+        <!-- Progress -->
+        <script src="assets/js/jquery.barfiller.js"></script>
+
+        <!-- counter , waypoint,Hover Direction -->
+        <script src="assets/js/jquery.counterup.min.js"></script>
+        <script src="assets/js/waypoints.min.js"></script>
+        <script src="assets/js/jquery.countdown.min.js"></script>
+        <script src="assets/js/hover-direction-snake.min.js"></script>
+
+        <!-- contact js -->
+        <script src="assets/js/contact.js"></script>
+        <script src="assets/js/jquery.form.js"></script>
+        <script src="assets/js/jquery.validate.min.js"></script>
+        <script src="assets/js/mail-script.js"></script>
+        <script src="assets/js/jquery.ajaxchimp.min.js"></script>
+
+        <!-- Jquery Plugins, main Jquery -->
+        <script src="assets/js/plugins.js"></script>
+        <script src="assets/js/main.js"></script>
+
+    </h:body>
+</html>
+
